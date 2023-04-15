@@ -3,7 +3,8 @@ from Motor import PicoGo
 from time import sleep_us
 
 def getkey():
-    global IR
+    IR = Pin(5, Pin.IN)
+    
     if (IR.value() == 0):
         count = 0
         while ((IR.value() == 0) and (count < 100)): #9ms
@@ -45,9 +46,8 @@ def getkey():
 
 if __name__=='__main__':
     
-    IR = Pin(5, Pin.IN)
     M = PicoGo()
-    speed = 50
+    speed = 30
     
     while True:
         key = getkey()
