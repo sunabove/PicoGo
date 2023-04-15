@@ -47,7 +47,7 @@ def getkey():
 if __name__=='__main__':
     
     M = PicoGo()
-    speed = 30
+    speed = 20
     
     while True:
         key = getkey()
