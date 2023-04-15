@@ -63,6 +63,7 @@ class PicoGo(object):
         self.BIN1.value(0)
 
     def setMotor(self, left, right):
+        print( "setMotor" )
         if((left >= 0) and (left <= 100)):
             self.AIN1.value(0)
             self.AIN2.value(1)
@@ -82,13 +83,13 @@ class PicoGo(object):
 
 if __name__=='__main__':
     duration = 2
-    M = PicoGo()
-    M.forward(50)
+    car = PicoGo()
+    car.forward(50)
     sleep(duration)
-    M.backward(50)
+    car.backward(50)
     sleep(duration)
-    M.left(30)
+    car.left(30)
     sleep(duration)
-    M.right(30)
+    car.right(30)
     sleep(duration)
-    M.stop()
+    car.stop()
