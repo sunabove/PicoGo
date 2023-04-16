@@ -15,7 +15,7 @@ class PicoGo(object):
             
     def forward(self,speed):
         if((speed >= 0) and (speed <= 100)):
-            print( "forward" )
+            print( f"forward: speed = {speed}" )
             self.PWMA.duty_u16(int(speed*0xFFFF/100))
             self.PWMB.duty_u16(int(speed*0xFFFF/100))
             self.AIN2.value(1)
@@ -25,7 +25,7 @@ class PicoGo(object):
         
     def backward(self,speed):
         if((speed >= 0) and (speed <= 100)):
-            print( "backward" )
+            print( f"backward: speed = {speed}" )
             self.PWMA.duty_u16(int(speed*0xFFFF/100))
             self.PWMB.duty_u16(int(speed*0xFFFF/100))
             self.AIN2.value(0)
@@ -35,7 +35,7 @@ class PicoGo(object):
 
     def left(self,speed):
         if((speed >= 0) and (speed <= 100)):
-            print( "left" )
+            print( f"left: speed = {speed}" )
             self.PWMA.duty_u16(int(speed*0xFFFF/100))
             self.PWMB.duty_u16(int(speed*0xFFFF/100))
             self.AIN2.value(0)
@@ -45,7 +45,7 @@ class PicoGo(object):
         
     def right(self,speed):
         if((speed >= 0) and (speed <= 100)):
-            print( "right" )
+            print( f"right: speed = {speed}" )
             self.PWMA.duty_u16(int(speed*0xFFFF/100))
             self.PWMB.duty_u16(int(speed*0xFFFF/100))
             self.AIN2.value(1)
@@ -54,7 +54,7 @@ class PicoGo(object):
             self.BIN1.value(1)
         
     def stop(self):
-        print( "stop" )
+        print( f"stop: speed = {0}" )
         self.PWMA.duty_u16(0)
         self.PWMB.duty_u16(0)
         self.AIN2.value(0)
@@ -63,7 +63,7 @@ class PicoGo(object):
         self.BIN1.value(0)
 
     def setMotor(self, left, right):
-        print( "setMotor" )
+        print( f"setMotor: left = {left}, right = {right}" )
         if((left >= 0) and (left <= 100)):
             self.AIN1.value(0)
             self.AIN2.value(1)
