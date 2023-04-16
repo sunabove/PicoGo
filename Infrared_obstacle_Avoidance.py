@@ -18,7 +18,7 @@ while True:
         robot.right(10)
     elif((dl_status == 1) and (dr_status == 0)):  # 우측 장애물시, 좌회전
         robot.left(10)
-    else :  # 장매물이 없으면, 전진한다.
+    else :  # 장매물이 없으면, 전진
         robot.forward( 20 )
     pass
         
