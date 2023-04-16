@@ -2,18 +2,19 @@ from machine import Pin
 from Motor import PicoGo
 from time import sleep_us
 
+irRemoteCon = Pin(5, Pin.IN)
+
 def getkey():
-    IR = Pin(5, Pin.IN)
-    
-    if (IR.value() == 0):
+        
+    if (irRemoteCon.value() == 0):
         count = 0
-        while ((IR.value() == 0) and (count < 100)): #9ms
+        while ((irRemoteCon.value() == 0) and (count < 100)): #9ms
             count += 1
             sleep_us(100)
         if(count < 10):
             return None
         count = 0
-        while ((IR.value() == 1) and (count < 50)): #4.5ms
+        while ((irRemoteCon.value() == 1) and (count < 50)): #4.5ms
             count += 1
             sleep_us(100)
             
@@ -22,12 +23,12 @@ def getkey():
         data = [0,0,0,0]
         for i in range(0,32):
             count = 0
-            while ((IR.value() == 0) and (count < 10)):    #0.56ms
+            while ((irRemoteCon.value() == 0) and (count < 10)):    #0.56ms
                 count += 1
                 sleep_us(100)
 
             count = 0
-            while ((IR.value() == 1) and (count < 20)):   #0: 0.56mx
+            while ((irRemoteCon.value() == 1) and (count < 20)):   #0: 0.56mx
                 count += 1                                #1: 1.69ms
                 sleep_us(100)
 
