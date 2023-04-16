@@ -82,14 +82,17 @@ class PicoGo(object):
             self.PWMB.duty_u16(-int(right*0xFFFF/100))
 
 if __name__=='__main__':
+    robot = PicoGo()
+    
     duration = 2
-    car = PicoGo()
-    car.forward(50)
+    
+    robot.forward(50)
     sleep(duration)
-    car.backward(50)
+    robot.backward(50)
     sleep(duration)
-    car.left(30)
+    robot.left(30)
     sleep(duration)
-    car.right(30)
+    robot.right(30)
     sleep(duration)
-    car.stop()
+    robot.stop()
+pass
