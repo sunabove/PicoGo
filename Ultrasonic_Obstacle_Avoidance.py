@@ -9,7 +9,7 @@ trig = Pin(14, Pin.OUT)
 trig.value(0)
 echo.value(0)
 
-def get_distance():
+def get_obstacle_distance():
     trig.value(1)
     utime.sleep_us(10)
     trig.value(0)
@@ -24,7 +24,7 @@ def get_distance():
     return distance
 
 while True:
-    dist = get_distance()
+    dist = get_obstacle_distance()
     if dist <= 20 :
         robot.right(20)
     else:

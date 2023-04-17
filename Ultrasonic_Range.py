@@ -7,7 +7,7 @@ trig = Pin(14, Pin.OUT)
 trig.value(0)
 echo.value(0)
 
-def get_dist():
+def get_obstacle_dist():
     trig.value(1)
     sleep( 0.1 )
     trig.value(0)
@@ -28,7 +28,7 @@ def get_dist():
 pass
 
 while True:
-    dist = get_dist()
+    dist = get_obstacle_dist()
     print( f"Distance:{dist:6.2f} cm" )
     sleep(1)
 pass

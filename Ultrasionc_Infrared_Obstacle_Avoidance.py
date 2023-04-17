@@ -2,35 +2,38 @@ import utime
 from machine import Pin
 from Motor import PicoGo
 
-M = PicoGo()
-DSR = Pin(2, Pin.IN)
-DSL = Pin(3, Pin.IN)
-Echo = Pin(15, Pin.IN)
-Trig = Pin(14, Pin.OUT)
-Trig.value(0)
-Echo.value(0)
+robot = PicoGo()
+dsr = Pin(2, Pin.IN)
+dsl = Pin(3, Pin.IN)
 
-def dist():
-    Trig.value(1)
+echo = Pin(15, Pin.IN)
+trig = Pin(14, Pin.OUT)
+trig.value(0)
+echo.value(0)
+
+def get_obstacle_distance():
+    trig.value(1)
     utime.sleep_us(10)
-    Trig.value(0)
-    while(Echo.value() == 0):
+    trig.value(0)
+    while echo.value() == 0:
         pass
     ts=utime.ticks_us()
-    while(Echo.value() == 1):
+    while echo.value() == 1:
         pass
     te=utime.ticks_us()
     distance=((te-ts)*0.034)/2
+    
     return distance
+pass
 
 while True:
-    D = dist()
-    DR_status = DSR.value()
-    DL_status = DSL.value()
-    if((D <= 20) or (DL_status == 0) or (DR_status == 0)):
-        M.right(20)
-        #Ab.left()
+    dist = get_obstacle_distance()
+    dr_status = dsr.value()
+    dl_status = dsl.value()
+    if (dist <= 20) or (dl_status == 0) or (dr_status == 0) :
+        robot.right(20)
     else:
-        M.forward(40)
+        robot.forward(25)
         
     utime.sleep_ms(20)
+pass
