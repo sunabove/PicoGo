@@ -1,6 +1,7 @@
-import utime
 from machine import Pin
 from Motor import PicoGo
+import utime
+from time import sleep
 
 robot = PicoGo()
 dsr = Pin(2, Pin.IN)
@@ -26,14 +27,24 @@ def get_obstacle_distance():
     return distance
 pass
 
+speed = 30
+    
 while True:
     dist = get_obstacle_distance()
     dr_status = dsr.value()
     dl_status = dsl.value()
-    if (dist <= 20) or (dl_status == 0) or (dr_status == 0) :
-        robot.right(20)
-    else:
-        robot.forward(25)
+    
+    if (dl_status == 0) and (dr_status == 0) : # 양쪽에 장애물이 있을 때, 좌회전
+        robot.left( speed/2 )
+    elif (dl_status == 0) and (dr_status == 1) : # 좌측 장애물시, 우회전
+        robot.right( speed/2 )
+    elif (dl_status == 1) and (dr_status == 0) :  # 우측 장애물시, 좌회전
+        robot.left( speed/2 )
+    elif dist < 20 :
+        robot.right( speed/2 )    
+    else :  # 장매물이 없으면, 전진
+        robot.forward( speed )
+    pass
         
-    utime.sleep_ms(20)
+    sleep( 0.1 )
 pass
