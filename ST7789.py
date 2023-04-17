@@ -22,12 +22,12 @@ class ST7789(framebuf.FrameBuffer):
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
         self.init_display()
         
-        self.WHITE  =   0xFFFF
-        self.BLACK  =  0x0000
-        self.GREEN  =  0x001F
-        self.RED    =  0xF800
+        self.WHITE  = 0xFFFF
+        self.BLACK  = 0x0000
+        self.GREEN  = 0x001F
+        self.RED    = 0xF800
         self.BLUE   = 0xFF00
-        self.GBLUE = 0X07FF
+        self.GBLUE  = 0X07FF
         self.YELLOW = 0xFFE0
         
     def write_cmd(self, cmd):
@@ -155,6 +155,4 @@ if __name__=='__main__':
     lcd.text("PicoGo",10,15)
     lcd.text("Waveshare.com",10,25,0x07E0)
     lcd.show()
-    
-   
-
+pass

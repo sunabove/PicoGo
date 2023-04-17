@@ -1,6 +1,6 @@
 from machine import Pin
 from ST7789 import ST7789
-import utime
+from time import sleep
 
 bat = machine.ADC(Pin(26))
 temp = machine.ADC(4)
@@ -21,8 +21,8 @@ lcd.text("PicoGo",10,7,0x001F)
 lcd.text("Waveshare.com",70,120,0x07E0)
 lcd.show()
 
-while (1):
-    utime.sleep(1)
+while True :
+    sleep(1)
     reading = temp.read_u16() * 3.3 / (65535)
     temperature = 27 - (reading - 0.706)/0.001721
     v = bat.read_u16()*3.3/65535 * 2
@@ -31,8 +31,8 @@ while (1):
     if(p > 100):p=100
 
     lcd.fill_rect(145,50,65,40,0xF232)
-    lcd.text("temperature :  {:5.2f} C".format(temperature),30,50,0xFFFF)
-    lcd.text("Voltage     :  {:5.2f} V".format(v),30,65,0xFFFF)
-    lcd.text("percent     :   {:3.1f} %".format(p),30,80,0xFFFF)
+    lcd.text( f"temperature : {temperature:5.2f} C",30,50,0xFFFF )
+    lcd.text( f"Voltage     : {v:5.2f} V",30,65,0xFFFF )
+    lcd.text( f"percent     : {p:3.1f} %",30,80,0xFFFF )
 
     lcd.show()
