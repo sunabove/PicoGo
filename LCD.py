@@ -2,7 +2,8 @@ from machine import Pin,SPI
 import framebuf
 import time
 
-class ST7789(framebuf.FrameBuffer):
+# ST7789
+class LCD(framebuf.FrameBuffer):
     def __init__(self):
         self.width = 240
         self.height = 135
@@ -148,7 +149,7 @@ class ST7789(framebuf.FrameBuffer):
         self.cs(1)
         
 if __name__=='__main__':
-    lcd = ST7789()
+    lcd = LCD()
     lcd.fill(0xFFFF)
     lcd.show()
     lcd.text("Raspberry Pi Pico",10,5,0xFF00)

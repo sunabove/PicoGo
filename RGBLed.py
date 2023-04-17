@@ -1,11 +1,11 @@
 # Example using PIO to drive a set of WS2812 LEDs.
-import array, time
+import array, rp2
 from machine import Pin
-import rp2
+from time import sleep
 
 # Configure the number of WS2812 LEDs.
 NUM_LEDS = 4
-PIN_NUM = 22
+PIN_NUM = 22 
 
 @rp2.asm_pio(sideset_init=rp2.PIO.OUT_LOW, out_shiftdir=rp2.PIO.SHIFT_LEFT, autopull=True, pull_thresh=24)
 def ws2812():
@@ -21,7 +21,7 @@ def ws2812():
     nop()                   .side(0)    [T2 - 1]
     wrap()
         
-class NeoPixel(object):
+class RGBLed(object): #NeoPixel
     def __init__(self,pin=PIN_NUM,num=NUM_LEDS,brightness=0.8):
         self.pin=pin
         self.num=num
@@ -66,9 +66,9 @@ class NeoPixel(object):
     def color_chase(self, color, wait):
         for i in range(self.num):
             self.pixels_set(i, color)
-            time.sleep(wait)
+            sleep(wait)
             self.pixels_show()
-        time.sleep(0.2)
+        sleep(0.2)
      
     def wheel(self, pos):
         # Input a value 0 to 255 to get a color value.
@@ -90,20 +90,22 @@ class NeoPixel(object):
                 rc_index = (i * 256 // self.num) + j
                 self.pixels_set(i, self.wheel(rc_index & 255))
             self.pixels_show()
-            time.sleep(wait)
+            sleep(wait)
 
 if __name__=='__main__':
-    strip = NeoPixel()
+    rgbLed = RGBLed()
     print("fills")
-    for color in strip.COLORS:       
-        strip.pixels_fill(color)
-        strip.pixels_show()
-        time.sleep(0.5)
+    for color in rgbLed.COLORS:       
+        rgbLed.pixels_fill(color)
+        rgbLed.pixels_show()
+        sleep(0.5)
 
     print("chases")
     for color in strip.COLORS:       
-        strip.color_chase(color, 0.05)
+        rgbLed.color_chase(color, 0.05)
 
     print("rainbow")
-    while(1):
-        strip.rainbow_cycle(0.02)
+    while True :
+        rgbLed.rainbow_cycle(0.05)
+    pass
+pass
