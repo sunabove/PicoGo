@@ -1,34 +1,47 @@
-import utime
+from time import sleep, sleep_us, ticks_us
 from machine import Pin
 from Motor import PicoGo
+from Ultrasonic_Range import get_obstacle_distance
 
 robot = PicoGo()
-echo = Pin(15, Pin.IN)
-trig = Pin(14, Pin.OUT)
 
-trig.value(0)
-echo.value(0)
+if __name__ == '__main__' :
+    print( "Hello" )
 
-def get_obstacle_distance():
-    trig.value(1)
-    utime.sleep_us(10)
-    trig.value(0)
-    while echo.value() == 0 :
-        pass
-    ts=utime.ticks_us()
-    while echo.value() == 1:
-        pass
-    te=utime.ticks_us()
-    distance=((te-ts)*0.034)/2
+    start = ticks_us()   
+    duration = 0.1
     
-    return distance
-
-while True:
-    dist = get_obstacle_distance()
-    if dist <= 20 :
-        robot.right(20)
-    else:
-        robot.forward(20)
+    obstacle_cnt = 0 
+    while True :
+        dist = get_obstacle_distance()
         
-    utime.sleep_ms(20)
+        print( f"distance: {dist:6.2f} cm" )
+        
+        if dist < 20 :
+            if obstacle_cnt : 
+                robot.stop()
+                sleep( duration )
+            
+            ostacle_cnt += 1
+            
+            robot.right(20)
+            sleep( duration )
+        else:
+            ostacle_cnt = 0 
+            robot.forward(20)
+        pass
+            
+        sleep( duration )
+        
+        now = ticks_us()
+        elapsed = now - start
+        
+        print( f"start = {start:,}, now = {now:,}, duration = {elapsed:,}" ) 
+        
+        if elapsed > 60*10**6 : break
+    pass
+
+    robot.stop()
+
+    print( "Good bye!" )
 pass

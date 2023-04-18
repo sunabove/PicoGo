@@ -1,5 +1,5 @@
 from machine import Pin
-from time import sleep, ticks_us
+from time import sleep, sleep_us, ticks_us
 
 echo = Pin(15, Pin.IN)
 trig = Pin(14, Pin.OUT)
@@ -7,28 +7,30 @@ trig = Pin(14, Pin.OUT)
 trig.value(0)
 echo.value(0)
 
-def get_obstacle_dist():
+def get_obstacle_distance():
     trig.value(1)
-    sleep( 0.1 )
+    sleep_us( 10 )
     trig.value(0)
     
-    while(echo.value() == 0):
+    while echo.value() == 0 :
         pass
     
-    ts=ticks_us()
+    then = ticks_us()
     
-    while(echo.value() == 1):
+    while echo.value() == 1 :
         pass
     
-    te=ticks_us()
+    now = ticks_us()
     
-    distance=((te-ts)*0.034)/2
+    distance= (now - then)*0.017
     
     return distance
 pass
 
-while True:
-    dist = get_obstacle_dist()
-    print( f"Distance:{dist:6.2f} cm" )
-    sleep(1)
+if __name__=='__main__':
+    while True:
+        dist = get_obstacle_distance()
+        print( f"Distance:{dist:6.2f} cm" )
+        sleep(1)
+    pass
 pass

@@ -11,6 +11,7 @@ class PicoGo(object):
         self.BIN2 = Pin(20, Pin.OUT)
         self.PWMB = PWM(Pin(21))
         self.PWMB.freq(1000)
+        self.stop_cnt = 0 
         self.stop()
             
     def forward(self,speed):
@@ -54,13 +55,17 @@ class PicoGo(object):
             self.BIN1.value(1)
         
     def stop(self):
-        print( f"stop: speed = {0}" )
+        if self.stop_cnt :
+            print( f"stop: speed = {0}" )
+        self.stop_cnt += 1
+        
         self.PWMA.duty_u16(0)
         self.PWMB.duty_u16(0)
         self.AIN2.value(0)
         self.AIN1.value(0)
         self.BIN2.value(0)
         self.BIN1.value(0)
+    pass
 
     def setMotor(self, left, right):
         print( f"setMotor: left = {left}, right = {right}" )
