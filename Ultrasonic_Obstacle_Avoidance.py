@@ -10,6 +10,7 @@ if __name__ == '__main__' :
 
     start = ticks_us()   
     duration = 0.1
+    speed = 20
     
     obstacle_cnt = 0 
     while True :
@@ -18,17 +19,17 @@ if __name__ == '__main__' :
         print( f"distance: {dist:6.2f} cm" )
         
         if dist < 20 :
-            if obstacle_cnt : 
+            if obstacle_cnt == 0 : 
                 robot.stop()
                 sleep( duration )
             
             ostacle_cnt += 1
             
-            robot.right(20)
+            robot.right( speed )
             sleep( duration )
         else:
             ostacle_cnt = 0 
-            robot.forward(20)
+            robot.forward( speed )
         pass
             
         sleep( duration )
