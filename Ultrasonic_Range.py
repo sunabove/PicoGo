@@ -31,6 +31,6 @@ if __name__=='__main__':
     while True:
         dist = get_obstacle_distance()
         print( f"Distance:{dist:6.2f} cm" )
-        sleep(1)
+        sleep( 0.1)
     pass
 pass

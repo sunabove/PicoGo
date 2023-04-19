@@ -18,15 +18,14 @@ if __name__ == '__main__' :
         
         print( f"distance: {dist:6.2f} cm" )
         
-        if dist < 20 :
-            if obstacle_cnt == 0 : 
+        if dist <= 20 :
+            ostacle_cnt += 1
+            
+            if obstacle_cnt == 1 : 
                 robot.stop()
                 sleep( duration )
             
-            ostacle_cnt += 1
-            
             robot.right( speed )
-            sleep( duration )
         else:
             ostacle_cnt = 0 
             robot.forward( speed )
