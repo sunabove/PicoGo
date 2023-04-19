@@ -11,5 +11,5 @@ while not bootsel_button() :
   sleep( 0.1 )
 pass
 
-print( "Bootsel pressed!" )
-print( "Good bye!" )
+print( "Bootsel button is pressed!" )
+print( "Goodbye!" )
