@@ -56,7 +56,8 @@ HIGH_SPEED   =  80
 speed = 20
 t = 0
 j = 0
-n = 0  
+n = 0
+
 def dist():
     Trig.value(1)
     utime.sleep_ms(10)
@@ -109,13 +110,11 @@ while True:
     for i in range(strip.num):
         strip.pixels_set(i, strip.wheel(((i * 256 // strip.num) + j) & 255))
     strip.pixels_show()
+    
     j += 1
+    
     if(j > 256): 
         j = 0
+    pass
 
-
-
-
-
-
-
+pass

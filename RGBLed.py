@@ -20,6 +20,7 @@ def ws2812():
     label("do_zero")
     nop()                   .side(0)    [T2 - 1]
     wrap()
+pass
         
 class RGBLed(object): #NeoPixel
     def __init__(self,pin=PIN_NUM,num=NUM_LEDS,brightness=0.8):
@@ -91,8 +92,13 @@ class RGBLed(object): #NeoPixel
                 self.pixels_set(i, self.wheel(rc_index & 255))
             self.pixels_show()
             sleep(wait)
+        pass
+    pass
+
+pass
 
 if __name__=='__main__':
+    
     rgbLed = RGBLed()
     print("fills")
     for color in rgbLed.COLORS:       
@@ -108,4 +114,5 @@ if __name__=='__main__':
     while True :
         rgbLed.rainbow_cycle(0.05)
     pass
+
 pass

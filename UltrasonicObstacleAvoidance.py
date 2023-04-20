@@ -1,7 +1,7 @@
 from time import sleep, sleep_us, ticks_us
 from machine import Pin
 from Motor import PicoGo
-from Ultrasonic_Range import get_obstacle_distance
+from UltrasonicRange import get_obstacle_distance
 
 robot = PicoGo()
 
@@ -43,5 +43,5 @@ if __name__ == '__main__' :
 
     robot.stop()
 
-    print( "Good bye!" )
+    print( "Goodbye!" )
 pass

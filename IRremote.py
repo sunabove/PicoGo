@@ -2,9 +2,7 @@ from machine import Pin
 from Motor import PicoGo
 from time import sleep_us
 
-irRemoteCon = Pin(5, Pin.IN)
-
-def getkey():
+def getkey( irRemoteCon ):
         
     if (irRemoteCon.value() == 0):
         count = 0
@@ -44,30 +42,31 @@ def getkey():
             return data[2]
         else:
             return("repeat")
+        pass
+    
+    pass
+
+pass
 
 if __name__=='__main__':
     
-    M = PicoGo()
+    robot = PicoGo()
+    irRemoteCon = Pin(5, Pin.IN)
     speed = 20
     
     while True:
-        key = getkey()
+        key = getkey( irRemoteCon )
         if(key != None):
             if key == 0x18:
-                M.forward(speed)
-                print("forward")
+                robot.forward(speed)
             elif key == 0x08:
-                M.left(20)
-                print("left")
+                robot.left(20)
             elif key == 0x1c:
-                M.stop()
-                print("stop")
+                robot.stop()
             elif key == 0x5a:
-                M.right(20)
-                print("right")
+                robot.right(20)
             elif key == 0x52:
-                M.backward(speed)
-                print("backward")
+                robot.backward(speed)
             elif key == 0x09:
                 speed = 50
                 print(speed)
