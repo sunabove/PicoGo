@@ -34,7 +34,9 @@ if __name__ == '__main__' :
         if percent > 100 : percent = 100
 
         y = 35
-        lcd.fill_rect(30, y, 120, 40,0xF232)
+        lcd.fill_rect( 30, y, 160, 80, 0xF232 )
+        lcd.rect( 30, y, 160, 80, LCD.WHITE )
+        
         lcd.text( f"count : {count}", 30, y, 0xFFFF ); y += 15
         lcd.text( f"temperature : {temperature:5.2f} C", 30, y, 0xFFFF ); y += 15
         lcd.text( f"Voltage     : {voltage:5.2f} V", 30, y, 0xFFFF ); y += 15
