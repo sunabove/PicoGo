@@ -1,10 +1,10 @@
-from machine import Pin
+from Battery import Battery
 from LCD import LCD
 from time import sleep
 
-if __name__ == '__main__' : 
-    bat = machine.ADC(Pin(26))
-    temp = machine.ADC(4)
+if __name__ == '__main__' :
+    
+    battery = Battery()
 
     lcd = LCD()
     lcd.fill(0xF232)
@@ -24,21 +24,16 @@ if __name__ == '__main__' :
 
     count = 1
     while True :
-        reading = temp.read_u16()*3.3/65535
+        temperature, voltage, percent = battery.read()
         
-        temperature = 27 - (reading - 0.706)/0.001721
-        voltage = bat.read_u16()*3.3/65535*2
-        percent = (voltage - 3)*100/1.2
+        print( f"[{count:03d}] Temperature = {temperature:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
-        if percent < 0: percent = 0
-        if percent > 100 : percent = 100
-
         y = 35
         lcd.fill_rect( 30, y, 160, 80, 0xF232 )
         lcd.rect( 30, y, 160, 80, LCD.WHITE )
         
         lcd.text( f"count : {count}", 30, y, 0xFFFF ); y += 15
-        lcd.text( f"temperature : {temperature:5.2f} C", 30, y, 0xFFFF ); y += 15
+        lcd.text( f"temperature : {temperature:5.2f} °C", 30, y, 0xFFFF ); y += 15
         lcd.text( f"Voltage     : {voltage:5.2f} V", 30, y, 0xFFFF ); y += 15
         lcd.text( f"percent     : {percent:3.1f} %", 30, y, 0xFFFF ); y += 15
 

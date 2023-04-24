@@ -1,50 +1,26 @@
-from machine import Pin
+from machine import Pin, ADC
 from LCD import LCD
 from time import sleep
 
-if __name__ == '__main__' : 
-    bat = machine.ADC(Pin(26))
-    temp = machine.ADC(4)
+class Battery :
+    def __init__( self ) : 
+        self.batt = ADC(Pin(26))
+        self.temp = ADC(4)
+    pass
 
-    lcd = LCD()
-    lcd.fill(0xF232)
-    lcd.line(2,2,70,2,0xBB56)
-    lcd.line(70,2,85,17,0xBB56)
-    lcd.line(85,17,222,17,0xBB56)
-    lcd.line(222,17,237,32,0xBB56)
-    lcd.line(2,2,2,118,0xBB56)
-    lcd.line(2,118,17,132,0xBB56)
-    lcd.line(17,132,237,132,0xBB56)
-    lcd.line(237,32,237,132,0xBB56)
-
-    lcd.text("Raspberry Pi Pico", 90, 7, 0xFF00)
-    lcd.text("PicoGo", 10, 7, 0x001F)
-    lcd.text("Waveshare.com", 70, 120, 0x07E0)
-    lcd.show()
-
-    count = 1
-    while True :
-        reading = temp.read_u16()*3.3/65535
+    def read( self ) :
+        batt = self.batt
+        temp = self.temp
         
+        reading = temp.read_u16()*3.3/65535        
         temperature = 27 - (reading - 0.706)/0.001721
-        voltage = bat.read_u16()*3.3/65535*2
+        
+        voltage = batt.read_u16()*3.3/65535*2
         percent = (voltage - 3)*100/1.2
         
-        if percent < 0: percent = 0
-        if percent > 100 : percent = 100
-
-        y = 35
-        lcd.fill_rect( 30, y, 160, 80, 0xF232 )
-        lcd.rect( 30, y, 160, 80, LCD.WHITE )
+        percent = max( 0, min( 100, percent ) )
         
-        lcd.text( f"count : {count}", 30, y, 0xFFFF ); y += 15
-        lcd.text( f"temperature : {temperature:5.2f} C", 30, y, 0xFFFF ); y += 15
-        lcd.text( f"Voltage     : {voltage:5.2f} V", 30, y, 0xFFFF ); y += 15
-        lcd.text( f"percent     : {percent:3.1f} %", 30, y, 0xFFFF ); y += 15
-
-        lcd.show()
-        sleep( 1 )
-        count += 1
+        return temperature, voltage, percent         
     pass
 
 pass
