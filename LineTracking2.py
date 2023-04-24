@@ -1,7 +1,7 @@
 from machine import Pin
 from TRSensor import TRSensor
 from Motor import PicoGo
-from ws2812 import NeoPixel
+from RGBLed import RGBLed
 import time
 
 
@@ -10,7 +10,7 @@ Buzzer = Pin(4, Pin.OUT)
 DSR = Pin(2, Pin.IN)
 DSL = Pin(3, Pin.IN)
 
-strip = NeoPixel()
+strip = RGBLed()
 strip.pixels_set(0, strip.RED)
 strip.pixels_set(1, strip.GREEN)
 strip.pixels_set(2, strip.BLUE)
@@ -81,6 +81,10 @@ while True:
     for i in range(strip.num):
         strip.pixels_set(i, strip.wheel(((i * 256 // strip.num) + j) & 255))
     strip.pixels_show()
+    
     j += 1
     if(j > 256): 
         j = 0
+    pass
+
+pass

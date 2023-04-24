@@ -1,33 +1,37 @@
 from TRSensor import TRSensor
 from Motor import PicoGo
-import time
-
+from time import sleep
 
 print("\nTRSensor Test Program ...\r\n")
-time.sleep(3)
-M = PicoGo()
-TRS=TRSensor()
+sleep(3)
+robot = PicoGo()
+
+trs = TRSensor()
 for i in range(100):
-    if(i<25 or i>= 75):
-        M.setMotor(30,-30)
+    if  25 < i <= 75:
+        robot.setMotor(30,-30)
     else:
-        M.setMotor(-30,30)
-    TRS.calibrate()
+        robot.setMotor(-30,30)
+    trs.calibrate()
+pass
 print("\ncalibrate done\r\n")
-print(TRS.calibratedMin)
-print(TRS.calibratedMax)
+
+print( "calibratedMin = ", trs.calibratedMin )
+print( "calibratedMax = ", trs.calibratedMax )
 print("\ncalibrate done\r\n")
-maximum = 100
+sleep(2)
+
+maximum = 20
 integral = 0
 last_proportional = 0
 
 while True:
-    #print(TRS.readCalibrated())
-    #print(TRS.readLine())
-    position,Sensors = TRS.readLine()
-    #time.sleep(0.1)
-    if((Sensors[0] + Sensors[1] + Sensors[2]+ Sensors[3]+ Sensors[4]) > 4000):
-        M.setMotor(0,0)
+    position, sensors = trs.readLine()
+    
+    print( "position = ", position, ", Sensors = ", sensors )
+    
+    if False and sum(sensors) > 4000 :
+        robot.setMotor(0,0)
     else:
         # The "proportional" term should be 0 when we are on the line.
         proportional = position - 2000
@@ -48,15 +52,17 @@ while True:
         // the proportional, integral, and derivative terms are multiplied to
         // improve performance.
         '''
-        power_difference = proportional/30  + derivative*2;  
+        power_diff = proportional/30  + derivative*2;  
 
-        if (power_difference > maximum):
-            power_difference = maximum
-        if (power_difference < - maximum):
-            power_difference = - maximum
+        power_diff = max( -maximum, min( power_diff, maximum ) )
         
-        if (power_difference < 0):
-            M.setMotor(maximum + power_difference, maximum)
+        if power_diff < 0 :
+            robot.setMotor(maximum + power_diff, maximum)
         else:
-            M.setMotor(maximum, maximum - power_difference)
+            robot.setMotor(maximum, maximum - power_diff)
+        pass
+    
+    pass
+
+pass
 
