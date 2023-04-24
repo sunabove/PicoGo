@@ -5,10 +5,12 @@ import rp2
 
 @rp2.asm_pio(out_shiftdir=0, autopull=True, pull_thresh=12, autopush=True, push_thresh=12, sideset_init=(rp2.PIO.OUT_LOW), out_init=rp2.PIO.OUT_LOW)
 def spi_cpha0():
-    out(pins, 1)             .side(0x0)   [1]
-    in_(pins, 1)             .side(0x1)   [1]
+    out(pins, 1).side(0x0)[1]
+    in_(pins, 1).side(0x1)[1]
+pass
         
 class TRSensor():
+    
     def __init__(self):
         self.numSensors = 5
         self.calibratedMin = [0] * self.numSensors
@@ -21,6 +23,7 @@ class TRSensor():
         self.CS.value(1)
         self.sm = rp2.StateMachine(1, spi_cpha0, freq=4*200000, sideset_base=Pin(self.Clock, Pin.OUT), out_base=Pin(self.Address, Pin.OUT), in_base=Pin(self.DataOut, Pin.IN))
         self.sm.active(1)
+    pass
         
     """
     Reads the sensor values into an array. There *MUST* be space
@@ -32,7 +35,7 @@ class TRSensor():
     with higher values corresponding to lower reflectance (e.g. a black
     surface or a void).
     """     
-    def AnalogRead(self):
+    def readAnalog(self):
         value = [0]*(self.numSensors+1)
         
         #Read Channel~channe5 AD value
@@ -45,7 +48,9 @@ class TRSensor():
             self.CS.value(1)
             value[j] >>= 2
         time.sleep_ms(2)
+        
         return value[1:]
+    pass
     
     """
     Reads the sensors 10 times and uses the results for
@@ -56,26 +61,37 @@ class TRSensor():
     def calibrate(self):
         max_sensor_values = [0]*self.numSensors
         min_sensor_values = [0]*self.numSensors
+        
         for j in range(0,10):
         
-            sensor_values = self.AnalogRead();
+            sensor_values = self.readAnalog();
             
-            for i in range(0,self.numSensors):
-            
+            for i in range(0,self.numSensors):            
                 # set the max we found THIS time
                 if((j == 0) or max_sensor_values[i] < sensor_values[i]):
                     max_sensor_values[i] = sensor_values[i]
+                pass
 
                 # set the min we found THIS time
                 if((j == 0) or min_sensor_values[i] > sensor_values[i]):
                     min_sensor_values[i] = sensor_values[i]
+                pass
+            pass
+        
+        pass
 
         # record the min and max calibration values
         for i in range(0,self.numSensors):
             if(min_sensor_values[i] > self.calibratedMin[i]):
                 self.calibratedMin[i] = min_sensor_values[i]
+            pass
+        
             if(max_sensor_values[i] < self.calibratedMax[i]):
                 self.calibratedMax[i] = max_sensor_values[i]
+            pass
+        pass
+    
+    pass
         
     """
     Returns values calibrated to a value between 0 and 1000, where
@@ -87,7 +103,7 @@ class TRSensor():
     """  
     def readCalibrated(self):
         value = 0
-        sensor_values = self.AnalogRead()
+        sensor_values = self.readAnalog()
         
         for i in range (0,self.numSensors):
             denominator = self.calibratedMax[i] - self.calibratedMin[i]
@@ -103,6 +119,7 @@ class TRSensor():
             sensor_values[i] = int(value)
 
         return sensor_values
+    pass
 
     """
     Operates the same as read calibrated, but also returns an
@@ -127,6 +144,7 @@ class TRSensor():
     """
     def readLine(self, white_line = 0):
         sensor_values = self.readCalibrated()
+        
         avg = 0
         sum = 0
         on_line = 0
@@ -156,13 +174,22 @@ class TRSensor():
         else:
             self.last_value = avg/sum
 
-        return int(self.last_value),sensor_values
+        return int(self.last_value), sensor_values
+    pass
+
+pass
 
 if __name__ == '__main__':
 
     print("\nTRSensor Test Program ...\r\n")
-    TRS=TRSensor()
+    trs = TRSensor()
+    trs.calibrate()
     while True:
-        print(TRS.AnalogRead())
+        digits = trs.readAnalog()
+        #digits = trs.readCalibrated()
+        
+        avg = sum( digits ) / len( digits )
+        
+        print( "avg: = ", avg, " ", digits )
         time.sleep(0.1)
                 
