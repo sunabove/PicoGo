@@ -2,37 +2,35 @@ from TRSensor import TRSensor
 from Motor import PicoGo
 from time import sleep
 
-print("\nTRSensor Test Program ...\r\n")
-sleep(3)
-robot = PicoGo()
+if __name__ == '__main__' :
+    print("\nTRSensor Test Program ...\r\n")
+    sleep(3)
+    robot = PicoGo()
 
-trs = TRSensor()
-for i in range(100):
-    if  25 < i <= 75:
-        robot.setMotor(30,-30)
-    else:
-        robot.setMotor(-30,30)
-    trs.calibrate()
-pass
-print("\ncalibrate done\r\n")
+    trs = TRSensor()
+    for i in range(100):
+        if  25 < i <= 75:
+            robot.setMotor(30,-30)
+        else:
+            robot.setMotor(-30,30)
+        trs.calibrate()
+    pass
+    print("\ncalibrate done\r\n")
 
-print( "calibratedMin = ", trs.calibratedMin )
-print( "calibratedMax = ", trs.calibratedMax )
-print("\ncalibrate done\r\n")
-sleep(2)
+    print( "calibratedMin = ", trs.calibratedMin )
+    print( "calibratedMax = ", trs.calibratedMax )
+    print("\ncalibrate done\r\n")
+    sleep(2)
 
-maximum = 20
-integral = 0
-last_proportional = 0
+    maximum = 20
+    integral = 0
+    last_proportional = 0
 
-while True:
-    position, sensors = trs.readLine()
-    
-    print( "position = ", position, ", Sensors = ", sensors )
-    
-    if False and sum(sensors) > 4000 :
-        robot.setMotor(0,0)
-    else:
+    while True:
+        position, sensors = trs.readLine()
+        
+        print( "position = ", position, ", Sensors = ", sensors )        
+        
         # The "proportional" term should be 0 when we are on the line.
         proportional = position - 2000
 
@@ -60,9 +58,8 @@ while True:
             robot.setMotor(maximum + power_diff, maximum)
         else:
             robot.setMotor(maximum, maximum - power_diff)
-        pass
-    
+        pass 
+
     pass
 
 pass
-

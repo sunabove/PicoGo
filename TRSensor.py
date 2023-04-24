@@ -148,31 +148,33 @@ class TRSensor():
         avg = 0
         sum = 0
         on_line = 0
-        for i in range(0,self.numSensors):
-            value = sensor_values[i]
-            if(white_line):
-                value = 1000-value
+        
+        for i, value in enumerate( sensor_values ):             
+            if white_line :
+                value = 1000 - value
+            
             # keep track of whether we see the line at all
-            if(value > 200):
+            if value > 200 :
                 on_line = 1
                 
             # only average in values that are above a noise threshold
-            if(value > 50):
+            if value > 50 :
                 avg += value * (i * 1000);  # this is for the weighted total,
-                sum += value;               # this is for the denominator 
+                sum += value;               # this is for the denominator
+            pass
+        pass
 
-        if(on_line != 1):
+        if on_line != 1 :
             # If it last read to the left of center, return 0.
-            if(self.last_value < (self.numSensors - 1)*1000/2):
+            if self.last_value < (self.numSensors - 1)*1000/2 :
                 #print("left")
                 self.last_value = 0;
-
-            # If it last read to the right of center, return the max.
-            else:
+            else: # If it last read to the right of center, return the max.
                 #print("right")
                 self.last_value = (self.numSensors - 1)*1000
         else:
             self.last_value = avg/sum
+        pass
 
         return int(self.last_value), sensor_values
     pass
