@@ -100,19 +100,3 @@ class PicoGo(object):
     pass
 
 pass
-
-if __name__=='__main__':
-    robot = PicoGo()
-    
-    duration = 2
-    
-    robot.forward(50)
-    sleep(duration)
-    robot.backward(50)
-    sleep(duration)
-    robot.left(30)
-    sleep(duration)
-    robot.right(30)
-    sleep(duration)
-    robot.stop()
-pass
