@@ -1,9 +1,17 @@
-from machine import Pin,SPI
+from machine import Pin,SPI 
 import framebuf
-import time
 
 # ST7789
 class LCD(framebuf.FrameBuffer):
+    
+    WHITE  = 0xFFFF
+    BLACK  = 0x0000
+    GREEN  = 0x001F
+    RED    = 0xF800
+    BLUE   = 0xFF00
+    GBLUE  = 0X07FF
+    YELLOW = 0xFFE0
+    
     def __init__(self):
         self.width = 240
         self.height = 135
@@ -21,15 +29,9 @@ class LCD(framebuf.FrameBuffer):
         self.dc(1)
         self.buffer = bytearray(self.height * self.width * 2)
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
-        self.init_display()
+        self.init_display()       
         
-        self.WHITE  = 0xFFFF
-        self.BLACK  = 0x0000
-        self.GREEN  = 0x001F
-        self.RED    = 0xF800
-        self.BLUE   = 0xFF00
-        self.GBLUE  = 0X07FF
-        self.YELLOW = 0xFFE0
+    pass
         
     def write_cmd(self, cmd):
         self.cs(1)
@@ -37,6 +39,7 @@ class LCD(framebuf.FrameBuffer):
         self.cs(0)
         self.spi.write(bytearray([cmd]))
         self.cs(1)
+    pass
 
     def write_data(self, buf):
         self.cs(1)
@@ -44,6 +47,7 @@ class LCD(framebuf.FrameBuffer):
         self.cs(0)
         self.spi.write(bytearray([buf]))
         self.cs(1)
+    pass
 
     def init_display(self):
         """Initialize dispaly"""
@@ -126,6 +130,7 @@ class LCD(framebuf.FrameBuffer):
         self.write_cmd(0x11)
 
         self.write_cmd(0x29)
+    pass
 
     def show(self):
         self.write_cmd(0x2A)
@@ -147,13 +152,6 @@ class LCD(framebuf.FrameBuffer):
         self.cs(0)
         self.spi.write(self.buffer)
         self.cs(1)
-        
-if __name__=='__main__':
-    lcd = LCD()
-    lcd.fill(0xFFFF)
-    lcd.show()
-    lcd.text("Raspberry Pi Pico",10,5,0xFF00)
-    lcd.text("PicoGo",10,15)
-    lcd.text("Waveshare.com",10,25,0x07E0)
-    lcd.show()
+    pass
+
 pass
