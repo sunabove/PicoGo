@@ -53,9 +53,11 @@ ADS_CONFIG_COMP_QUE_NON             = 0x0003      #Disable comparator and set AL
 Config_Set = 0
 
 class ADS1015(object):
+    
     def __init__(self,i2c_bus=1,addr=ADS_I2C_ADDRESS):
         self.i2c = I2C(i2c_bus)
         self.addr = addr
+    pass
         
     def ADS1015_Set_Channel(self,channel):                    #Read single channel data
         data=0
@@ -76,21 +78,25 @@ class ADS1015(object):
             Config_Set |= ADS_CONFIG_MUX_SINGLE_3
         Config_Set |=ADS_CONFIG_OS_SINGLE_CONVERT
         self._write_word(ADS_POINTER_CONFIG,Config_Set)
-        #time.sleep(0.01)
-        #data=self._read_u16(ADS_POINTER_CONVERT)>>4
-        #return data
+        
+    pass
     
     def _read_u16(self,cmd):
         data = self.i2c.readfrom_mem(self.addr, cmd, 2)
         return ((data[0] * 256 ) + data[1])
+    pass
     
     def _write_word(self, cmd, val):
         temp = [0,0]
         temp[1] = val & 0xFF
         temp[0] =(val & 0xFF00) >> 8
         self.i2c.writeto_mem(self.addr,cmd,bytes(temp))
+    pass
+
+pass
         
 class TRSensor(ADS1015):
+    
     def __init__(self):
         self.numSensors = 5
         self.calibratedMin = [0] * self.numSensors
@@ -99,6 +105,7 @@ class TRSensor(ADS1015):
         super().__init__()
         self.adc1 = machine.ADC(27)
         self.adc2 = machine.ADC(28)
+    pass
         
     """
     Reads the sensor values into an array. There *MUST* be space
@@ -122,10 +129,10 @@ class TRSensor(ADS1015):
         value[2] = int((self._read_u16(ADS_POINTER_CONVERT)>>4)*1024/1650)   #channel 1
         self.ADS1015_Set_Channel(3)
         value[3] = int((self._read_u16(ADS_POINTER_CONVERT)>>4)*1024/1650)   #channel 2
-        value[4] = int(self.adc2.read_u16()*1024/0x10000)
-        
+        value[4] = int(self.adc2.read_u16()*1024/0x10000)        
         
         return value
+    pass
     
     """
     Reads the sensors 10 times and uses the results for
@@ -156,6 +163,7 @@ class TRSensor(ADS1015):
                 self.calibratedMin[i] = min_sensor_values[i]
             if(max_sensor_values[i] < self.calibratedMax[i]):
                 self.calibratedMax[i] = max_sensor_values[i]
+    pass
         
     """
     Returns values calibrated to a value between 0 and 1000, where
@@ -183,6 +191,7 @@ class TRSensor(ADS1015):
             sensor_values[i] = int(value)
 
         return sensor_values
+    pass
 
     """
     Operates the same as read calibrated, but also returns an
@@ -237,6 +246,9 @@ class TRSensor(ADS1015):
             self.last_value = avg/sum
 
         return int(self.last_value),sensor_values
+    pass
+
+pass
 
 if __name__ == '__main__':
 
@@ -245,4 +257,7 @@ if __name__ == '__main__':
     while True:
         print(TRS.AnalogRead())
         time.sleep(0.1)
+    pass
+
+pass
                 
