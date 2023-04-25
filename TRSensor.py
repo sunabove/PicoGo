@@ -13,15 +13,17 @@ class TRSensor():
     
     def __init__(self):
         self.numSensors = 5
+        
         self.calibratedMin = [0] * self.numSensors
         self.calibratedMax = [1023] * self.numSensors
-        self.last_value = 0
+        
+        self.last_position = 0
         self.Clock     = 6
         self.Address   = 7
         self.DataOut   = 27
         self.CS        = Pin(28, Pin.OUT)
         self.CS.value(1)
-        self.sm = rp2.StateMachine(1, spi_cpha0, freq=4*200000, sideset_base=Pin(self.Clock, Pin.OUT), out_base=Pin(self.Address, Pin.OUT), in_base=Pin(self.DataOut, Pin.IN))
+        self.sm = rp2.StateMachine(1, spi_cpha0, freq=800_000, sideset_base=Pin(self.Clock, Pin.OUT), out_base=Pin(self.Address, Pin.OUT), in_base=Pin(self.DataOut, Pin.IN))
         self.sm.active(1)
     pass
         
@@ -125,35 +127,35 @@ class TRSensor():
 
     """
     Operates the same as read calibrated, but also returns an
-    estimated position of the robot with respect to a line. The
-    estimate is made using a weighted average of the sensor indices
+    estimated position of the robot with respect to a line.
+    The estimate is made using a weighted average of the sensor indices
     multiplied by 1000, so that a return value of 0 indicates that
-    the line is directly below sensor 0, a return value of 1000
-    indicates that the line is directly below sensor 1, 2000
-    indicates that it's below sensor 2000, etc.  Intermediate
-    values indicate that the line is between two sensors.  The
-    formula is:
+    the line is directly below sensor 0,
+    a return value of 1000 indicates that the line is directly below sensor 1,
+    2000 indicates that it's below sensor 2, etc.
+    Intermediate values indicate that the line is between two sensors.
+    
+    The formula is:
 
-       0*value0 + 1000*value1 + 2000*value2 + ...
-       --------------------------------------------
+         0*value0 + 1000*value1 + 2000*value2 + ...
+       -----------------------------------------------
              value0  +  value1  +  value2 + ...
 
     By default, this function assumes a dark line (high values)
-    surrounded by white (low values).  If your line is light on
-    black, set the optional second argument white_line to true.  In
-    this case, each sensor value will be replaced by (1000-value)
-    before the averaging.
+    surrounded by white (low values).
+    If your line is light on black, set the optional second argument white_line to true.
+    In this case, each sensor value will be replaced by (1000-value) before the averaging.
     """
     def readLine(self, white_line = 0):
         sensor_values = self.readCalibrated()
         
-        avg = 0
-        total = 0
+        weighted_total = 0
+        total_value = 0
         on_line = 0
         
         for i, value in enumerate( sensor_values ):             
             if white_line :
-                value = 1000 - value
+                value = 1_000 - value
             pass
             
             # keep track of whether we see the line at all
@@ -163,39 +165,52 @@ class TRSensor():
                 
             # only average in values that are above a noise threshold
             if value > 50 :
-                avg += value * (i+1) * 1000 ;  # this is for the weighted total,
-                total += value;               # this is for the denominator
+                weighted_total += value*(i+1)    # this is for the weighted total,
+                total_value += value                # this is for the denominator
             pass
         pass
 
         if not on_line :
             # If it last read to the left of center, return 0.
-            if self.last_value < (self.numSensors - 1)*1000/2 :
+            if self.last_position < (self.numSensors - 1)/2 :
                 #print("left")
-                self.last_value = 0;
+                self.last_position = 0
             else: # If it last read to the right of center, return the max.
                 #print("right")
-                self.last_value = (self.numSensors - 1)*1000
+                self.last_position = (self.numSensors - 1)
         else:
-            self.last_value = avg/total
+            self.last_position = weighted_total/total_value - 1
         pass
 
-        return int(self.last_value), sensor_values
+        return self.last_position, sensor_values
     pass
 
 pass
 
 if __name__ == '__main__':
 
-    print("\nTRSensor Test Program ...\r\n")
+    print( "TRSensor Test ..." )
+    print()
+    
     trs = TRSensor()
     trs.calibrate()
+    
+    idx = 0 
     while True:
-        digits = trs.readAnalog()
-        #digits = trs.readCalibrated()
-        
-        avg = sum( digits ) / len( digits )
-        
-        print( "avg: = ", avg, " ", digits )
+        idx += 1
+        if True :
+            position, sensors = trs.readLine()
+            print( f"[{idx:6d}] position = {position:.3f}, sensors = {sensors}" )
+        else : 
+            #digits = trs.readAnalog()
+            digits = trs.readCalibrated()
+            
+            avg = sum( digits ) / len( digits )
+            
+            print( "avg: = ", avg, " ", digits )
+        pass
+    
         time.sleep(0.1)
-                
+    pass
+
+pass
