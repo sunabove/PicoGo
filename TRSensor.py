@@ -36,10 +36,10 @@ class TRSensor():
     surface or a void).
     """     
     def readAnalog(self):
-        value = [0]*(self.numSensors+1)
+        value = [0]*( self.numSensors + 1 )
         
         #Read Channel~channe5 AD value
-        for j in range(0,self.numSensors+1):
+        for j in range( self.numSensors+1 ):
             self.CS.value(0)
             #set channe
             self.sm.put(j << 28)
@@ -47,6 +47,8 @@ class TRSensor():
             value[j] = self.sm.get() & 0xfff
             self.CS.value(1)
             value[j] >>= 2
+        pass
+    
         time.sleep_ms(2)
         
         return value[1:]
@@ -59,21 +61,21 @@ class TRSensor():
     and used for the readCalibrated() method.
     """
     def calibrate(self):
-        max_sensor_values = [0]*self.numSensors
-        min_sensor_values = [0]*self.numSensors
+        numSensors = self.numSensors
+        max_sensor_values = [0]*numSensors
+        min_sensor_values = [0]*numSensors
         
-        for j in range(0,10):
-        
+        for j in range(10):        
             sensor_values = self.readAnalog();
             
-            for i in range(0,self.numSensors):            
+            for i in range(numSensors):            
                 # set the max we found THIS time
-                if((j == 0) or max_sensor_values[i] < sensor_values[i]):
+                if (j == 0) or max_sensor_values[i] < sensor_values[i] :
                     max_sensor_values[i] = sensor_values[i]
                 pass
 
                 # set the min we found THIS time
-                if((j == 0) or min_sensor_values[i] > sensor_values[i]):
+                if (j == 0) or min_sensor_values[i] > sensor_values[i] :
                     min_sensor_values[i] = sensor_values[i]
                 pass
             pass
@@ -81,12 +83,12 @@ class TRSensor():
         pass
 
         # record the min and max calibration values
-        for i in range(0,self.numSensors):
-            if(min_sensor_values[i] > self.calibratedMin[i]):
+        for i in range(numSensors):
+            if min_sensor_values[i] > self.calibratedMin[i] :
                 self.calibratedMin[i] = min_sensor_values[i]
             pass
         
-            if(max_sensor_values[i] < self.calibratedMax[i]):
+            if max_sensor_values[i] < self.calibratedMax[i] :
                 self.calibratedMax[i] = max_sensor_values[i]
             pass
         pass
@@ -146,25 +148,27 @@ class TRSensor():
         sensor_values = self.readCalibrated()
         
         avg = 0
-        sum = 0
+        total = 0
         on_line = 0
         
         for i, value in enumerate( sensor_values ):             
             if white_line :
                 value = 1000 - value
+            pass
             
             # keep track of whether we see the line at all
             if value > 200 :
                 on_line = 1
+            pass
                 
             # only average in values that are above a noise threshold
             if value > 50 :
-                avg += value * (i * 1000);  # this is for the weighted total,
-                sum += value;               # this is for the denominator
+                avg += value * (i+1) * 1000 ;  # this is for the weighted total,
+                total += value;               # this is for the denominator
             pass
         pass
 
-        if on_line != 1 :
+        if not on_line :
             # If it last read to the left of center, return 0.
             if self.last_value < (self.numSensors - 1)*1000/2 :
                 #print("left")
@@ -173,7 +177,7 @@ class TRSensor():
                 #print("right")
                 self.last_value = (self.numSensors - 1)*1000
         else:
-            self.last_value = avg/sum
+            self.last_value = avg/total
         pass
 
         return int(self.last_value), sensor_values

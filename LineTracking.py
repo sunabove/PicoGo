@@ -3,24 +3,27 @@ from Motor import PicoGo
 from time import sleep
 
 if __name__ == '__main__' :
-    print("\nTRSensor Test Program ...\r\n")
+    print("TRSensor Test Program ...")
     sleep(3)
     robot = PicoGo()
 
     trs = TRSensor()
     for i in range(100):
         if  25 < i <= 75:
-            robot.setMotor(30,-30)
+            robot.setMotor( 30, -30, False )
         else:
-            robot.setMotor(-30,30)
+            robot.setMotor(-30, 30, False )
+        pass
+    
         trs.calibrate()
     pass
-    print("\ncalibrate done\r\n")
 
     print( "calibratedMin = ", trs.calibratedMin )
     print( "calibratedMax = ", trs.calibratedMax )
-    print("\ncalibrate done\r\n")
-    sleep(2)
+    print( "calibrate done!")
+    print()
+    
+    sleep(5)
 
     maximum = 20
     integral = 0
