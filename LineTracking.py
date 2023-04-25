@@ -18,6 +18,8 @@ if __name__ == '__main__' :
         trs.calibrate()
     pass
 
+    robot.stop()
+
     print( "calibratedMin = ", trs.calibratedMin )
     print( "calibratedMax = ", trs.calibratedMax )
     print( "calibrate done!")

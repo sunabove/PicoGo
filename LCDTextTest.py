@@ -4,7 +4,6 @@ if __name__=='__main__':
     lcd = LCD()
     
     lcd.fill( LCD.BLACK )
-    lcd.show()
     
     lcd.text( "Raspberry Pi Pico", 10, 5, LCD.BLUE )
     lcd.text( "PicoGo", 10, 15, LCD.WHITE )

@@ -1,6 +1,7 @@
 from machine import Pin
-import machine
-import time
+from Motor import PicoGo
+from time import sleep, sleep_ms
+import machine 
 import rp2
 
 @rp2.asm_pio(out_shiftdir=0, autopull=True, pull_thresh=12, autopush=True, push_thresh=12, sideset_init=(rp2.PIO.OUT_LOW), out_init=rp2.PIO.OUT_LOW)
@@ -51,7 +52,7 @@ class TRSensor():
             value[j] >>= 2
         pass
     
-        time.sleep_ms(2)
+        sleep_ms(2)
         
         return value[1:]
     pass
@@ -149,9 +150,11 @@ class TRSensor():
     def readLine(self, white_line = 0):
         sensor_values = self.readCalibrated()
         
+        numSensors = self.numSensors
+        
         weighted_total = 0
         total_value = 0
-        on_line = 0
+        on_line = 0        
         
         for i, value in enumerate( sensor_values ):             
             if white_line :
@@ -172,12 +175,12 @@ class TRSensor():
 
         if not on_line :
             # If it last read to the left of center, return 0.
-            if self.last_position < (self.numSensors - 1)/2 :
+            if self.last_position < numSensors/2 :
                 #print("left")
                 self.last_position = 0
             else: # If it last read to the right of center, return the max.
                 #print("right")
-                self.last_position = (self.numSensors - 1)
+                self.last_position = numSensors
         else:
             self.last_position = weighted_total/total_value - 1
         pass
@@ -188,19 +191,51 @@ class TRSensor():
 pass
 
 if __name__ == '__main__':
-
-    print( "TRSensor Test ..." )
-    print()
+    
+    from LCD import LCD
+    
+    print( "TRSensor Test ... \n" )
+    
+    lcd = LCD()
+    lcd.fill( LCD.BLACK )
+    lcd.show()
     
     trs = TRSensor()
-    trs.calibrate()
+    
+    if True :
+        sleep(3)
+        robot = PicoGo()
+        
+        for i in range(100):
+            if  25 < i <= 75:
+                robot.setMotor( 30, -30, False )
+            else:
+                robot.setMotor(-30, 30, False )
+            pass
+        
+            trs.calibrate()
+        pass
+
+        robot.stop()
+
+        print( "calibratedMin = ", trs.calibratedMin )
+        print( "calibratedMax = ", trs.calibratedMax )
+        print( "calibrate done! \n" ) 
+    else :
+        trs.calibrate()
+    pass
     
     idx = 0 
     while True:
         idx += 1
         if True :
             position, sensors = trs.readLine()
-            print( f"[{idx:6d}] position = {position:.3f}, sensors = {sensors}" )
+            print( f"[{idx:4d}] position = {position:+.3f}, sensors = {sensors}" )
+            
+            lcd.fill( LCD.BLACK )    
+            lcd.text( f"[{idx:4d}] position = {position:+.3f}", 10, 15, LCD.WHITE )
+            lcd.show()
+            
         else : 
             #digits = trs.readAnalog()
             digits = trs.readCalibrated()
@@ -210,7 +245,7 @@ if __name__ == '__main__':
             print( "avg: = ", avg, " ", digits )
         pass
     
-        time.sleep(0.1)
+        sleep( 1 )
     pass
 
 pass
