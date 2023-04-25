@@ -180,7 +180,7 @@ class TRSensor():
                 self.last_position = 0
             else: # If it last read to the right of center, return the max.
                 #print("right")
-                self.last_position = numSensors
+                self.last_position = numSensors - 1
         else:
             self.last_position = weighted_total/total_value - 1
         pass
@@ -230,10 +230,10 @@ if __name__ == '__main__':
         idx += 1
         if True :
             position, sensors = trs.readLine()
-            print( f"[{idx:4d}] position = {position:+.3f}, sensors = {sensors}" )
+            print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
             
             lcd.fill( LCD.BLACK )    
-            lcd.text( f"[{idx:4d}] position = {position:+.3f}", 10, 15, LCD.WHITE )
+            lcd.text( f"[{idx:4d}] position = {position:.2f}", 10, 15, LCD.WHITE )
             lcd.show()
             
         else : 
