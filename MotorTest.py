@@ -1,7 +1,7 @@
 from Motor import PicoGo
 from time import sleep 
 
-if __name__=='__main__':
+if __name__== '__main__' :
     robot = PicoGo()
     
     duration = 1
