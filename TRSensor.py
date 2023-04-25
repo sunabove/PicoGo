@@ -27,6 +27,10 @@ class TRSensor():
         self.sm = rp2.StateMachine(1, spi_cpha0, freq=800_000, sideset_base=Pin(self.Clock, Pin.OUT), out_base=Pin(self.Address, Pin.OUT), in_base=Pin(self.DataOut, Pin.IN))
         self.sm.active(1)
     pass
+
+    def center_position(self) :
+        return self.numSensors/2 - 0.5
+    pass
         
     """
     Reads the sensor values into an array. There *MUST* be space
@@ -196,14 +200,18 @@ if __name__ == '__main__':
     
     print( "TRSensor Test ... \n" )
     
-    lcd = LCD()
-    lcd.fill( LCD.BLACK )
-    lcd.show()
+    lcd = LCD() 
+    lcd.disp_text( f"PicoGo by SkySLAM", 50, 60 ) 
     
     trs = TRSensor()
     
+    print( "center position = ", trs.center_position() )
+    
     if True :
         sleep(3)
+        
+        lcd.disp_text( f"Calibrating ....", 50, 60 )
+        
         robot = PicoGo()
         
         for i in range(100):
@@ -220,7 +228,9 @@ if __name__ == '__main__':
 
         print( "calibratedMin = ", trs.calibratedMin )
         print( "calibratedMax = ", trs.calibratedMax )
-        print( "calibrate done! \n" ) 
+        print( "calibrate done! \n" )
+        
+        lcd.disp_text( f"Calibrating done!", 50, 60 )
     else :
         trs.calibrate()
     pass
@@ -232,10 +242,7 @@ if __name__ == '__main__':
             position, sensors = trs.readLine()
             print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
             
-            lcd.fill( LCD.BLACK )    
-            lcd.text( f"[{idx:4d}] position = {position:.2f}", 10, 15, LCD.WHITE )
-            lcd.show()
-            
+            lcd.disp_text( f"[{idx:4d}] position = {position:.2f}", 10, 15, LCD.WHITE )
         else : 
             #digits = trs.readAnalog()
             digits = trs.readCalibrated()
@@ -248,4 +255,4 @@ if __name__ == '__main__':
         sleep( 1 )
     pass
 
-pass
+pass 
