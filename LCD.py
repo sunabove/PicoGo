@@ -154,13 +154,18 @@ class LCD(framebuf.FrameBuffer):
         self.cs(1)
     pass
 
-    def disp_text(self, text, x, y, fg=None, bg=None) :
+    def disp_text(self, text, x, y, fg=None, bg=None, show=True) :
         if bg is None : bg = self.BLACK
         if fg is None : fg = self.WHITE
         
         self.fill( bg )
-        self.text( text, x, y, fg )
-        self.show()
+        
+        for t in text.split( "\n" ) : 
+            self.text( t, x, y, fg )
+            y += 15
+        pass
+    
+        show and self.show()
     pass
 
 pass

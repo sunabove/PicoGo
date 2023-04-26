@@ -1,14 +1,21 @@
 from TRSensor import TRSensor
 from Motor import PicoGo
 from time import sleep
+from LCD import LCD
 
 if __name__ == '__main__' :
+    
     print("TRSensor Test Program ...")
+    
+    lcd = LCD() 
+    lcd.disp_text( f"LineTracking", 50, 60 )
+    
     sleep(3)
+    
     robot = PicoGo()
-
     trs = TRSensor()
-    for i in range(100):
+    
+    for i in range(100) :
         if  25 < i <= 75:
             robot.setMotor( 30, -30, False )
         else:
@@ -25,25 +32,31 @@ if __name__ == '__main__' :
     print( "calibrate done!")
     print()
     
-    sleep(5)
+    sleep(3)
 
     numSensors = trs.numSensors
     center_position = trs.center_position()
     
-    maximum = 20
-    integral = 0
-    last_proportional = 0
+    max_power = 20 
 
     while True:
         position, sensors = trs.readLine()
         
         print( "position = ", position, ", Sensors = ", sensors )        
         
-        diff = position - center_position
-        power_diff = maximum*diff/center_position
+        pos_diff = position - center_position
         
-        robot.setMotor(maximum + power_diff, maximum - power_diff)
-
+        lcd.disp_text( f"pos  = {position:4.3f}\ndiff = {pos_diff:6.3f}", 50, 60 )
+        
+        if abs( pos_diff ) < numSensors/4 :
+            robot.forward( max_power )
+        elif pos_diff > 0 :
+            power = max_power*abs(pos_diff)/center_position
+            robot.right( power )
+        elif pos_diff < 0 :
+            power = max_power*abs(pos_diff)/center_position
+            robot.left( power )
+        pass        
     pass
 
 pass
