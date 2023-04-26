@@ -77,6 +77,10 @@ class PicoGo(object):
         self.BIN1.value(0)
     pass
 
+    def move(self, left, right, verbose=True):
+        self.setMotor( left, right, verbose )
+    pass
+
     def setMotor(self, left, right, verbose=True):
         if verbose:
             print( f"setMotor: left = {left}, right = {right}" )

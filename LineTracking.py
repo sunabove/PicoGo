@@ -10,10 +10,12 @@ if __name__ == '__main__' :
     lcd = LCD() 
     lcd.disp_text( f"LineTracking", 50, 60 )
     
-    sleep(3)
-    
     robot = PicoGo()
     trs = TRSensor()
+    
+    robot.stop()
+    
+    sleep(3)
     
     for i in range(100) :
         if  25 < i <= 75:
@@ -37,7 +39,7 @@ if __name__ == '__main__' :
     numSensors = trs.numSensors
     center_position = trs.center_position()
     
-    max_power = 20 
+    max_power = 15 
 
     while True:
         position, sensors = trs.readLine()
@@ -48,7 +50,10 @@ if __name__ == '__main__' :
         
         lcd.disp_text( f"pos  = {position:4.3f}\ndiff = {pos_diff:6.3f}", 50, 60 )
         
-        if abs( pos_diff ) < numSensors/4 :
+        if True :
+            power_diff = max_power*pos_diff/center_position
+            robot.move( max_power + power_diff, max_power - power_diff )
+        elif abs( pos_diff ) < numSensors/4 :
             robot.forward( max_power )
         elif pos_diff > 0 :
             power = max_power*abs(pos_diff)/center_position
@@ -56,7 +61,9 @@ if __name__ == '__main__' :
         elif pos_diff < 0 :
             power = max_power*abs(pos_diff)/center_position
             robot.left( power )
-        pass        
+        pass
+    
+        sleep( 0.1 )
     pass
 
 pass
