@@ -20,6 +20,9 @@ class LCD(framebuf.FrameBuffer):
         self.bg = self.BLACK  # background color
         self.fg = self.WHITE  # foreground color
         
+        self.text_y = -1
+        self.text_idx = 1 
+        
         self.inited_print = False
         
         self.rst = Pin(12,Pin.OUT)
@@ -39,6 +42,7 @@ class LCD(framebuf.FrameBuffer):
         self.init_display()
         
         self.fill( self.bg )
+        self.show()
     pass
         
     def write_cmd(self, cmd):
@@ -193,24 +197,41 @@ class LCD(framebuf.FrameBuffer):
         
         self.fill( bg )
         self.rect( 0, 0, width -1, height -1, fg, False )
+        self.show()
     pass
 
     def print(self, *args, **kwargs) :
         self.init_print()
     
-        text = "".join( args )
-        
         fg = None
         if "c" in kwargs :
             fg = kwargs.pop( "c" )
         elif "fg" in kwargs :
             fg = kwargs.pop( "fg" )
+        else :
+            fg = self.fg
+        pass
+    
+        texts = "".join( args ) 
+    
+        if self.text_y < 0 :
+            self.text_y = 10 
+        pass
+    
+        text_x = 10
+        for text in texts :
+            text = f"[{text_idx + 1:2d}] {text}"
+            self.text( text, text_x, self.text_y, fg )
+            self.text_y += 15
+            self.text_idx += 1
+            
+            builtins.print( text )
         pass
         
-        self.disp_text( text, 10, 5, fg )
-        
-        builtins.print( "LCD : ", end="" )
-        builtins.print( *args, **kwargs )
+        if False :
+            builtins.print( "LCD : ", end="" )
+            builtins.print( *args, **kwargs )
+        pass
     pass
 
 pass
@@ -219,11 +240,20 @@ if __name__=='__main__':
     # LCDPrintTest.py
     
     lcd = LCD()
+    lcd.fill(lcd.BLACK)
+    lcd.show()
     
     lcd.print( "Hello...." )
     lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
     lcd.print( "PicoGo", c=LCD.WHITE )
     lcd.print( "Waveshare.com", c=0x07E0 )
     
-    lcd.print( "Goood bye!" ) 
+    lcd.print( "Hello...." )
+    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
+    lcd.print( "PicoGo", c=LCD.WHITE )
+    lcd.print( "Waveshare.com", c=0x07E0 )
+    
+    lcd.print( "Goood bye!" )
+    
+    lcd.show()
 pass
