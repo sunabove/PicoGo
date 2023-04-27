@@ -34,13 +34,3 @@ class UltraSonic :
     pass
 
 pass
-
-if __name__=='__main__':
-    ultraSonic = UltraSonic()
-    
-    while True:
-        dist = ultraSonic.get_obstacle_distance()
-        print( f"Distance:{dist:6.2f} cm" )
-        sleep( 0.1)
-    pass
-pass

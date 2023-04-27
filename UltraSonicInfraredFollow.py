@@ -69,12 +69,13 @@ def dist():
         pass
     te=utime.ticks_us()
     distance=((te-ts)*0.034)/2
-    return distance
-while True:
     
+    return distance
+pass
+
+while True:    
     D = dist()
-#     print("Distance:%6.2f cm" % dist())
-#     utime.sleep(1)
+    
     DR_status = DSR.value()
     DL_status = DSL.value()
     
