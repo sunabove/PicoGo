@@ -1,5 +1,6 @@
 from machine import Pin,SPI 
 import framebuf
+import builtins
 
 # ST7789
 class LCD(framebuf.FrameBuffer):
@@ -16,6 +17,11 @@ class LCD(framebuf.FrameBuffer):
         self.width = 240
         self.height = 135
         
+        self.bg = self.BLACK  # background color
+        self.fg = self.WHITE  # foreground color
+        
+        self.inited_print = False
+        
         self.rst = Pin(12,Pin.OUT)
         self.bl = Pin(13,Pin.OUT)
         self.bl(1)
@@ -28,9 +34,11 @@ class LCD(framebuf.FrameBuffer):
         self.dc = Pin(8,Pin.OUT)
         self.dc(1)
         self.buffer = bytearray(self.height * self.width * 2)
-        super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
-        self.init_display()       
         
+        super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
+        self.init_display()
+        
+        self.fill( self.bg )
     pass
         
     def write_cmd(self, cmd):
@@ -155,10 +163,13 @@ class LCD(framebuf.FrameBuffer):
     pass
 
     def disp_text(self, text, x, y, fg=None, bg=None, show=True) :
-        if bg is None : bg = self.BLACK
-        if fg is None : fg = self.WHITE
+        if bg is None : bg = self.bg
+        if fg is None : fg = self.fg
         
-        self.fill( bg )
+        width = self.width
+        height = self.height
+        
+        self.rect( 2, 2, width -5, height -5, bg, True )
         
         for t in text.split( "\n" ) : 
             self.text( t, x, y, fg )
@@ -168,4 +179,51 @@ class LCD(framebuf.FrameBuffer):
         show and self.show()
     pass
 
+    def init_print( self ) :
+        if self.inited_print :
+            return
+        pass
+    
+        self.inited_print = True
+    
+        bg = self.bg
+        fg = self.fg
+        width = self.width
+        height = self.height
+        
+        self.fill( bg )
+        self.rect( 0, 0, width -1, height -1, fg, False )
+    pass
+
+    def print(self, *args, **kwargs) :
+        self.init_print()
+    
+        text = "".join( args )
+        
+        fg = None
+        if "c" in kwargs :
+            fg = kwargs.pop( "c" )
+        elif "fg" in kwargs :
+            fg = kwargs.pop( "fg" )
+        pass
+        
+        self.disp_text( text, 10, 5, fg )
+        
+        builtins.print( "LCD : ", end="" )
+        builtins.print( *args, **kwargs )
+    pass
+
+pass
+
+if __name__=='__main__':
+    # LCDPrintTest.py
+    
+    lcd = LCD()
+    
+    lcd.print( "Hello...." )
+    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
+    lcd.print( "PicoGo", c=LCD.WHITE )
+    lcd.print( "Waveshare.com", c=0x07E0 )
+    
+    lcd.print( "Goood bye!" ) 
 pass
