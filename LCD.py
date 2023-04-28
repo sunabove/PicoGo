@@ -1,4 +1,6 @@
-from machine import Pin,SPI 
+from machine import Pin, SPI
+from time import sleep
+
 import framebuf
 import builtins
 
@@ -226,8 +228,11 @@ class LCD(framebuf.FrameBuffer):
         x = 0 ; y = 0
         y = int (height/2 + 1)
         
-        self.rect( x, y, width - 2 - x, height - 2 - y, self.bg, True )
-        self.rect( x, y, width - 2 - x, height - 2 - y, self.fg, False )
+        w = width -1 - x
+        h = height -1 - y
+        
+        self.rect( x, y, w, h, self.bg, True )
+        self.rect( x, y, w, h, self.fg, False )
         
         x = 10
         y = 10 if y < 1 else y + line_height 
@@ -254,21 +259,64 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass
 
+    def disp_battery( self, values ) :
+        width = self.width
+        height = int ( (self.height -4)/4)
+        
+        x = 0 ; y = 0
+        
+        w = width -1 - x
+        h = height - 1 - y
+        
+        self.rect( x, y, w, h, self.bg, True )
+        self.rect( x, y, w, h, self.fg, False )
+        
+        [ temp, voltage, percent ] = values
+        
+        maxes = [ 50, 5, 100 ]
+        
+        m = 8
+        cell_cnt = len( values )
+        
+        x += m; y += m ; 
+        w = int( (w - m*(cell_cnt + 1))/cell_cnt)
+        h = h - 2*m
+        
+        for idx, val in enumerate( values ) :
+            self.rect( x, y, w, h, self.bg, True )
+            self.rect( x, y, w, h, self.fg, False )
+            
+            x += w + m
+        pass            
+        
+        print( f"[{idx:03d}] Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
+        
+        
+        
+    pass
+
 pass
 
-if __name__=='__main__':
-    # LCDPrintTest.py
+if __name__=='__main__': 
     
-    lcd = LCD() 
+    lcd = LCD()
     
-    lcd.print( "Hello...." )
-    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
-    lcd.print( "PicoGo", c=LCD.WHITE ) 
-    
-    lcd.print( "Hello...." )
-    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
-    lcd.print( "PicoGo", c=LCD.WHITE )
-    lcd.print( "Waveshare.com", c=LCD.RED ) 
-    
+    lcd.fill( lcd.BLACK )
     lcd.show()
+    
+    from Battery import Battery
+    
+    battery = Battery()
+    
+    idx = 0
+    while True :
+        idx += 1
+        
+        values = temperature, voltage, percent = battery.read()
+        
+        lcd.disp_battery( values )
+        lcd.show()
+        
+        sleep( 1 )
+    pass 
 pass
