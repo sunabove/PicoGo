@@ -20,8 +20,8 @@ class LCD(framebuf.FrameBuffer):
         self.bg = self.BLACK  # background color
         self.fg = self.WHITE  # foreground color
         
-        self.text_y = -1
-        self.text_idx = 1 
+        self.texts = []
+        self.text_idx = 0 
         
         self.inited_print = False
         
@@ -196,8 +196,7 @@ class LCD(framebuf.FrameBuffer):
         height = self.height
         
         self.fill( bg )
-        self.rect( 0, 0, width -1, height -1, fg, False )
-        self.show()
+        self.rect( 0, 0, width -1, height -1, fg, False ) 
     pass
 
     def print(self, *args, **kwargs) :
@@ -212,18 +211,26 @@ class LCD(framebuf.FrameBuffer):
             fg = self.fg
         pass
     
-        texts = "".join( args ) 
-    
-        if self.text_y < 0 :
-            self.text_y = 10 
+        texts = "".join( args )
+        
+        for text in texts.split( "\n" ) :
+            self.texts.append( [ text, fg, self.text_idx ] )
+            self.text_idx += 1
         pass
     
-        text_x = 10
-        for text in texts :
-            text = f"[{text_idx + 1:2d}] {text}"
-            self.text( text, text_x, self.text_y, fg )
-            self.text_y += 15
-            self.text_idx += 1
+        x = 10 ; y = 10
+        width = self.width; height = self.height
+        
+        self.rect( x, y, width - 1 - 2*x, height - 1 - 2*y, self.bg, True )
+        
+        for text in self.texts[ -8 :  ] :
+            t = text[ 0 ]
+            fg = text[ 1 ]
+            text_idx = text[ 2 ]
+            
+            t = f"[{text_idx + 1:2d}] {t}"
+            self.text( t, x, y, fg )
+            y += 15
             
             builtins.print( text )
         pass
@@ -239,9 +246,7 @@ pass
 if __name__=='__main__':
     # LCDPrintTest.py
     
-    lcd = LCD()
-    lcd.fill(lcd.BLACK)
-    lcd.show()
+    lcd = LCD() 
     
     lcd.print( "Hello...." )
     lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
