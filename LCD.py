@@ -274,6 +274,7 @@ class LCD(framebuf.FrameBuffer):
         [ temp, voltage, percent ] = values
         
         maxes = [ 50, 5, 100 ]
+        colors = [ LCD.GREEN, LCD.BLUE, LCD.GREEN ]
         
         m = 8
         cell_cnt = len( values )
@@ -283,7 +284,11 @@ class LCD(framebuf.FrameBuffer):
         h = h - 2*m
         
         for idx, val in enumerate( values ) :
-            self.rect( x, y, w, h, self.bg, True )
+            color = colors[ idx ]
+            max = maxes[ idx ]
+            
+            self.rect( x, y, w, h, LCD.GBLUE, True )
+            self.rect( x, y, int( w*val/max ), h, color, True )
             self.rect( x, y, w, h, self.fg, False )
             
             x += w + m
@@ -317,6 +322,6 @@ if __name__=='__main__':
         lcd.disp_battery( values )
         lcd.show()
         
-        sleep( 1 )
+        sleep( 0.1 )
     pass 
 pass
