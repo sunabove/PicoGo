@@ -138,9 +138,7 @@ class LCD(framebuf.FrameBuffer):
         self.write_data(0x23)
         
         self.write_cmd(0x21)
-
         self.write_cmd(0x11)
-
         self.write_cmd(0x29)
     pass
 
@@ -218,19 +216,27 @@ class LCD(framebuf.FrameBuffer):
             self.text_idx += 1
         pass
     
-        x = 10 ; y = 10
         width = self.width; height = self.height
         
-        self.rect( x, y, width - 1 - 2*x, height - 1 - 2*y, self.bg, True )
+        x = 10
+        y = 10
+        #y = int (height/2)
         
-        for text in self.texts[ -8 :  ] :
+        line_height = 15
+        line_count = int( (height - y)/line_height )
+        
+        self.rect( x, y, width - 2 - x, height - 2 - y, self.bg, True )
+        
+        print( f"line count = {line_count}" )
+        
+        for text in self.texts[ - line_count :  ] :
             t = text[ 0 ]
             fg = text[ 1 ]
             text_idx = text[ 2 ]
             
             t = f"[{text_idx + 1:2d}] {t}"
             self.text( t, x, y, fg )
-            y += 15
+            y += line_height
             
             builtins.print( text )
         pass
