@@ -19,7 +19,11 @@ if __name__=='__main__':
     
     # 사각형 외곽선 그리기 
     y += h + 10 ; h = 20
-    lcd.rect( x, y, w - 2*x - 1 , h, lcd.RED, False ) 
+    lcd.rect( x, y, w - 2*x - 1 , h, lcd.RED, False )
+    
+    # 타원 그리기 
+    y += 2*h + 10 ; w = 50
+    lcd.ellipse( x + w, y, w, h, lcd.BLUE, True ) 
         
     lcd.show() 
         
