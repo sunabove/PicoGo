@@ -216,6 +216,10 @@ class LCD(framebuf.FrameBuffer):
             self.text_idx += 1
         pass
     
+        while len( self.texts ) > 8 :
+            self.texts.pop( 0 )
+        pass
+    
         width = self.width; height = self.height
         line_height = 15
         
