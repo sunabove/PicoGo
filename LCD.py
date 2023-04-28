@@ -5,6 +5,7 @@ import builtins
 # ST7789
 class LCD(framebuf.FrameBuffer):
     
+    # RGC 565 Color Definition
     WHITE  = 0xFFFF
     BLACK  = 0x0000
     GREEN  = 0x001F
@@ -41,8 +42,7 @@ class LCD(framebuf.FrameBuffer):
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
         self.init_display()
         
-        self.fill( self.bg )
-        self.show()
+        self.fill( self.bg ) 
     pass
         
     def write_cmd(self, cmd):
