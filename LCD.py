@@ -274,29 +274,25 @@ class LCD(framebuf.FrameBuffer):
         [ temp, voltage, percent ] = values
         
         maxes = [ 50, 5, 100 ]
-        colors = [ LCD.GREEN, LCD.BLUE, LCD.GREEN ]
+        color = LCD.GREEN
+        if percent < 33 :
+            color = LCD.RED
+        elif percent < 66 :
+            color = LCD.BLUE
+        else :
+            color = LCD.GREEN
         
         m = 8
-        cell_cnt = len( values )
         
         x += m; y += m ; 
-        w = int( (w - m*(cell_cnt + 1))/cell_cnt)
+        w = w - 2*m 
         h = h - 2*m
         
-        for idx, val in enumerate( values ) :
-            color = colors[ idx ]
-            max = maxes[ idx ]
-            
-            self.rect( x, y, w, h, LCD.GBLUE, True )
-            self.rect( x, y, int( w*val/max ), h, color, True )
-            self.rect( x, y, w, h, self.fg, False )
-            
-            x += w + m
-        pass            
+        self.rect( x, y, w, h, LCD.GBLUE, True )
+        self.rect( x, y, int( w*percent/100 ), h, color, True )
+        self.rect( x, y, w, h, self.fg, False )
         
-        print( f"[{idx:03d}] Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
-        
-        
+        print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
     pass
 
@@ -314,14 +310,17 @@ if __name__=='__main__':
     battery = Battery()
     
     idx = 0
+    from random import randint
     while True :
         idx += 1
         
-        values = temperature, voltage, percent = battery.read()
+        values = [ temp, voltage, percent ] = battery.read()
+        
+        #values = [ temp,  voltage, randint( 0, 100 ) ] 
         
         lcd.disp_battery( values )
         lcd.show()
         
-        sleep( 0.1 )
+        sleep( 1 )
     pass 
 pass
