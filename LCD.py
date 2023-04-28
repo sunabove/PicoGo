@@ -8,10 +8,10 @@ class LCD(framebuf.FrameBuffer):
     WHITE  = 0xFFFF
     BLACK  = 0x0000
     GREEN  = 0x001F
-    RED    = 0xF800
+    RED    = 0x00F0
     BLUE   = 0xFF00
     GBLUE  = 0X07FF
-    YELLOW = 0xFFE0
+    YELLOW = 0xF0FF
     
     def __init__(self):
         self.width = 240
@@ -259,15 +259,12 @@ if __name__=='__main__':
     
     lcd.print( "Hello...." )
     lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
-    lcd.print( "PicoGo", c=LCD.WHITE )
-    lcd.print( "Waveshare.com", c=0x07E0 )
+    lcd.print( "PicoGo", c=LCD.WHITE ) 
     
     lcd.print( "Hello...." )
     lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
     lcd.print( "PicoGo", c=LCD.WHITE )
-    lcd.print( "Waveshare.com", c=0x07E0 )
-    
-    lcd.print( "Goood bye!" )
+    lcd.print( "Waveshare.com", c=LCD.RED ) 
     
     lcd.show()
 pass
