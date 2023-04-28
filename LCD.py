@@ -194,7 +194,7 @@ class LCD(framebuf.FrameBuffer):
         height = self.height
         
         self.fill( bg )
-        self.rect( 0, 0, width -1, height -1, fg, False ) 
+        #self.rect( 0, 0, width -1, height -1, fg, False ) 
     pass
 
     def print(self, *args, **kwargs) :
@@ -217,17 +217,20 @@ class LCD(framebuf.FrameBuffer):
         pass
     
         width = self.width; height = self.height
-        
-        x = 10
-        y = 10
-        #y = int (height/2)
-        
         line_height = 15
-        line_count = int( (height - y)/line_height )
+        
+        x = 0 ; y = 0
+        y = int (height/2 + 1)
         
         self.rect( x, y, width - 2 - x, height - 2 - y, self.bg, True )
+        self.rect( x, y, width - 2 - x, height - 2 - y, self.fg, False )
         
-        print( f"line count = {line_count}" )
+        x = 10
+        y = 10 if y < 1 else y + line_height 
+        
+        line_count = int( (height - y)/line_height )
+        
+        #print( f"line count = {line_count}" )
         
         for text in self.texts[ - line_count :  ] :
             t = text[ 0 ]
@@ -238,7 +241,7 @@ class LCD(framebuf.FrameBuffer):
             self.text( t, x, y, fg )
             y += line_height
             
-            builtins.print( text )
+            #builtins.print( text )
         pass
         
         if False :
