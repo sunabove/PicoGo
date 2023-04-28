@@ -44,7 +44,18 @@ class LCD(framebuf.FrameBuffer):
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
         self.init_display()
         
-        self.fill( self.bg ) 
+        self.fill( self.bg )
+        
+        x = 0
+        y = 0
+        m = 4
+        w = self.width - 1
+        h = int( (self.height - m - 1)/2 )
+        
+        for idx in range( 2 ) :
+            self.rect( x, y, w, h, self.fg, False )
+            y += h + m
+        pass
     pass
         
     def write_cmd(self, cmd):
@@ -183,25 +194,20 @@ class LCD(framebuf.FrameBuffer):
         show and self.show()
     pass
 
-    def init_print( self ) :
-        if self.inited_print :
-            return
-        pass
-    
-        self.inited_print = True
-    
-        bg = self.bg
-        fg = self.fg
-        width = self.width
-        height = self.height
-        
-        self.fill( bg )
-        #self.rect( 0, 0, width -1, height -1, fg, False ) 
-    pass
-
     def print(self, *args, **kwargs) :
-        self.init_print()
-    
+        width = self.width; height = self.height
+        line_height = 15
+        
+        x = 0 ; y = 0
+        
+        m = 4
+        w = width - 1
+        h = int( (height - m - 1)/2 )
+        y = h + m
+        
+        self.rect( x, y, w, h, self.bg, True )
+        self.rect( x, y, w, h, self.fg, False )
+        
         fg = None
         if "c" in kwargs :
             fg = kwargs.pop( "c" )
@@ -222,20 +228,8 @@ class LCD(framebuf.FrameBuffer):
             self.texts.pop( 0 )
         pass
     
-        width = self.width; height = self.height
-        line_height = 15
-        
-        x = 0 ; y = 0
-        y = int (height/2 + 1)
-        
-        w = width -1 - x
-        h = height -1 - y
-        
-        self.rect( x, y, w, h, self.bg, True )
-        self.rect( x, y, w, h, self.fg, False )
-        
         x = 10
-        y = 10 if y < 1 else y + line_height 
+        y += line_height 
         
         line_count = int( (height - y)/line_height )
         
@@ -260,20 +254,23 @@ class LCD(framebuf.FrameBuffer):
     pass
 
     def disp_battery( self, values ) :
+        
         width = self.width
-        height = int ( (self.height -4)/4)
+        height = int ( (self.height - 4 ) /4 )
         
         x = 0 ; y = 0
         
         w = width -1 - x
         h = height - 1 - y
         
-        self.rect( x, y, w, h, self.bg, True )
-        self.rect( x, y, w, h, self.fg, False )
+        m = 8
         
-        [ temp, voltage, percent ] = values
+        x += m; y += m ; 
+        w = w - 2*m 
+        h = h - 2*m
         
-        maxes = [ 50, 5, 100 ]
+        temp, voltage, percent = values
+        
         color = LCD.GREEN
         if percent < 33 :
             color = LCD.RED
@@ -281,12 +278,7 @@ class LCD(framebuf.FrameBuffer):
             color = LCD.BLUE
         else :
             color = LCD.GREEN
-        
-        m = 8
-        
-        x += m; y += m ; 
-        w = w - 2*m 
-        h = h - 2*m
+        pass
         
         self.rect( x, y, w, h, LCD.GBLUE, True )
         self.rect( x, y, int( w*percent/100 ), h, color, True )
@@ -298,12 +290,24 @@ class LCD(framebuf.FrameBuffer):
 
 pass
 
-if __name__=='__main__': 
+if __name__=='__main__ 2':
+    # LCDPrintTest.py
     
-    lcd = LCD()
+    lcd = LCD() 
     
-    lcd.fill( lcd.BLACK )
+    lcd.print( "Hello...." )
+    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
+    lcd.print( "PicoGo", c=LCD.WHITE ) 
+    
+    lcd.print( "Hello...." )
+    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
+    lcd.print( "PicoGo", c=LCD.WHITE )
+    lcd.print( "Waveshare.com", c=LCD.RED ) 
+    
     lcd.show()
+elif __name__=='__main__': 
+    
+    lcd = LCD() 
     
     from Battery import Battery
     
@@ -316,7 +320,7 @@ if __name__=='__main__':
         
         values = [ temp, voltage, percent ] = battery.read()
         
-        #values = [ temp,  voltage, randint( 0, 100 ) ] 
+        values = [ temp,  voltage, randint( 0, 100 ) ] 
         
         lcd.disp_battery( values )
         lcd.show()

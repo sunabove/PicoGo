@@ -7,9 +7,6 @@ if __name__=='__main__':
     
     lcd = LCD()
     
-    lcd.fill( lcd.BLACK )
-    lcd.show()
-    
     from Battery import Battery
     
     battery = Battery()
