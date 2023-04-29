@@ -11,15 +11,9 @@ if __name__=='__main__':
     
     battery = Battery()
     
-    idx = 0
     while True :
-        idx += 1
         
-        values = [ temp, voltage, percent ] = battery.read()
-        
-        #values = [ temp,  voltage, randint( 0, 100 ) ] 
-        
-        lcd.disp_battery( values )
+        lcd.disp_battery( battery )
         lcd.show()
         
         sleep( 1 )

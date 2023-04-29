@@ -1,5 +1,6 @@
 from machine import Pin, SPI
 from time import sleep
+from Battery import Battery
 
 import framebuf
 import builtins

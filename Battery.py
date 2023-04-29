@@ -1,5 +1,4 @@
 from machine import Pin, ADC
-from LCD import LCD
 from time import sleep
 
 class Battery :
