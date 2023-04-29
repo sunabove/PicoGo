@@ -1,6 +1,7 @@
 from machine import Pin, SPI
 from time import sleep
 from Battery import Battery
+from UltraSonic import UltraSonic
 
 import framebuf
 import builtins
@@ -255,18 +256,21 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass
 
-    def disp_battery( self, values ) :
+    def disp_battery( self, values = None ) : # 배터리 잔량 표시 
         
         if isinstance( values , Battery ) :
             values = values.read()
+        elif values is None :
+            values = [ 0, 0, 0 ]
         pass
         
         width = self.width
         height = int ( (self.height - 4 ) /4 )
         
-        x = 0 ; y = 0
+        x = 0
+        y = 0
         
-        w = width -1 - x
+        w = width - 1 - x
         h = height - 1 - y
         
         m = 8
@@ -297,9 +301,65 @@ class LCD(framebuf.FrameBuffer):
         
     pass
 
+    def disp_ultra_sonic( self, dist = 0 ) :  # 초음파 센서 거리 표시 
+        
+        if isinstance( dist, UltraSonic ) :
+            dist = dist.get_obstacle_distance()
+        pass
+    
+        width = self.width
+        height = int ( (self.height - 4 ) / 4 )
+        
+        x = 0
+        y = height
+        
+        w = width - 1 - x
+        h = height - 1
+        
+        m = 8
+        
+        x += m 
+        y += m 
+        w = w - 2*m 
+        h = h - 2*m 
+        
+        color = LCD.GREEN
+        if dist < 20 :
+            color = LCD.RED
+        elif dist < 10 :
+            color = LCD.BLUE
+        else :
+            color = LCD.GREEN
+        pass
+    
+        fg = self.fg
+        
+        self.rect( x, y, w, h, LCD.GBLUE, True )
+        self.rect( x, y, int( w*min(30, dist)/30 ), h, color, True )
+        self.rect( x, y, w, h, fg, False )
+        
+        self.text( f"{dist:6.2f} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
+    
+    pass
+
 pass
 
-if __name__=='__main__ 2':
+if __name__== '__main__' :
+    
+    lcd = LCD()
+    ultraSonic = UltraSonic()
+    
+    lcd.disp_battery( )
+    
+    while 1 :
+        dist = ultraSonic.get_obstacle_distance()
+        lcd.disp_ultra_sonic( dist )
+        lcd.show()
+        
+        print( f"Distance:{dist:6.2f} cm" )
+        sleep( 0.1)
+    pass
+elif __name__== '__main__ 2' :
     # LCDPrintTest.py
     
     lcd = LCD() 
@@ -314,7 +374,7 @@ if __name__=='__main__ 2':
     lcd.print( "Waveshare.com", c=LCD.RED ) 
     
     lcd.show()
-elif __name__=='__main__': 
+elif __name__== '__main__' : 
     
     lcd = LCD() 
     

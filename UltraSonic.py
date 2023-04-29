@@ -2,6 +2,7 @@ from machine import Pin
 from time import sleep, sleep_us, ticks_us
 
 class UltraSonic :
+    
     def __init__( self ) :
         self.echo = Pin(15, Pin.IN)
         self.trig = Pin(14, Pin.OUT)
@@ -10,7 +11,7 @@ class UltraSonic :
         self.echo.value(0)
     pass
 
-    def get_obstacle_distance( self ):
+    def get_obstacle_distance( self ) :
         echo = self.echo
         trig = self.trig
         
