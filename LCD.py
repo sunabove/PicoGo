@@ -45,6 +45,7 @@ class LCD(framebuf.FrameBuffer):
         self.init_display()
         
         self.fill( self.bg )
+        self.show()
         
         x = 0
         y = 0
@@ -255,6 +256,10 @@ class LCD(framebuf.FrameBuffer):
 
     def disp_battery( self, values ) :
         
+        if isinstance( values , Battery ) :
+            values = values.read()
+        pass
+        
         width = self.width
         height = int ( (self.height - 4 ) /4 )
         
@@ -279,10 +284,13 @@ class LCD(framebuf.FrameBuffer):
         else :
             color = LCD.GREEN
         pass
+    
+        fg = self.fg
         
         self.rect( x, y, w, h, LCD.GBLUE, True )
         self.rect( x, y, int( w*percent/100 ), h, color, True )
-        self.rect( x, y, w, h, self.fg, False )
+        self.rect( x, y, w, h, fg, False )
+        self.text( f"{int(percent):3d} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
         
         print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
