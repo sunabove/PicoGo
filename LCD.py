@@ -67,7 +67,7 @@ class LCD(framebuf.FrameBuffer):
         
         for idx in range( rc ) :
             y = idx*h + (idx + 1)*m
-            rect = [ x, y, w, h ]
+            rect = [ x, y, w, h, m ]
             rects.append( rect )
         pass
         
@@ -211,7 +211,7 @@ class LCD(framebuf.FrameBuffer):
         pass
     
         show and self.show()
-    pass
+    pass # disp_text
 
     def print(self, *args, **kwargs) :
         width = self.width; height = self.height
@@ -270,7 +270,7 @@ class LCD(framebuf.FrameBuffer):
             builtins.print( "LCD : ", end="" )
             builtins.print( *args, **kwargs )
         pass
-    pass
+    pass # print
 
     def disp_battery( self, values = None, verbose=False ) : # 배터리 잔량 표시 
         
@@ -293,11 +293,7 @@ class LCD(framebuf.FrameBuffer):
     
         fg = self.fg
         
-        r = self.rects[0]
-        x = r[0]
-        y = r[1]
-        w = r[2]
-        h = r[3]
+        x, y, w, h, m = self.rects[0]
         
         self.rect( x, y, w, h, LCD.GBLUE, True )
         self.rect( x, y, int( w*percent/100 ), h, color, True )
@@ -328,15 +324,22 @@ class LCD(framebuf.FrameBuffer):
         pass
     
         fg = self.fg
+        bg = self.bg
         
-        r = self.rects[1]
-        x = r[0]
-        y = r[1]
-        w = r[2]
-        h = r[3]
+        x, y, w, h, m = self.rects[1]
         
-        self.rect( x, y, w, h, fg, True )
-        self.rect( x, y, int( w*min(30, dist)/30 ), h, color, True )
+        v = value = int( w*min(30, dist)/30 )
+        
+        self.rect( x, y, w, h, LCD.GBLUE, True )
+        self.rect( x, y, value, h, color, True )
+        
+        if False :
+            cw = cell_width = int( ( w - m*9 )/10 )
+            for idx in range( 1, 9 ) :
+                self.rect( x + idx*(cw +m), y, m, h, bg, True )
+            pass
+        pass
+    
         self.rect( x, y, w, h, fg, False )
         
         self.text( f"{dist: 6.2f} cm", int(x + w/2 - 30), int( y + 5), LCD.WHITE )
