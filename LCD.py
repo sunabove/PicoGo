@@ -46,19 +46,35 @@ class LCD(framebuf.FrameBuffer):
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
         self.init_display()
         
-        self.fill( self.bg )
-        self.show()
+        self.fill( self.bg ) 
         
         x = 0
         y = 0
-        m = 4
-        w = self.width - 1
-        h = int( (self.height - m - 1)/2 )
+        rc = row_count = 6
         
-        for idx in range( 2 ) :
-            self.rect( x, y, w, h, self.fg, False )
-            y += h + m
+        width = self.width
+        height = self.height
+        
+        self.rect( x, y, width, height - 1, self.fg, False )
+        
+        m = 4
+        
+        rects = self.rects = []
+        
+        x = m
+        w = width - 2*m
+        h = int( (height - (rc + 2)*m - 1)/rc )
+        
+        for idx in range( rc ) :
+            y = idx*h + (idx + 1)*m
+            rect = [ x, y, w, h ]
+            rects.append( rect )
         pass
+        
+        for r in rects :
+            self.rect( r[0], r[1], r[2], r[3], self.fg, False )
+        pass
+    
     pass
         
     def write_cmd(self, cmd):
@@ -262,22 +278,7 @@ class LCD(framebuf.FrameBuffer):
             values = values.read()
         elif values is None :
             values = [ 0, 0, 0 ]
-        pass
-        
-        width = self.width
-        height = int ( (self.height - 4 ) /4 )
-        
-        x = 0
-        y = 0
-        
-        w = width - 1 - x
-        h = height - 1 - y
-        
-        m = 8
-        
-        x += m; y += m ; 
-        w = w - 2*m 
-        h = h - 2*m
+        pass 
         
         temp, voltage, percent = values
         
@@ -292,9 +293,16 @@ class LCD(framebuf.FrameBuffer):
     
         fg = self.fg
         
+        r = self.rects[ 0 ]
+        x = r[0]
+        y = r[1]
+        w = r[2]
+        h = r[3]
+        
         self.rect( x, y, w, h, LCD.GBLUE, True )
         self.rect( x, y, int( w*percent/100 ), h, color, True )
         self.rect( x, y, w, h, fg, False )
+        
         self.text( f"{int(percent):3d} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
         
         print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
@@ -345,6 +353,31 @@ class LCD(framebuf.FrameBuffer):
 pass
 
 if __name__== '__main__' :
+    # lcd battery print
+    
+    lcd = LCD()    
+    battery = Battery()
+    
+    idx = 0
+    from random import randint
+    while True :
+        idx += 1
+        
+        values = [ temp, voltage, percent ] = battery.read()
+        
+        #values = [ temp,  voltage, randint( 0, 100 ) ] 
+        
+        lcd.disp_battery( values )
+        lcd.show()
+        
+        sleep( 1 )
+    pass 
+elif __name__== '__main__' :
+    
+    lcd = LCD()
+    lcd.show()
+    
+elif __name__== '__main__' :
     
     lcd = LCD()
     ultraSonic = UltraSonic()
@@ -374,26 +407,4 @@ elif __name__== '__main__ 2' :
     lcd.print( "Waveshare.com", c=LCD.RED ) 
     
     lcd.show()
-elif __name__== '__main__' : 
-    
-    lcd = LCD() 
-    
-    from Battery import Battery
-    
-    battery = Battery()
-    
-    idx = 0
-    from random import randint
-    while True :
-        idx += 1
-        
-        values = [ temp, voltage, percent ] = battery.read()
-        
-        values = [ temp,  voltage, randint( 0, 100 ) ] 
-        
-        lcd.disp_battery( values )
-        lcd.show()
-        
-        sleep( 1 )
-    pass 
 pass
