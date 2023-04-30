@@ -293,7 +293,7 @@ class LCD(framebuf.FrameBuffer):
     
         fg = self.fg
         
-        r = self.rects[ 0 ]
+        r = self.rects[0]
         x = r[0]
         y = r[1]
         w = r[2]
@@ -303,38 +303,25 @@ class LCD(framebuf.FrameBuffer):
         self.rect( x, y, int( w*percent/100 ), h, color, True )
         self.rect( x, y, w, h, fg, False )
         
-        self.text( f"{int(percent):3d} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
+        self.text( f"{int(percent):3d} %", int(x + w/2 - 25), int( y + 5), LCD.WHITE )
         
         verbose and print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
-    pass
+    pass # disp_battery
 
     def disp_ultra_sonic( self, dist = 0 ) :  # 초음파 센서 거리 표시 
         
         if isinstance( dist, UltraSonic ) :
             dist = dist.get_obstacle_distance()
-        pass
-    
-        width = self.width
-        height = int ( (self.height - 4 ) / 4 )
-        
-        x = 0
-        y = height
-        
-        w = width - 1 - x
-        h = height - 1
-        
-        m = 8
-        
-        x += m 
-        y += m 
-        w = w - 2*m 
-        h = h - 2*m 
+        pass 
         
         color = LCD.GREEN
-        if dist < 20 :
+        
+        if dist < 10 :
             color = LCD.RED
-        elif dist < 10 :
+        elif dist < 20 :
+            color = 0xFFF0
+        elif dist < 30 :
             color = LCD.BLUE
         else :
             color = LCD.GREEN
@@ -342,13 +329,19 @@ class LCD(framebuf.FrameBuffer):
     
         fg = self.fg
         
-        self.rect( x, y, w, h, LCD.GBLUE, True )
+        r = self.rects[1]
+        x = r[0]
+        y = r[1]
+        w = r[2]
+        h = r[3]
+        
+        self.rect( x, y, w, h, fg, True )
         self.rect( x, y, int( w*min(30, dist)/30 ), h, color, True )
         self.rect( x, y, w, h, fg, False )
         
-        self.text( f"{dist:6.2f} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
+        self.text( f"{dist: 6.2f} cm", int(x + w/2 - 30), int( y + 5), LCD.WHITE )
     
-    pass
+    pass # disp_ultra_sonic
 
 pass
 
