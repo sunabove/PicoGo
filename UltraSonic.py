@@ -11,7 +11,7 @@ class UltraSonic :
         self.echo.value(0)
     pass
 
-    def get_obstacle_distance( self ) :
+    def obstacle_distance( self ) :
         echo = self.echo
         trig = self.trig
         

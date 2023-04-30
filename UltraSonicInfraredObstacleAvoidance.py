@@ -20,7 +20,7 @@ if __name__ == '__main__' :
     obstacle_cnt = 0
         
     while True:
-        dist = ultraSonic.get_obstacle_distance()
+        dist = ultraSonic.obstacle_distance()
         
         left_block = ( dsr.value() == 0 )
         right_block = ( dsl.value()== 0 )

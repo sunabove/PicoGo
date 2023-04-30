@@ -272,7 +272,7 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass
 
-    def disp_battery( self, values = None ) : # 배터리 잔량 표시 
+    def disp_battery( self, values = None, verbose=False ) : # 배터리 잔량 표시 
         
         if isinstance( values , Battery ) :
             values = values.read()
@@ -305,7 +305,7 @@ class LCD(framebuf.FrameBuffer):
         
         self.text( f"{int(percent):3d} %", int(x + w/2 -10), int( y + 3), LCD.WHITE )
         
-        print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
+        verbose and print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
     pass
 
@@ -353,6 +353,22 @@ class LCD(framebuf.FrameBuffer):
 pass
 
 if __name__== '__main__' :
+    # print ultra sonic
+    
+    lcd = LCD()
+    ultraSonic = UltraSonic()
+    
+    lcd.disp_battery()
+    
+    while 1 :
+        dist = ultraSonic.obstacle_distance()
+        lcd.disp_ultra_sonic( dist )
+        lcd.show()
+        
+        print( f"Distance = {dist:6.2f} cm" )
+        sleep( 0.1)
+    pass
+elif __name__== '__main__' :
     # lcd battery print
     
     lcd = LCD()    
@@ -367,31 +383,14 @@ if __name__== '__main__' :
         
         #values = [ temp,  voltage, randint( 0, 100 ) ] 
         
-        lcd.disp_battery( values )
+        lcd.disp_battery( values, 1 )
         lcd.show()
         
         sleep( 1 )
     pass 
-elif __name__== '__main__' :
-    
+elif __name__== '__main__' :    
     lcd = LCD()
     lcd.show()
-    
-elif __name__== '__main__' :
-    
-    lcd = LCD()
-    ultraSonic = UltraSonic()
-    
-    lcd.disp_battery( )
-    
-    while 1 :
-        dist = ultraSonic.get_obstacle_distance()
-        lcd.disp_ultra_sonic( dist )
-        lcd.show()
-        
-        print( f"Distance:{dist:6.2f} cm" )
-        sleep( 0.1)
-    pass
 elif __name__== '__main__ 2' :
     # LCDPrintTest.py
     

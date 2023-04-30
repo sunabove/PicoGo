@@ -14,9 +14,9 @@ if __name__ == '__main__' :
     
     obstacle_cnt = 0 
     while True :
-        dist = ultraSonic.get_obstacle_distance()
+        dist = ultraSonic.obstacle_distance()
         
-        print( f"distance: {dist:6.2f} cm" )
+        print( f"distance = {dist:6.2f} cm" )
         
         if dist < max_dist :
             ostacle_cnt += 1
