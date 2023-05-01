@@ -1,12 +1,12 @@
 from Motor import PicoGo
-from machine import Pin
+from InfraredSensor import InfraredSensor
 from time import sleep
 
 if __name__ == '__main__' :
     
     robot = PicoGo()
-    dsr = Pin(2, Pin.IN)
-    dsl = Pin(3, Pin.IN)
+    
+    infraredSensor = InfraredSensor()
 
     speed = 20
     duration = 0.02
@@ -14,8 +14,7 @@ if __name__ == '__main__' :
     idx = 0 
     while True:
         idx += 1
-        left_block  = ( dsl.value() == 0 )
-        right_block = ( dsr.value() == 0 )
+        left_block, right_block = infraredSensor.read_blocks()
         
         print( f"[{idx:4d}] InfraRed left: {left_block}, right: {right_block}" )
 

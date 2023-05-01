@@ -2,6 +2,7 @@ from machine import Pin, SPI
 from time import sleep
 from Battery import Battery
 from UltraSonic import UltraSonic
+from InfraredSensor import InfraredSensor
 
 import framebuf
 import builtins
@@ -354,14 +355,33 @@ class LCD(framebuf.FrameBuffer):
     
     pass # disp_ultra_sonic
 
-    def disp_infrared_sensor( self, values ) :
+    def disp_infrared_sensor( self, blocks = [0, 0]) :
         pass
     pass # disp_infrared_sensor
 
 pass
 
 if __name__== '__main__' :
-    # print ultra sonic
+    # display infrared sensor
+    
+    lcd = LCD()
+    infraredSensor = InfraredSensor()
+    
+    lcd.disp_init()
+    
+    idx = 0 
+    while 1 :
+        idx += 1
+        blocks = infraredSensor.read_blocks()
+        lcd.disp_infrared_sensor( blocks )
+        lcd.show() 
+        
+        print( f"[{idx:4d}] InfraRed left: {blocks[0]}, right: {blocks[1]}" )
+        
+        sleep( 0.1)
+    pass
+elif __name__== '__main__' :
+    # display ultra sonic
     
     lcd = LCD()
     ultraSonic = UltraSonic()
@@ -377,7 +397,7 @@ if __name__== '__main__' :
         sleep( 0.1)
     pass
 elif __name__== '__main__' :
-    # lcd battery print
+    # dispaly batter
     
     lcd = LCD()    
     battery = Battery()
