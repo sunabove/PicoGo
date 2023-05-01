@@ -419,24 +419,24 @@ class LCD(framebuf.FrameBuffer):
             #print( f"x1 = {x1}, y1 = {y1}, w1 = {w1}, h1 = {h1}" )
         pass
     
-        we = int( h/4 )
+        we = h/4
         he = we
         
-        xe = x
+        xe = x + m + 3 + we/2
         
         pos = position
         
         if pos < 0 :
-            xe = x + we
+            xe = x + m + 3 + we/2
         elif pos > sensors_len - 1 : 
-            xe = x + w - we
+            xe = x + w - we - m - 4
         else :
-            xe += int( w*(pos + 1)/sensors_len )
-        pass 
+            xe = x + w*(pos + 0.5)/sensors_len - we/2
+        pass
     
-        ye = int( y + h/2 )
+        ye = y + h/2
         
-        lcd.ellipse( xe, ye, we, he, lcd.BLUE, True )
+        lcd.ellipse( int(xe), int(ye), int(we), int(he), lcd.BLUE, True )
     
         if flush : self.flush()
     pass # disp_tr_sensor
