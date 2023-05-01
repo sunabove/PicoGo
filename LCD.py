@@ -278,11 +278,11 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass # print
 
-    def disp_init( self ) :
+    def disp_init( self, flush=False ) :
         self.disp_battery()
         self.disp_ultra_sonic()
         self.disp_infrared_sensor()
-        self.disp_tr_sensor()
+        self.disp_tr_sensor( flush )
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False, flush=False ) : # 배터리 잔량 표시 
@@ -404,7 +404,7 @@ class LCD(framebuf.FrameBuffer):
         w1 = int( (w - m*sensors_len - m)/sensors_len )
         
         for idx, sensor in enumerate( sensors ) :
-            sensor = 1_000 - min( sensor, 1_000 )
+            sensor = min( sensor, 1_000 )
             sensor = max( sensor, 100 )
             
             h1 = int( (h - 2*m)*sensor/1_000 )
@@ -419,16 +419,53 @@ class LCD(framebuf.FrameBuffer):
             #print( f"x1 = {x1}, y1 = {y1}, w1 = {w1}, h1 = {h1}" )
         pass
     
+        we = int( h/4 )
+        he = we
+        
+        xe = x
+        
+        pos = position
+        
+        if pos < 0 :
+            xe = x + we
+        elif pos > sensors_len - 1 : 
+            xe = x + w - we
+        else :
+            xe += int( w*(pos + 1)/sensors_len )
+        pass 
+    
+        ye = int( y + h/2 )
+        
+        lcd.ellipse( xe, ye, we, he, lcd.BLUE, True )
+    
         if flush : self.flush()
     pass # disp_tr_sensor
 
 pass
 
-if __name__== '__main__ 2' :
+if __name__== '__main__' :
+    from Motor import PicoGo
+    robot = PicoGo() 
     lcd = LCD()
     trs = TRSensor()
     
-    lcd.disp_init()
+    lcd.disp_init(flush=1)
+    
+    robot.stop()
+    
+    sleep(3)
+    
+    for i in range(100) :
+        if  25 < i <= 75:
+            robot.setMotor( 30, -30, False )
+        else:
+            robot.setMotor(-30, 30, False )
+        pass
+    
+        trs.calibrate()
+    pass
+
+    robot.stop()
     
     idx = 0 
     while True:
