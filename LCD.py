@@ -285,7 +285,7 @@ class LCD(framebuf.FrameBuffer):
         self.disp_tr_sensor()
     pass
 
-    def disp_battery( self, values = [0, 0, 0], verbose=False ) : # 배터리 잔량 표시 
+    def disp_battery( self, values = [0, 0, 0], verbose=False, flush=False ) : # 배터리 잔량 표시 
         
         if isinstance( values , Battery ) :
             values = values.read()
@@ -312,11 +312,13 @@ class LCD(framebuf.FrameBuffer):
         
         self.text( f"{int(percent):3d} %", int(x + w/2 - 25), int( y + 5), LCD.WHITE )
         
-        verbose and print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
+        if flush : self.flush()
+        
+        if verbose : print( f"Temperature = {temp:.3f} °C, Voltage = {voltage:.3f} V, Percent = {percent:.2} %" )
         
     pass # disp_battery
 
-    def disp_ultra_sonic( self, dist = 0 ) :  # 초음파 센서 거리 표시 
+    def disp_ultra_sonic( self, dist = 0 , verbose = 0, flush=0 ) :  # 초음파 센서 거리 표시 
         
         if isinstance( dist, UltraSonic ) :
             dist = dist.get_obstacle_distance()
@@ -358,11 +360,11 @@ class LCD(framebuf.FrameBuffer):
         
         self.rect( x, y, w, h, fg, False )
         
-        #self.text( f"{dist: 6.2f} cm", int(x + w/2 - 30), int( y + 5), LCD.WHITE )
+        if flush : self.flush()
     
     pass # disp_ultra_sonic
 
-    def disp_infrared_sensor( self, blocks = [0, 0]) :
+    def disp_infrared_sensor( self, blocks = [0, 0], flush = 0 ) :
         
         x, y, w, h, m = self.rects[2]
         
@@ -382,10 +384,12 @@ class LCD(framebuf.FrameBuffer):
             self.rect( x + idx*(w +m) , y, w, h, c, True )
             self.rect( x + idx*(w +m) , y, w, h, fg, False )
         pass
+    
+        if flush : self.flush()
         
     pass # disp_infrared_sensor
 
-    def disp_tr_sensor( self, position = -1, sensors = [0]*5 ) :
+    def disp_tr_sensor( self, position = -1, sensors = [0]*5, flush = 0 ) :
         x, y, w, h, m = self.rects[3]
         h = 2*h + m
         
@@ -414,11 +418,13 @@ class LCD(framebuf.FrameBuffer):
             
             #print( f"x1 = {x1}, y1 = {y1}, w1 = {w1}, h1 = {h1}" )
         pass
+    
+        if flush : self.flush()
     pass # disp_tr_sensor
 
 pass
 
-if __name__== '__main__' :
+if __name__== '__main__ 2' :
     lcd = LCD()
     trs = TRSensor()
     
@@ -429,8 +435,7 @@ if __name__== '__main__' :
         idx += 1
         
         position, sensors = trs.readLine()        
-        lcd.disp_tr_sensor( position, sensors )
-        lcd.show()
+        lcd.disp_tr_sensor( position, sensors, flush=1 ) 
         
         print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
     
@@ -443,14 +448,13 @@ elif __name__== '__main__' :
     lcd = LCD()
     infraredSensor = InfraredSensor()
     
-    lcd.disp_init()
+    lcd.disp_init() 
     
     idx = 0 
     while 1 :
         idx += 1
         blocks = infraredSensor.read_blocks()
-        lcd.disp_infrared_sensor( blocks )
-        lcd.show() 
+        lcd.disp_infrared_sensor( blocks, flush=True ) 
         
         print( f"[{idx:4d}] InfraRed left: {blocks[0]}, right: {blocks[1]}" )
         
