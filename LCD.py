@@ -272,12 +272,10 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass # print
 
-    def disp_battery( self, values = None, verbose=False ) : # 배터리 잔량 표시 
+    def disp_battery( self, values = [0, 0, 0], verbose=False ) : # 배터리 잔량 표시 
         
         if isinstance( values , Battery ) :
             values = values.read()
-        elif values is None :
-            values = [ 0, 0, 0 ]
         pass 
         
         temp, voltage, percent = values
@@ -313,11 +311,13 @@ class LCD(framebuf.FrameBuffer):
         
         color = LCD.GREEN
         
-        if dist < 10 :
+        max_dist = 40
+        
+        if dist <= 10 :
+            color = 0xFFF0            
+        elif dist <= 20 :
             color = LCD.RED
-        elif dist < 20 :
-            color = 0xFFF0
-        elif dist < 30 :
+        elif dist <= 30 :
             color = LCD.BLUE
         else :
             color = LCD.GREEN
@@ -328,21 +328,24 @@ class LCD(framebuf.FrameBuffer):
         
         x, y, w, h, m = self.rects[1]
         
-        v = value = int( w*min(30, dist)/30 )
+        value_width = int( w*min(max_dist, dist)/max_dist )
         
         self.rect( x, y, w, h, LCD.GBLUE, True )
-        self.rect( x, y, value, h, color, True )
         
         if False :
-            cw = cell_width = int( ( w - m*9 )/10 )
-            for idx in range( 1, 9 ) :
-                self.rect( x + idx*(cw +m), y, m, h, bg, True )
+            self.rect( x, y, value_width, h, color, True )
+        else :
+            cw = cell_width = int(w/10)
+            
+            for idx in range( int(value_width/cw + 0.5) ):
+                c = color
+                self.rect( x + idx*cw, y, cw - m, h, c, True )
             pass
         pass
-    
+        
         self.rect( x, y, w, h, fg, False )
         
-        self.text( f"{dist: 6.2f} cm", int(x + w/2 - 30), int( y + 5), LCD.WHITE )
+        #self.text( f"{dist: 6.2f} cm", int(x + w/2 - 30), int( y + 5), LCD.WHITE )
     
     pass # disp_ultra_sonic
 
