@@ -7,8 +7,9 @@ if __name__ == '__main__' :
     
     robot = PicoGo()
     lcd = LCD()
-    
     infraredSensor = InfraredSensor()
+    
+    lcd.disp_init()
 
     speed = 20
     duration = 0.02

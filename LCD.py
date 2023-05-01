@@ -3,6 +3,7 @@ from time import sleep
 from Battery import Battery
 from UltraSonic import UltraSonic
 from InfraredSensor import InfraredSensor
+from TRSensor import TRSensor
 
 import framebuf
 import builtins
@@ -197,6 +198,10 @@ class LCD(framebuf.FrameBuffer):
         self.cs(1)
     pass
 
+    def flush( self ) :
+        self.show()
+    pass # flush
+
     def disp_text(self, text, x, y, fg=None, bg=None, show=True) :
         if bg is None : bg = self.bg
         if fg is None : fg = self.fg
@@ -277,6 +282,7 @@ class LCD(framebuf.FrameBuffer):
         self.disp_battery()
         self.disp_ultra_sonic()
         self.disp_infrared_sensor()
+        self.disp_tr_sensor()
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False ) : # 배터리 잔량 표시 
@@ -379,9 +385,58 @@ class LCD(framebuf.FrameBuffer):
         
     pass # disp_infrared_sensor
 
+    def disp_tr_sensor( self, position = -1, sensors = [0]*5 ) :
+        x, y, w, h, m = self.rects[3]
+        h = 2*h + m
+        
+        bg = self.bg
+        fg = self.fg
+        
+        self.rect( x, y, w, h, bg, True )
+        self.rect( x, y, w, h, fg, False )
+        
+        sensors_len = len( sensors )
+        
+        w1 = int( (w - m*sensors_len - m)/sensors_len )
+        
+        for idx, sensor in enumerate( sensors ) :
+            sensor = 1_000 - min( sensor, 1_000 )
+            
+            h1 = int( (h - 2*m)*sensor/1_000 )
+            x1 = x + idx*(w1 + m) + m
+            y1 = y + m + (h - 2*m - h1)
+            
+            color = LCD.YELLOW
+            
+            self.rect( x1, y1, w1, h1, color, True )
+            self.rect( x1, y + m, w1, h - 2*m, fg, False )
+            
+            #print( f"x1 = {x1}, y1 = {y1}, w1 = {w1}, h1 = {h1}" )
+        pass
+    pass # disp_tr_sensor
+
 pass
 
 if __name__== '__main__' :
+    lcd = LCD()
+    trs = TRSensor()
+    
+    lcd.disp_init()
+    
+    idx = 0 
+    while True:
+        idx += 1
+        
+        position, sensors = trs.readLine()        
+        lcd.disp_tr_sensor( position, sensors )
+        lcd.show()
+        
+        print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
+    
+        sleep( 1 )
+    pass
+    
+elif __name__== '__main__' :
     # display infrared sensor
     
     lcd = LCD()
