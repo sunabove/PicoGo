@@ -401,6 +401,7 @@ class LCD(framebuf.FrameBuffer):
         
         for idx, sensor in enumerate( sensors ) :
             sensor = 1_000 - min( sensor, 1_000 )
+            sensor = max( sensor, 100 )
             
             h1 = int( (h - 2*m)*sensor/1_000 )
             x1 = x + idx*(w1 + m) + m
