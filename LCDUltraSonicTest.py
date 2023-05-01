@@ -7,7 +7,7 @@ if __name__=='__main__':
     lcd = LCD()
     ultraSonic = UltraSonic()
     
-    lcd.disp_battery()
+    lcd.disp_init()
     
     while 1 :
         dist = ultraSonic.obstacle_distance()

@@ -272,6 +272,11 @@ class LCD(framebuf.FrameBuffer):
         pass
     pass # print
 
+    def disp_init( self ) :
+        self.disp_battery()
+        self.disp_ultra_sonic()
+    pass
+
     def disp_battery( self, values = [0, 0, 0], verbose=False ) : # 배터리 잔량 표시 
         
         if isinstance( values , Battery ) :
@@ -357,7 +362,7 @@ if __name__== '__main__' :
     lcd = LCD()
     ultraSonic = UltraSonic()
     
-    lcd.disp_battery()
+    lcd.disp_init()
     
     while 1 :
         dist = ultraSonic.obstacle_distance()

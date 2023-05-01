@@ -6,10 +6,9 @@ from random import randint
 if __name__=='__main__': 
     
     lcd = LCD()
-    
-    from Battery import Battery
-    
     battery = Battery()
+    
+    lcd.disp_init()
     
     while True :
         
