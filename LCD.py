@@ -276,6 +276,7 @@ class LCD(framebuf.FrameBuffer):
     def disp_init( self ) :
         self.disp_battery()
         self.disp_ultra_sonic()
+        self.disp_infrared_sensor()
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False ) : # 배터리 잔량 표시 
@@ -356,7 +357,26 @@ class LCD(framebuf.FrameBuffer):
     pass # disp_ultra_sonic
 
     def disp_infrared_sensor( self, blocks = [0, 0]) :
+        
+        x, y, w, h, m = self.rects[2]
+        
+        bg = self.bg
+        fg = self.fg
+        
+        self.rect( x, y, w, h, bg, True )
+        self.rect( x, y, w, h, fg, False )
+        
+        x += m
+        y += 1
+        w = int( (w - 3*m)/2 )
+        h = h - 2
+        
+        for idx, block in enumerate( blocks ) :
+            c = LCD.RED if block else LCD.GREEN
+            self.rect( x + idx*(w +m) , y, w, h, c, True )
+            self.rect( x + idx*(w +m) , y, w, h, fg, False )
         pass
+        
     pass # disp_infrared_sensor
 
 pass

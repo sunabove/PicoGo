@@ -1,10 +1,12 @@
 from Motor import PicoGo
+from LCD import LCD
 from InfraredSensor import InfraredSensor
 from time import sleep
 
 if __name__ == '__main__' :
     
     robot = PicoGo()
+    lcd = LCD()
     
     infraredSensor = InfraredSensor()
 
@@ -14,7 +16,11 @@ if __name__ == '__main__' :
     idx = 0 
     while True:
         idx += 1
-        left_block, right_block = infraredSensor.read_blocks()
+        blocks = [ left_block, right_block ] = infraredSensor.read_blocks()
+        
+        blocks = infraredSensor.read_blocks()
+        lcd.disp_infrared_sensor( blocks )
+        lcd.show() 
         
         print( f"[{idx:4d}] InfraRed left: {left_block}, right: {right_block}" )
 
