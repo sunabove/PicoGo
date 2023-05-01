@@ -354,6 +354,10 @@ class LCD(framebuf.FrameBuffer):
     
     pass # disp_ultra_sonic
 
+    def disp_infrared_sensor( self, values ) :
+        pass
+    pass # disp_infrared_sensor
+
 pass
 
 if __name__== '__main__' :
