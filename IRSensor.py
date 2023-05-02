@@ -1,6 +1,6 @@
 from machine import Pin
 
-class InfraredSensor :
+class IRSensor :
     
     def __init__( self ) :
         self.dsr = Pin(2, Pin.IN)

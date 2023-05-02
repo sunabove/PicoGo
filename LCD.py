@@ -2,7 +2,7 @@ from machine import Pin, SPI
 from time import sleep
 from Battery import Battery
 from UltraSonic import UltraSonic
-from InfraredSensor import InfraredSensor
+from IRSensor import IRSensor
 from TRSensor import TRSensor
 
 import framebuf
@@ -281,7 +281,7 @@ class LCD(framebuf.FrameBuffer):
     def disp_init( self, flush=False ) :
         self.disp_battery()
         self.disp_ultra_sonic()
-        self.disp_infrared_sensor()
+        self.disp_ir_sensor()
         self.disp_tr_sensor( flush )
     pass
 
@@ -364,7 +364,11 @@ class LCD(framebuf.FrameBuffer):
     
     pass # disp_ultra_sonic
 
-    def disp_infrared_sensor( self, blocks = [0, 0], flush = 0 ) :
+    def disp_ir_sensor( self, blocks = [0, 0], flush = 0 ) :
+        
+        if isinstance( blocks, IRSensor ) :
+            blocks = blocks.read_blocks()
+        pass
         
         x, y, w, h, m = self.rects[2]
         
@@ -436,14 +440,14 @@ class LCD(framebuf.FrameBuffer):
     
         ye = y + h/2
         
-        lcd.ellipse( int(xe), int(ye), int(we), int(he), lcd.BLUE, True )
+        self.ellipse( int(xe), int(ye), int(we), int(he), LCD.BLUE, True )
     
         if flush : self.flush()
     pass # disp_tr_sensor
 
 pass
 
-if __name__== '__main__' :
+if __name__== '__main__ 2' :
     from Motor import PicoGo
     robot = PicoGo() 
     lcd = LCD()
@@ -483,17 +487,17 @@ elif __name__== '__main__' :
     # display infrared sensor
     
     lcd = LCD()
-    infraredSensor = InfraredSensor()
+    irSensor = IRSensor()
     
     lcd.disp_init() 
     
     idx = 0 
     while 1 :
         idx += 1
-        blocks = infraredSensor.read_blocks()
-        lcd.disp_infrared_sensor( blocks, flush=True ) 
+        blocks = irSensor.read_blocks()
+        lcd.disp_ir_sensor( blocks, flush=True ) 
         
-        print( f"[{idx:4d}] InfraRed left: {blocks[0]}, right: {blocks[1]}" )
+        print( f"[{idx:4d}] InfraRed LEFT: {blocks[0]}, RIGHT: {blocks[1]}" )
         
         sleep( 0.1)
     pass
@@ -514,7 +518,7 @@ elif __name__== '__main__' :
         sleep( 0.1)
     pass
 elif __name__== '__main__' :
-    # dispaly batter
+    # dispaly battery
     
     lcd = LCD()    
     battery = Battery()
