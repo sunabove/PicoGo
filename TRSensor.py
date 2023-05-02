@@ -46,14 +46,14 @@ class TRSensor():
         value = [0]*( self.numSensors + 1 )
         
         #Read Channel~channe5 AD value
-        for j in range( self.numSensors+1 ):
+        for i in range( self.numSensors + 1 ):
             self.CS.value(0)
             #set channe
-            self.sm.put(j << 28)
+            self.sm.put(i << 28)
             #get last channe value
-            value[j] = self.sm.get() & 0xfff
+            value[i] = self.sm.get() & 0xfff
             self.CS.value(1)
-            value[j] >>= 2
+            value[i] >>= 2
         pass
     
         sleep_ms(2)
@@ -68,6 +68,7 @@ class TRSensor():
     and used for the readCalibrated() method.
     """
     def calibrate(self):
+        
         numSensors = self.numSensors
         max_sensor_values = [0]*numSensors
         min_sensor_values = [0]*numSensors
@@ -114,18 +115,16 @@ class TRSensor():
         value = 0
         sensor_values = self.readAnalog()
         
-        for i in range (0,self.numSensors):
+        for i in range(self.numSensors):
             denominator = self.calibratedMax[i] - self.calibratedMin[i]
 
-            if(denominator != 0):
+            if denominator != 0 :
                 value = (sensor_values[i] - self.calibratedMin[i])* 1000 / denominator
+            pass
+        
+            value = max( 0, min( value, 1_000 ) )
 
-            if(value < 0):
-                value = 0
-            elif(value > 1000):
-                value = 1000
-
-            sensor_values[i] = int(value)
+            sensor_values[i] = int( value )
 
         return sensor_values
     pass
@@ -181,10 +180,10 @@ class TRSensor():
             # If it last read to the left of center, return 0.
             if self.last_position < numSensors/2 :
                 #print("left")
-                self.last_position = 0
+                self.last_position = -1
             else: # If it last read to the right of center, return the max.
                 #print("right")
-                self.last_position = numSensors - 1
+                self.last_position = numSensors
         else:
             self.last_position = weighted_total/total_value
         pass
@@ -193,66 +192,3 @@ class TRSensor():
     pass
 
 pass
-
-if __name__ == '__main__':
-    
-    from LCD import LCD
-    
-    print( "TRSensor Test ... \n" )
-    
-    lcd = LCD() 
-    lcd.disp_text( f"PicoGo by SkySLAM", 50, 60 ) 
-    
-    trs = TRSensor()
-    
-    print( "center position = ", trs.center_position() )
-    
-    if True :
-        sleep(3)
-        
-        lcd.disp_text( f"Calibrating ....", 50, 60 )
-        
-        robot = PicoGo()
-        
-        for i in range(100):
-            if  25 < i <= 75:
-                robot.setMotor( 30, -30, False )
-            else:
-                robot.setMotor(-30, 30, False )
-            pass
-        
-            trs.calibrate()
-        pass
-
-        robot.stop()
-
-        print( "calibratedMin = ", trs.calibratedMin )
-        print( "calibratedMax = ", trs.calibratedMax )
-        print( "calibrate done! \n" )
-        
-        lcd.disp_text( f"Calibrating done!", 50, 60 )
-    else :
-        trs.calibrate()
-    pass
-    
-    idx = 0 
-    while True:
-        idx += 1
-        if True :
-            position, sensors = trs.readLine()
-            print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
-            
-            lcd.disp_text( f"[{idx:4d}] position = {position:.2f}", 10, 15, LCD.WHITE )
-        else : 
-            #digits = trs.readAnalog()
-            digits = trs.readCalibrated()
-            
-            avg = sum( digits ) / len( digits )
-            
-            print( "avg: = ", avg, " ", digits )
-        pass
-    
-        sleep( 1 )
-    pass
-
-pass 

@@ -394,6 +394,8 @@ class LCD(framebuf.FrameBuffer):
     pass # disp_infrared_sensor
 
     def disp_tr_sensor( self, position = -1, sensors = [0]*5, flush = 0 ) :
+        
+        # draw sensor rectagnel 
         x, y, w, h, m = self.rects[3]
         h = 2*h + m
         
@@ -405,24 +407,25 @@ class LCD(framebuf.FrameBuffer):
         
         sensors_len = len( sensors )
         
-        w1 = int( (w - m*sensors_len - m)/sensors_len )
+        w1 = (w - m*sensors_len - m)/sensors_len
         
         for idx, sensor in enumerate( sensors ) :
             sensor = min( sensor, 1_000 )
             sensor = max( sensor, 100 )
             
-            h1 = int( (h - 2*m)*sensor/1_000 )
+            h1 = (h - 2*m)*sensor/1_000
             x1 = x + idx*(w1 + m) + m
             y1 = y + m + (h - 2*m - h1)
             
             color = LCD.YELLOW
             
-            self.rect( x1, y1, w1, h1, color, True )
-            self.rect( x1, y + m, w1, h - 2*m, fg, False )
+            self.rect( int(x1), int(y1), int(w1), int(h1), color, True )
+            self.rect( int(x1), int(y + m), int(w1), int(h - 2*m), fg, False )
             
             #print( f"x1 = {x1}, y1 = {y1}, w1 = {w1}, h1 = {h1}" )
         pass
     
+        # draw position circle
         we = h/4
         he = we
         
@@ -438,16 +441,18 @@ class LCD(framebuf.FrameBuffer):
             xe = x + w*(pos + 0.5)/sensors_len - we/2
         pass
     
-        ye = y + h/2
+        ye = y + h/2 
         
         self.ellipse( int(xe), int(ye), int(we), int(he), LCD.BLUE, True )
+        self.ellipse( int(xe), int(ye), int(we), int(he), fg, False )
     
         if flush : self.flush()
     pass # disp_tr_sensor
 
 pass
 
-if __name__== '__main__ 2' :
+if __name__== '__main__' :
+    # display tr sensor
     from Motor import PicoGo
     robot = PicoGo() 
     lcd = LCD()
@@ -455,6 +460,7 @@ if __name__== '__main__ 2' :
     
     lcd.disp_init(flush=1)
     
+    # calibration
     robot.stop()
     
     sleep(3)
