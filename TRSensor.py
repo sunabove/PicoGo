@@ -1,5 +1,4 @@
 from machine import Pin
-from Motor import PicoGo
 from time import sleep, sleep_ms
 import machine 
 import rp2

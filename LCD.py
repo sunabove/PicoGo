@@ -4,6 +4,7 @@ from Battery import Battery
 from UltraSonic import UltraSonic
 from IRSensor import IRSensor
 from TRSensor import TRSensor
+from Motors import Motors
 
 import framebuf
 import builtins
@@ -451,6 +452,11 @@ class LCD(framebuf.FrameBuffer):
     pass # disp_tr_sensor
 
     def disp_motors( self, motors = [ 0, 0 ], flush=False ) :
+        
+        if isinstance( motors, Motors ) :
+            motors = motors.speeds
+        pass
+    
         x, y, w, h, m = self.rects[5]
         
         bg = self.bg
@@ -468,29 +474,29 @@ pass
 
 if __name__== '__main__' :
     # display tr sensor
-    from Motor import PicoGo
-    robot = PicoGo() 
+    from Motors import Motors
+    motors = Motors() 
     lcd = LCD()
     trs = TRSensor()
     
     lcd.disp_init(flush=1)
     
     # calibration
-    robot.stop()
+    motors.stop()
     
     sleep(3)
     
     for i in range(100) :
         if  25 < i <= 75:
-            robot.set_motor( 30, -30, False )
+            motors.set_motor( 30, -30, False )
         else:
-            robot.set_motor(-30, 30, False )
+            motors.set_motor(-30, 30, False )
         pass
     
         trs.calibrate()
     pass
 
-    robot.stop()
+    motors.stop()
     
     idx = 0 
     while True:

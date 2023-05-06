@@ -1,18 +1,18 @@
-from Motor import PicoGo
+from Motors import Motors
 from time import sleep 
 
 if __name__== '__main__' :
-    robot = PicoGo()
+    motors = Motors()
     
     duration = 1
     
-    robot.forward(50)
+    motors.forward(50)
     sleep(duration)
-    robot.backward(50)
+    motors.backward(50)
     sleep(duration)
-    robot.left(30)
+    motors.left(30)
     sleep(duration)
-    robot.right(30)
+    motors.right(30)
     sleep(duration)
-    robot.stop()
+    motors.stop()
 pass

@@ -1,7 +1,7 @@
 from machine import Pin, PWM
 from time import sleep
 
-class PicoGo(object):
+class Motors(object):
     
     def __init__(self):
         self.PWMA = PWM(Pin(16))
