@@ -12,13 +12,13 @@ import builtins
 class LCD(framebuf.FrameBuffer):
     
     # RGC 565 Color Definition
-    WHITE  = 0xFFFF
-    BLACK  = 0x0000
-    GREEN  = 0x001F
-    RED    = 0x00F0
-    BLUE   = 0xFF00
-    GBLUE  = 0X07FF
-    YELLOW = 0xF0FF
+    WHITE  = white  = 0xFFFF
+    BLACK  = black  = 0x0000
+    GREEN  = green  = 0x001F
+    RED    = red    = 0x00F0
+    BLUE   = blue   = 0xFF00
+    GBLUE  = gblue  = 0X07FF
+    YELLOW = yellow = 0xF0FF
     
     def __init__(self):
         self.width = 240
@@ -282,7 +282,8 @@ class LCD(framebuf.FrameBuffer):
         self.disp_battery()
         self.disp_ultra_sonic()
         self.disp_ir_sensor()
-        self.disp_tr_sensor( flush )
+        self.disp_tr_sensor()
+        self.disp_motors( flush )
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False, flush=False ) : # 배터리 잔량 표시 
@@ -310,7 +311,7 @@ class LCD(framebuf.FrameBuffer):
         self.rect( x, y, int( w*percent/100 ), h, color, True )
         self.rect( x, y, w, h, fg, False )
         
-        self.text( f"{int(percent):3d} %", int(x + w/2 - 25), int( y + 5), LCD.WHITE )
+        if False : self.text( f"{int(percent):3d} %", int(x + w/2 - 25), int( y + 5), LCD.WHITE )
         
         if flush : self.flush()
         
@@ -448,6 +449,20 @@ class LCD(framebuf.FrameBuffer):
     
         if flush : self.flush()
     pass # disp_tr_sensor
+
+    def disp_motors( self, motors = [ 0, 0 ], flush=False ) :
+        x, y, w, h, m = self.rects[5]
+        
+        bg = self.bg
+        fg = self.fg
+        
+        bg = LCD.YELLOW
+        
+        self.rect( int(x), int(y), int(w), int(h), bg, True )
+        self.rect( int(x), int(y), int(w), int(h), fg, False )
+        
+        if flush : self.flush()
+    pass # disp_motors
 
 pass
 
