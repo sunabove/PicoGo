@@ -14,63 +14,36 @@ class PicoGo(object):
         self.BIN1 = Pin(19, Pin.OUT)
         self.BIN2 = Pin(20, Pin.OUT)        
         
-        self.stop_cnt = 0 
+        self.stop_cnt = 0
+        self.speeds = [ 0, 0 ]
         self.stop()
     pass
             
     def forward(self, speed ):
         if 0 <= speed <= 100 :
             print( f"forward: speed = {speed}" )
-            self.PWMA.duty_u16(int(speed*0xFFFF/100))
-            self.PWMB.duty_u16(int(speed*0xFFFF/100))
-            
-            self.AIN2.value(1)
-            self.AIN1.value(0)
-            
-            self.BIN2.value(1)
-            self.BIN1.value(0)
+            self.set_motor( speed, speed )
         pass
     pass
         
     def backward(self,speed):
         if 0 <= speed <= 100 :
             print( f"backward: speed = {speed}" )
-            self.PWMA.duty_u16(int(speed*0xFFFF/100))
-            self.PWMB.duty_u16(int(speed*0xFFFF/100))
-            
-            self.AIN2.value(0)
-            self.AIN1.value(1)
-            
-            self.BIN2.value(0)
-            self.BIN1.value(1)
+            self.set_motor( -speed, -speed )
         pass
     pass
 
     def left(self,speed):
         if 0 <= speed <= 100 :
             print( f"left: speed = {speed}" )
-            self.PWMA.duty_u16(int(speed*0xFFFF/100))
-            self.PWMB.duty_u16(int(speed*0xFFFF/100))
-            
-            self.AIN2.value(0)
-            self.AIN1.value(1)
-            
-            self.BIN2.value(1)
-            self.BIN1.value(0)
+            self.set_motor( -speed, speed )
         pass
     pass
         
     def right(self, speed):
         if 0 <= speed <= 100 :
             print( f"right: speed = {speed}" )
-            self.PWMA.duty_u16(int(speed*0xFFFF/100))
-            self.PWMB.duty_u16(int(speed*0xFFFF/100))
-            
-            self.AIN2.value(1)
-            self.AIN1.value(0)
-            
-            self.BIN2.value(0)
-            self.BIN1.value(1)
+            self.set_motor( speed, -speed )
         pass
     pass
         
@@ -92,13 +65,15 @@ class PicoGo(object):
     pass
 
     def move(self, left, right, verbose=True):
-        self.setMotor( left, right, verbose )
+        self.set_motor( left, right, verbose )
     pass
 
-    def setMotor(self, left, right, verbose=True):
+    def set_motor(self, left, right, verbose=True):
         if verbose:
-            print( f"setMotor: left = {left}, right = {right}" )
+            print( f"set_motor: left = {left}, right = {right}" )
         pass
+    
+        self.speeds = [ left, right ]
         
         if 0 <= left <= 100 :
             self.AIN1.value(0)

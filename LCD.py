@@ -482,9 +482,9 @@ if __name__== '__main__' :
     
     for i in range(100) :
         if  25 < i <= 75:
-            robot.setMotor( 30, -30, False )
+            robot.set_motor( 30, -30, False )
         else:
-            robot.setMotor(-30, 30, False )
+            robot.set_motor(-30, 30, False )
         pass
     
         trs.calibrate()
