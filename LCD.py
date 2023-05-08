@@ -5,10 +5,11 @@ from UltraSonic import UltraSonic
 from IRSensor import IRSensor
 from TRSensor import TRSensor
 from Motors import Motors
+from random import randint
 
 import framebuf
 import builtins
-
+    
 # ST7789
 class LCD(framebuf.FrameBuffer):
     
@@ -284,7 +285,7 @@ class LCD(framebuf.FrameBuffer):
         self.disp_ultra_sonic()
         self.disp_ir_sensor()
         self.disp_tr_sensor()
-        self.disp_motors( flush )
+        self.disp_motors( flush=True )
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False, flush=False ) : # 배터리 잔량 표시 
@@ -451,10 +452,10 @@ class LCD(framebuf.FrameBuffer):
         if flush : self.flush()
     pass # disp_tr_sensor
 
-    def disp_motors( self, motors = [ 0, 0 ], flush=False ) :
+    def disp_motors( self, speeds = [ 0, 0 ], flush=False ) :
         
-        if isinstance( motors, Motors ) :
-            motors = motors.speeds
+        if isinstance( speeds, Motors ) :
+            speeds = speeds.speeds
         pass
     
         x, y, w, h, m = self.rects[5]
@@ -462,10 +463,25 @@ class LCD(framebuf.FrameBuffer):
         bg = self.bg
         fg = self.fg
         
-        bg = LCD.YELLOW
-        
         self.rect( int(x), int(y), int(w), int(h), bg, True )
-        self.rect( int(x), int(y), int(w), int(h), fg, False )
+        
+        w_0 = (w - m)/2
+        
+        fg = self.green
+        
+        for idx, speed in enumerate( speeds ):
+            c = self.green if speed > 0 else self.red
+            x_0 = x + idx*(w_0 + m)
+            
+            w_1 = w_0*abs( speed )/100
+            x_1 = x + idx*(w_0 + m)
+            if idx ==0 :
+                x_1 = x_1 + w_0 - w_1
+            pass
+            
+            self.rect( int(x_1), int(y), int(w_1), int(h), c, True )
+            self.rect( int(x_0), int(y), int(w_0), int(h), lcd.white, False )
+        pass
         
         if flush : self.flush()
     pass # disp_motors
@@ -493,6 +509,8 @@ if __name__== '__main__' :
             motors.set_motor(-30, 30, False )
         pass
     
+        lcd.disp_motors( motors )
+    
         trs.calibrate()
     pass
 
@@ -503,7 +521,11 @@ if __name__== '__main__' :
         idx += 1
         
         position, sensors = trs.readLine()        
-        lcd.disp_tr_sensor( position, sensors, flush=1 ) 
+        lcd.disp_tr_sensor( position, sensors, flush=1 )
+        
+        speeds = [ randint( -100, 100 ), randint( -100, 100 ) ]
+        
+        lcd.disp_motors( speeds )
         
         print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
     
@@ -551,7 +573,6 @@ elif __name__== '__main__' :
     battery = Battery()
     
     idx = 0
-    from random import randint
     while True :
         idx += 1
         
@@ -564,9 +585,6 @@ elif __name__== '__main__' :
         
         sleep( 1 )
     pass 
-elif __name__== '__main__' :    
-    lcd = LCD()
-    lcd.show()
 elif __name__== '__main__ 2' :
     # LCDPrintTest.py
     
