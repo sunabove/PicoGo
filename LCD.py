@@ -4,7 +4,7 @@ from Battery import Battery
 from UltraSonic import UltraSonic
 from IRSensor import IRSensor
 from TRSensor import TRSensor
-from Motors import Motors
+from Motor import Motor
 from random import randint
 
 import framebuf
@@ -285,7 +285,7 @@ class LCD(framebuf.FrameBuffer):
         self.disp_ultra_sonic()
         self.disp_ir_sensor()
         self.disp_tr_sensor()
-        self.disp_motors( flush=True )
+        self.disp_motor( flush=True )
     pass
 
     def disp_battery( self, values = [0, 0, 0], verbose=False, flush=False ) : # 배터리 잔량 표시 
@@ -452,9 +452,9 @@ class LCD(framebuf.FrameBuffer):
         if flush : self.flush()
     pass # disp_tr_sensor
 
-    def disp_motors( self, speeds = [ 0, 0 ], flush=False ) :
+    def disp_motor( self, speeds = [ 0, 0 ], flush=False ) :
         
-        if isinstance( speeds, Motors ) :
+        if isinstance( speeds, Motor ) :
             speeds = speeds.speeds
         pass
     
@@ -490,42 +490,41 @@ pass
 
 if __name__== '__main__' :
     # display tr sensor
-    from Motors import Motors
-    motors = Motors() 
+    motor = Motor() 
     lcd = LCD()
     trs = TRSensor()
     
     lcd.disp_init(flush=1)
     
     # calibration
-    motors.stop()
+    motor.stop()
     
     sleep(3)
     
     for i in range(100) :
         if  25 < i <= 75:
-            motors.set_motor( 30, -30, False )
+            motor.set_motor( 30, -30, False )
         else:
-            motors.set_motor(-30, 30, False )
+            motor.set_motor(-30, 30, False )
         pass
     
-        lcd.disp_motors( motors )
+        lcd.disp_motor( motor, flush=True )
     
         trs.calibrate()
     pass
 
-    motors.stop()
+    motor.stop()
     
     idx = 0 
     while True:
         idx += 1
         
         position, sensors = trs.readLine()        
-        lcd.disp_tr_sensor( position, sensors, flush=1 )
+        lcd.disp_tr_sensor( position, sensors, flush=True )
         
-        speeds = [ randint( -100, 100 ), randint( -100, 100 ) ]
+        #speeds = [ randint( -100, 100 ), randint( -100, 100 ) ]
         
-        lcd.disp_motors( speeds )
+        lcd.disp_motor( motor, flush=True )
         
         print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )
     
