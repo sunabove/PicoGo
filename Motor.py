@@ -1,7 +1,6 @@
 from machine import Pin, PWM
-from time import sleep
 
-class Motors(object):
+class Motor(object):
     
     def __init__(self):
         self.PWMA = PWM(Pin(16))
