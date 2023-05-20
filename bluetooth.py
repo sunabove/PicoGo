@@ -1,16 +1,14 @@
 from machine import UART, Pin
-from Motor import PicoGo
+from Motor import Motor
 from machine import Pin
-from ws2812 import NeoPixel
-from ST7789 import ST7789
-import ujson
-import utime
-
+from RGBLed import RGBLed
+from LCD import LCD
+import ujson, utime
 
 bat = machine.ADC(Pin(26))
 temp = machine.ADC(4)
 
-lcd = ST7789()
+lcd = LCD()
 lcd.fill(0xF232)
 lcd.line(2,2,70,2,0xBB56)
 lcd.line(70,2,85,17,0xBB56)
@@ -26,19 +24,20 @@ lcd.text("PicoGo",10,7,0x001F)
 lcd.text("Waveshare.com",70,120,0x07E0)
 lcd.show()
 
-M = PicoGo()
-uart = UART(0, 115200)     # init with given baudrate
+M = Motor()
 led = Pin(25, Pin.OUT)
 led.value(1)
 BUZ = Pin(4, Pin.OUT)
 BUZ.value(0)
 
-strip = NeoPixel()
+strip = RGBLed()
 strip.pixels_set(0, strip.BLACK)
 strip.pixels_set(1, strip.BLACK)
 strip.pixels_set(2, strip.BLACK)
 strip.pixels_set(3, strip.BLACK)
 strip.pixels_show()
+
+uart = UART(0, 115200)     # init with given baudrate
 
 LOW_SPEED    =  30
 MEDIUM_SPEED =  50
@@ -49,6 +48,7 @@ t = 0
 
 while True:
     s=uart.read()
+    
     if(s != None):
         try:
             j=ujson.loads(s)
@@ -138,6 +138,8 @@ while True:
                 uart.write("{\"State\":\"RGB:\("+cmd+")\"}")
         except:
             print("err")
+        pass
+    pass
     
     if((utime.ticks_ms() - t) > 3000):
         t=utime.ticks_ms()
@@ -145,12 +147,15 @@ while True:
         temperature = 27 - (reading - 0.706)/0.001721
         v = bat.read_u16()*3.3/65535 * 2
         p = (v - 3) * 100 / 1.2
-        if(p < 0):p=0
-        if(p > 100):p=100
+        
+        p = max( 0, min( p, 100 ) )
 
         lcd.fill_rect(145,50,50,40,0xF232)
         lcd.text("temperature :  {:5.2f} C".format(temperature),30,50,0xFFFF)
         lcd.text("Voltage     :  {:5.2f} V".format(v),30,65,0xFFFF)
         lcd.text("percent     :   {:3.1f} %".format(p),30,80,0xFFFF)
         lcd.show()
+    pass
+
+pass
 
