@@ -18,37 +18,37 @@ class Motor(object):
         self.stop()
     pass
             
-    def forward(self, speed ):
+    def forward(self, speed, verbose=False ):
         if 0 <= speed <= 100 :
-            print( f"forward: speed = {speed}" )
+            if verbose : print( f"forward: speed = {speed}" )
             self.set_motor( speed, speed )
         pass
     pass
         
-    def backward(self,speed):
+    def backward(self, speed, verbose=False):
         if 0 <= speed <= 100 :
-            print( f"backward: speed = {speed}" )
+            if verbose : print( f"backward: speed = {speed}" )
             self.set_motor( -speed, -speed )
         pass
     pass
 
-    def left(self,speed):
+    def left(self,speed, verbose=False):
         if 0 <= speed <= 100 :
-            print( f"left: speed = {speed}" )
+            if verbose : print( f"left: speed = {speed}" )
             self.set_motor( -speed, speed )
         pass
     pass
         
-    def right(self, speed):
+    def right(self, speed, verbose=False):
         if 0 <= speed <= 100 :
-            print( f"right: speed = {speed}" )
+            if verbose: print( f"right: speed = {speed}" )
             self.set_motor( speed, -speed )
         pass
     pass
         
-    def stop(self):
+    def stop(self, verbose=False):
         if self.stop_cnt :
-            print( f"stop: speed = {0}" )
+            if verbose : print( f"stop: speed = {0}" )
         pass
     
         self.stop_cnt += 1
@@ -67,11 +67,9 @@ class Motor(object):
         self.set_motor( left, right, verbose )
     pass
 
-    def set_motor(self, left, right, verbose=True):
-        if verbose:
-            print( f"set_motor: left = {left}, right = {right}" )
-        pass
-    
+    def set_motor(self, left, right, verbose=False):
+        if verbose: print( f"set_motor: left = {left}, right = {right}" )
+        
         self.speeds = [ left, right ]
         
         if 0 <= left <= 100 :

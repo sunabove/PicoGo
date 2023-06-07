@@ -24,7 +24,7 @@ lcd.text("PicoGo",10,7,0x001F)
 lcd.text("Waveshare.com",70,120,0x07E0)
 lcd.show()
 
-M = Motor()
+motor = Motor()
 led = Pin(25, Pin.OUT)
 led.value(1)
 BUZ = Pin(4, Pin.OUT)
@@ -46,48 +46,53 @@ HIGH_SPEED   =  80
 speed = 50
 t = 0
 
+print( "Ready to accept ..." )
+
 while True:
-    s=uart.read()
+    s = uart.read()
     
-    if(s != None):
+    if s != None :
+        ##print( "s = " , s )
+        
         try:
-            j=ujson.loads(s)
-            #print(j)
+            j = ujson.loads(s)
+            
+            print( "j = " , j )
             
             cmd=j.get("Forward")
             if cmd != None:
                 if cmd == "Down":
-                    M.forward(speed)
+                    motor.forward(speed)
                     uart.write("{\"State\":\"Forward\"}")
                 elif cmd == "Up":
-                    M.stop()
+                    motor.stop()
                     uart.write("{\"State\":\"Stop\"}")
                     
             cmd = j.get("Backward")
             if cmd != None:
                 if cmd == "Down":
-                    M.backward(speed)
+                    motor.backward(speed)
                     uart.write("{\"State\":\"Backward\"}")
                 elif cmd == "Up":
-                    M.stop()
+                    motor.stop()
                     uart.write("{\"State\":\"Stop\"}")
              
             cmd = j.get("Left")
             if cmd != None:
                 if cmd == "Down":
-                    M.left(20)
+                    motor.left(20)
                     uart.write("{\"State\":\"Left\"}")
                 elif cmd == "Up":
-                    M.stop()
+                    motor.stop()
                     uart.write("{\"State\":\"Stop\"}")
                      
             cmd = j.get("Right")
             if cmd != None:
                 if cmd == "Down":
-                    M.right(20)
+                    motor.right(20)
                     uart.write("{\"State\":\"Right\"}")
                 elif cmd == "Up":
-                    M.stop()
+                    motor.stop()
                     uart.write("{\"State\":\"Stop\"}")
           
             cmd = j.get("Low")
