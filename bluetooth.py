@@ -1,9 +1,10 @@
-from machine import UART, Pin
+import machine
+import ujson, utime
+
 from Motor import Motor
 from machine import Pin
 from RGBLed import RGBLed
 from LCD import LCD
-import ujson, utime
 
 print( "Hello ... Bluetooth!" )
 
@@ -27,10 +28,10 @@ lcd.text("Waveshare.com",70,120,0x07E0)
 lcd.show()
 
 motor = Motor()
-led = Pin(25, Pin.OUT)
+led = machine.Pin(25, Pin.OUT)
 led.value(1)
 
-buzzer = Pin(4, Pin.OUT)
+buzzer = machine.Pin(4, Pin.OUT)
 buzzer.value(0)
 
 strip = RGBLed()
@@ -40,7 +41,7 @@ strip.pixels_set(2, strip.BLACK)
 strip.pixels_set(3, strip.BLACK)
 strip.pixels_show()
 
-uart = UART(0, 115200)     # init with given baudrate
+uart = machine.UART(0, 115200)     # init with given baudrate
 
 LOW_SPEED    =  30
 MEDIUM_SPEED =  50
