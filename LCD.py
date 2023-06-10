@@ -490,6 +490,9 @@ pass
 
 if __name__== '__main__' :
     # display tr sensor
+    
+    print( "disp_tr_sensor test" )
+    
     motor = Motor() 
     lcd = LCD()
     trs = TRSensor()
@@ -521,8 +524,6 @@ if __name__== '__main__' :
         
         position, sensors = trs.readLine()        
         lcd.disp_tr_sensor( position, sensors, flush=True )
-        
-        #speeds = [ randint( -100, 100 ), randint( -100, 100 ) ]
         
         lcd.disp_motor( motor, flush=True )
         
