@@ -24,7 +24,7 @@ lcd.line(237,32,237,132,0xBB56)
 
 lcd.text("Raspberry Pi Pico",90,7,0xFF00)
 lcd.text("PicoGo",10,7,0x001F)
-lcd.text("Waveshare.com",70,120,0x07E0)
+lcd.text("SkySLM Coorp.",70,120,0x07E0)
 lcd.show()
 
 motor = Motor()
