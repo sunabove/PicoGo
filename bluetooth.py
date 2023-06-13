@@ -1,45 +1,31 @@
 import machine
 import ujson, utime
 
-from Motor import Motor
-from machine import Pin
-from RGBLed import RGBLed
-from LCD import LCD
+from Robot import Robot
 
 print( "Hello ... Bluetooth!" )
 
-battery = machine.ADC(Pin(26))
-temperature = machine.ADC(4)
+robot = Robot()
 
-lcd = LCD()
-lcd.fill(0xF232)
-lcd.line(2,2,70,2,0xBB56)
-lcd.line(70,2,85,17,0xBB56)
-lcd.line(85,17,222,17,0xBB56)
-lcd.line(222,17,237,32,0xBB56)
-lcd.line(2,2,2,118,0xBB56)
-lcd.line(2,118,17,132,0xBB56)
-lcd.line(17,132,237,132,0xBB56)
-lcd.line(237,32,237,132,0xBB56)
+battery = robot.battery
+temperature = robot.temperature
 
-lcd.text("Raspberry Pi Pico",90,7,0xFF00)
-lcd.text("PicoGo",10,7,0x001F)
-lcd.text("SkySLM Coorp.",70,120,0x07E0)
-lcd.show()
+lcd = robot.lcd 
 
-motor = Motor()
-led = machine.Pin(25, Pin.OUT)
+led = robot.led
 led.value(1)
 
-buzzer = machine.Pin(4, Pin.OUT)
+buzzer = robot.buzzer
 buzzer.value(0)
 
-strip = RGBLed()
-strip.pixels_set(0, strip.BLACK)
-strip.pixels_set(1, strip.BLACK)
-strip.pixels_set(2, strip.BLACK)
-strip.pixels_set(3, strip.BLACK)
-strip.pixels_show()
+rgbLed = robot.rgbLed
+rgbLed.pixels_set(0, rgbLed.BLACK)
+rgbLed.pixels_set(1, rgbLed.BLACK)
+rgbLed.pixels_set(2, rgbLed.BLACK)
+rgbLed.pixels_set(3, rgbLed.BLACK)
+rgbLed.pixels_show()
+
+motor = robot.motor
 
 uart = machine.UART(0, 115200)     # init with given baudrate
 
@@ -49,6 +35,7 @@ HIGH_SPEED   =  80
 
 speed = 50
 t = 0
+count = 0 
 
 print( "Ready to accept!" )
 
@@ -59,6 +46,7 @@ while True:
         ##print( "s = " , s )
         
         try:
+            count += 1
             j = ujson.loads(s)
             
             print( "j = " , j )
@@ -139,11 +127,11 @@ while True:
             cmd = j.get("RGB")
             if cmd != None:
                 rgb=tuple(eval(cmd))
-                strip.pixels_set(0, rgb)
-                strip.pixels_set(1, rgb)
-                strip.pixels_set(2, rgb)
-                strip.pixels_set(3, rgb)
-                strip.pixels_show()
+                rgbLed.pixels_set(0, rgb)
+                rgbLed.pixels_set(1, rgb)
+                rgbLed.pixels_set(2, rgb)
+                rgbLed.pixels_set(3, rgb)
+                rgbLed.pixels_show()
                 uart.write("{\"State\":\"RGB:\("+cmd+")\"}")
         except:
             #print("err")
@@ -151,22 +139,13 @@ while True:
         pass
     pass
     
-    if (utime.ticks_ms() - t) > 3000 :
+    if s != None and (utime.ticks_ms() - t) > 3000 :
         t = utime.ticks_ms()
-        reading = temperature.read_u16() * 3.3 / (65535)
         
-        temp = 27 - (reading - 0.706)/0.001721
-        v = battery.read_u16()*3.3/65535 * 2
+        text = f"PicoGo\n{count}"
         
-        p = (v - 3) * 100 / 1.2        
-        p = max( 0, min( p, 100 ) )
-
-        lcd.fill_rect(145,50,50,40,0xF232)
-        lcd.text("temperature :  {:5.2f} C".format(temp),30,50,0xFFFF)
-        lcd.text("Voltage     :  {:5.2f} V".format(v),30,65,0xFFFF)
-        lcd.text("percent     :   {:3.1f} %".format(p),30,80,0xFFFF)
+        lcd.disp_full_text( text )
         lcd.show()
     pass
 
 pass
-

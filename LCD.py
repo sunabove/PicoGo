@@ -48,6 +48,8 @@ class LCD(framebuf.FrameBuffer):
         self.buffer = bytearray(self.height * self.width * 2)
         
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
+        
+        ## cod by sunabove ##
         self.init_display()
         
         self.fill( self.bg ) 
@@ -204,7 +206,7 @@ class LCD(framebuf.FrameBuffer):
         self.show()
     pass # flush
 
-    def disp_text(self, text, x, y, fg=None, bg=None, show=True) :
+    def disp_text(self, text, x, y, fg=None, bg=None, flush=True) :
         if bg is None : bg = self.bg
         if fg is None : fg = self.fg
         
@@ -218,7 +220,7 @@ class LCD(framebuf.FrameBuffer):
             y += 15
         pass
     
-        show and self.show()
+        flush and self.flush()
     pass # disp_text
 
     def print(self, *args, **kwargs) :
@@ -486,13 +488,106 @@ class LCD(framebuf.FrameBuffer):
         if flush : self.flush()
     pass # disp_motors
 
+    def disp_full_text(self, text, fg=None, bg=None, flush=True) :
+        if bg is None : bg = self.bg
+        if fg is None : fg = self.fg
+        
+        width = self.width
+        height = self.height
+        
+        m = 2
+        
+        self.rect( m, m, width - 2*m -1, height - 2*m -1, bg, True )
+        
+        texts = text.split( "\n" )
+        texts_len = len( texts )
+        
+        x = 0
+        y = height/2
+        cw = ch = 8
+        
+        for i, t in enumerate( texts ) :
+            x = (width - cw*len(t))/2
+            y = height/2 - ch/2 - 2*ch*( int(texts_len/2) - i )
+            
+            self.text( t, int( x ), int( y), fg ) 
+        pass
+    
+        flush and self.flush()
+    pass # disp_full_text
+
+    def color(self, R,G,B): # Convert RGB888 to RGB565
+        return (((G&0b00011100)<<3) +((B&0b11111000)>>3)<<8) + (R&0b11111000)+((G&0b11100000)>>5)
+    pass
+
+    def disp_logo(self, flush=True):
+        self.disp_logo_text( flush=flush)
+    pass
+
+    def disp_logo_text(self, flush=True) :
+        self.disp_full_text( "PicoRun\nSkySLAM\nVer 1.0", flush=True )
+    
+        sleep( 3 ) 
+
+        from LogoText import logo_text
+
+        self.disp_full_text( logo_text, flush=flush )
+    
+        del logo_text
+    pass        
+
+    def disp_logo_image(self, logo_image, flush=True) : 
+        
+        bg = self.bg
+        fg = self.fg 
+        
+        width = self.width
+        height = self.height
+        
+        m = 0
+        
+        self.rect( m, m, width - 2*m -1, height - 2*m -1, bg, True )
+        
+        cw = 8
+        ch = 16
+        m = 2
+        
+        x0 = 2*m
+        y0 = 2*m
+        
+        x = x0
+        y = y0
+        
+        for t in logo_image :
+            
+            if t != '\n' :
+                #print( f"x = {x}, y = {y}, t = {t}" )            
+            
+                if t == '∙' : t = ''
+                self.text( t, int(x), int(y), fg )
+                x += cw
+            else :
+                #print( f"new line encountered" );
+                y += ch
+                x = x0
+            pass
+        pass
+    
+        flush and self.flush() 
+    pass
+
 pass
 
 if __name__== '__main__' :
+    # LCDPrintTest.py
+    print( "Hello..." )
+    
+    lcd = LCD()
+    lcd.disp_logo() 
+    
+    #lcd.disp_logo( logo_image.strip(), flush = 1 )
+elif __name__== '__main__' :
     # display tr sensor
-    
-    print( "disp_tr_sensor test" )
-    
     motor = Motor() 
     lcd = LCD()
     trs = TRSensor()
@@ -524,6 +619,8 @@ if __name__== '__main__' :
         
         position, sensors = trs.readLine()        
         lcd.disp_tr_sensor( position, sensors, flush=True )
+        
+        #speeds = [ randint( -100, 100 ), randint( -100, 100 ) ]
         
         lcd.disp_motor( motor, flush=True )
         
@@ -561,7 +658,7 @@ elif __name__== '__main__' :
     while 1 :
         dist = ultraSonic.obstacle_distance()
         lcd.disp_ultra_sonic( dist )
-        lcd.show()
+        lcd.flush()
         
         print( f"Distance = {dist:6.2f} cm" )
         sleep( 0.1)
@@ -581,23 +678,8 @@ elif __name__== '__main__' :
         #values = [ temp,  voltage, randint( 0, 100 ) ] 
         
         lcd.disp_battery( values, 1 )
-        lcd.show()
+        lcd.flush()
         
         sleep( 1 )
-    pass 
-elif __name__== '__main__ 2' :
-    # LCDPrintTest.py
-    
-    lcd = LCD() 
-    
-    lcd.print( "Hello...." )
-    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
-    lcd.print( "PicoGo", c=LCD.WHITE ) 
-    
-    lcd.print( "Hello...." )
-    lcd.print( "Raspberry Pi Pico", c=LCD.BLUE )
-    lcd.print( "PicoGo", c=LCD.WHITE )
-    lcd.print( "Waveshare.com", c=LCD.RED ) 
-    
-    lcd.show()
+    pass
 pass
