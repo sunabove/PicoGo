@@ -7,4 +7,5 @@ if __name__== '__main__' :
         led.toggle()
 
     timer.init(freq=2, mode=Timer.PERIODIC, callback=blink)
+    
 pass
