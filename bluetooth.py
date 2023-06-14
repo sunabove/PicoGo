@@ -29,11 +29,11 @@ motor = robot.motor
 
 uart = robot.uart
 
-LOW_SPEED    =  30
-MEDIUM_SPEED =  50
-HIGH_SPEED   =  80
+low_speed  = robot.low_speed
+med_speed  = robot.med_speed
+high_speed = robot.high_speed
 
-speed = 50
+speed = low_speed
 t = 0
 count = 0 
 
@@ -90,17 +90,17 @@ while True:
             cmd = j.get("Low")
             if cmd == "Down":
                 uart.write("{\"State\":\"Low\"}")
-                speed = 30
+                speed = low_speed
 
             cmd = j.get("Medium")
             if cmd == "Down":
                 uart.write("{\"State\":\"Medium\"}")
-                speed = 50
+                speed = med_speed
 
             cmd = j.get("High")
             if cmd == "Down":
                 uart.write("{\"State\":\"High\"}")
-                speed = 100
+                speed = high_speed
             
             cmd = j.get("BZ")
             if cmd != None:

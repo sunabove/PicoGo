@@ -12,6 +12,10 @@ class Robot :
     
     VERSION = 1000
     
+    low_speed  = 30
+    med_speed  = 50
+    high_speed = 80
+    
     def __init__(self):
         self.rgbLed = RGBLed()
         
