@@ -6,10 +6,10 @@ if __name__== '__main__' :
     
     duration = 1
     
-    motor.forward(50)
+    motor.forward(30)
     sleep(duration)
     
-    motor.backward(50)
+    motor.backward(30)
     sleep(duration)
     
     motor.left(30)
