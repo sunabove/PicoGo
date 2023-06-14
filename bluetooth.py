@@ -37,7 +37,7 @@ speed = low_speed
 t = 0
 count = 0 
 
-def process_json_cmd( s, speed ) :
+def process_json_cmd( s, speed=30 ) :
     try: 
         j = ujson.loads(s) 
         
