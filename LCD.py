@@ -632,9 +632,40 @@ class LCD(framebuf.FrameBuffer):
         del numbers
     pass
 
+    def disp_pairing_code( self, number=0, fg=None, bg=None, flush=True) :
+        debug = False
+        
+        if bg is None : bg = self.black
+        if fg is None : fg = self.yellow
+        
+        import random as my_random
+        
+        number = my_random.randint( 1000, 9999 )
+        
+        texts = f"{number}"
+        
+        self.disp_full_number( texts, fg=fg, bg=bg, flush=flush)
+        
+        del my_random
+        
+        return texts
+    pass
+
 pass
 
 if __name__== '__main__' :
+    # LCDPrintTest.py
+    print( "Hello..." )
+    
+    lcd = LCD()
+    lcd.flush() 
+    
+    pair_code = lcd.disp_pairing_code( 7890, flush=True )
+    
+    print( f"pari code = {pair_code}" )
+    
+    sleep( 1 )
+elif __name__== '__main__' :
     # LCDPrintTest.py
     print( "Hello..." )
     
