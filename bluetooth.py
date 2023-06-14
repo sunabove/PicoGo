@@ -27,7 +27,7 @@ rgbLed.pixels_show()
 
 motor = robot.motor
 
-uart = machine.UART(0, 115200)     # init with given baudrate
+uart = robot.uart
 
 LOW_SPEED    =  30
 MEDIUM_SPEED =  50

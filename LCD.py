@@ -597,7 +597,7 @@ class LCD(framebuf.FrameBuffer):
         row = len( texts )        
         texts = [ '' ] * row
         
-        print( f"row = {row}" )
+        debug and print( f"row = {row}" )
         
         c = len( number )
         if c >= 4 or c < 1 :
@@ -610,7 +610,9 @@ class LCD(framebuf.FrameBuffer):
         
         for n in number :
             n = int( n )
-            print( f"n = {n}" )
+            
+            debug and print( f"n = {n}" )
+            
             n = numbers[ n ]
             n = n.split( "\n" )
             

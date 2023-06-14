@@ -24,6 +24,8 @@ class Robot :
         self.lcd = LCD()
         self.motor = Motor()
         
+        self.uart = machine.UART(0, 115200)
+        
         self.init_robot()
     pass
 
@@ -39,6 +41,9 @@ class Robot :
         sleep( duration )
         
         lcd.disp_full_number( self.VERSION, flush=True )        
+        sleep( duration )
+        
+        lcd.disp_logo()        
         sleep( duration )
         
         if False :
