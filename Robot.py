@@ -34,19 +34,17 @@ class Robot :
         
         duration = 2
         
-        lcd.disp_logo()
-        
-        self.beepOnOff( repeat=1, period=0.6 )
-        
+        lcd.disp_logo()        
+        self.beepOnOff( repeat=1, period=0.6 )        
         sleep( duration )
         
-        lcd.disp_full_number( self.VERSION, flush=True )
-        
+        lcd.disp_full_number( self.VERSION, flush=True )        
         sleep( duration )
         
-        lcd.disp_full_text( "PicoRun\nSkySLAM\nVer 1.0", flush=True )
-    
-        sleep( duration )
+        if False :
+            lcd.disp_full_text( "PicoRun\nSkySLAM\nVer 1.0", flush=True )    
+            sleep( duration )
+        pass
         
         print( "done init robot." )
     pass
