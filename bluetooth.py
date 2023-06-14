@@ -49,7 +49,7 @@ while True:
             count += 1
             j = ujson.loads(s)
             
-            print( "j = " , j )
+            print( "j =" , j )
             
             cmd=j.get("Forward")
             if cmd != None:

@@ -10,6 +10,8 @@ from LCD import LCD
 
 class Robot :
     
+    VERSION = 1000
+    
     def __init__(self):
         self.rgbLed = RGBLed()
         
@@ -26,18 +28,32 @@ class Robot :
     pass
 
     def init_robot( self ):
-        print( "Hello ... Robot")
-        
-        self.beepTimer( repeat=1, period=0.6 )
+        print( "init_robot")
         
         lcd = self.lcd
+        
+        duration = 2
+        
         lcd.disp_logo()
         
-        sleep( 3 ) 
+        self.beepOnOff( repeat=1, period=0.6 )
         
+        sleep( duration )
+        
+        lcd.disp_full_number( self.VERSION, flush=True )
+        
+        sleep( duration )
+        
+        lcd.disp_full_text( "PicoRun\nSkySLAM\nVer 1.0", flush=True )
+    
+        sleep( duration )
+        
+        print( "done init robot." )
     pass
 
     def beepOnOff(self, repeat = 1, period = 0.5 ) :
+        print( "beepOnOff" )
+        
         buzzer = self.buzzer
         
         repeat = max( 1, repeat )
@@ -46,15 +62,9 @@ class Robot :
             buzzer.value( (i+1) % 2 )
             sleep( period )
         pass
-    pass
-
-    def beepTimer(self, repeat = 1, period=0.5):
-        timer = Timer()
-        
-        callback = lambda repeat, period : self.beepOnOff( repeat, period )
-        
-        timer.init(freq=period, mode=Timer.ONE_SHOT, callback = callback(repeat, period) )
-    pass
+    
+        print( "done. beepOnOff" )
+    pass 
 
 pass
 

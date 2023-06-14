@@ -499,16 +499,19 @@ class LCD(framebuf.FrameBuffer):
         
         self.rect( m, m, width - 2*m -1, height - 2*m -1, bg, True )
         
-        texts = text.split( "\n" )
-        texts_len = len( texts )
+        if isinstance( text, str ) : 
+            text = text.split( "\n" )
+        pass
+    
+        text_len = len( text )
         
         x = 0
         y = height/2
         cw = ch = 8
         
-        for i, t in enumerate( texts ) :
+        for i, t in enumerate( text ) :
             x = (width - cw*len(t))/2
-            y = height/2 - ch/2 - 2*ch*( int(texts_len/2) - i )
+            y = height/2 - 2*ch*( int(text_len/2) - i )
             
             self.text( t, int( x ), int( y), fg ) 
         pass
@@ -520,18 +523,16 @@ class LCD(framebuf.FrameBuffer):
         return (((G&0b00011100)<<3) +((B&0b11111000)>>3)<<8) + (R&0b11111000)+((G&0b11100000)>>5)
     pass
 
-    def disp_logo(self, flush=True):
-        self.disp_logo_text( flush=flush)
+    def disp_logo(self, fg=None, bg=None, flush=True) : 
+        print( "disp_logo" )
+        
+        self.disp_logo_text( fg=fg, bg=bg, flush=flush)
     pass
 
-    def disp_logo_text(self, flush=True) :
-        self.disp_full_text( "PicoRun\nSkySLAM\nVer 1.0", flush=True )
-    
-        sleep( 3 ) 
-
+    def disp_logo_text(self, fg=None, bg=None, flush=True) :
         from LogoText import logo_text
 
-        self.disp_full_text( logo_text, flush=flush )
+        self.disp_full_text( logo_text, fg=fg, bg=bg, flush=flush )
     
         del logo_text
     pass        
@@ -576,6 +577,59 @@ class LCD(framebuf.FrameBuffer):
         flush and self.flush() 
     pass
 
+    def disp_full_number( self, number=0, fg=None, bg=None, flush=True) :
+        debug = False
+        
+        from TextNumber import numbers
+        
+        number = int(number)
+        number = f"{number:d}"
+        
+        texts = numbers[0] 
+        texts = texts.split( "\n" )
+        
+        if debug :
+            for t in texts :
+                print( f"***{t}***" )
+            pass
+        pass
+    
+        row = len( texts )        
+        texts = [ '' ] * row
+        
+        print( f"row = {row}" )
+        
+        c = len( number )
+        if c >= 4 or c < 1 :
+            c = 0
+        else :
+            c = 4 - c
+        pass
+    
+        c = " " * c
+        
+        for n in number :
+            n = int( n )
+            print( f"n = {n}" )
+            n = numbers[ n ]
+            n = n.split( "\n" )
+            
+            for i, (t1, t2) in enumerate( zip( texts, n ) ) :
+                texts[i] = t1 + c + t2
+            pass            
+        pass
+    
+        if debug :
+            for t in texts :
+                print( f"***{t}***" )
+            pass
+        pass
+    
+        self.disp_full_text( texts, fg=fg, bg=bg, flush=flush)
+    
+        del numbers
+    pass
+
 pass
 
 if __name__== '__main__' :
@@ -583,9 +637,21 @@ if __name__== '__main__' :
     print( "Hello..." )
     
     lcd = LCD()
-    lcd.disp_logo() 
+    lcd.flush() 
     
-    #lcd.disp_logo( logo_image.strip(), flush = 1 )
+    lcd.disp_full_number( 7890, flush=True )
+    
+    sleep( 1 )
+elif __name__== '__main__' :
+    # LCDPrintTest.py
+    print( "Hello..." )
+    
+    lcd = LCD()
+    lcd.flush()
+    
+    sleep( 1 )
+    
+    lcd.disp_logo( flush=True )
 elif __name__== '__main__' :
     # display tr sensor
     motor = Motor() 
@@ -683,3 +749,4 @@ elif __name__== '__main__' :
         sleep( 1 )
     pass
 pass
+
