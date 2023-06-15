@@ -17,6 +17,8 @@ class Robot :
     high_speed = 80
     
     def __init__(self):
+        self.speed = self.low_speed
+        
         self.rgbLed = RGBLed()
         
         self.buzzer = machine.Pin(4, Pin.OUT)
@@ -38,7 +40,7 @@ class Robot :
         
         lcd = self.lcd
         
-        duration = 2
+        duration = 1
         
         lcd.disp_logo()        
         self.beepOnOff( repeat=1, period=0.6 )        
