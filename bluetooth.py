@@ -181,6 +181,7 @@ class BlueTooth :
 
     def process_text_cmd( self, s, robot ) :
         reply = None
+        
         try :
             reply = self.process_text_cmd_impl( s, robot )
         except Exception as e :
@@ -190,17 +191,23 @@ class BlueTooth :
         return reply
     pass
 
-    def process_text_cmdImp( self, s, robot ) :
+    def process_text_cmd_impl( self, s, robot ) :
         reply = None
         
-        if s == "hello" :
+        if "hello" in s :
             reply = "ok"
-        elif s == "send me pair code" :
+        elif "send me pairing code" in s :
+            print( f"processing pairing code" )
+            
             pair_code = robot.lcd.disp_pairing_code( flush=True )
+            
+            print( f"pair code = {pair_code}" )
             
             reply = f"pair code: {pair_code}"  
         else :
-            reply = "Unknow code"
+            print( f"Unknown command = [{s}]" )
+            
+            reply = "Unknown code"
         pass
     
         return reply
@@ -275,8 +282,9 @@ class BlueTooth :
             pass
             
             if s != None :
-                print( f"s = {s}" )
                 count += 1
+                
+                print( f"[{count:04d}] s = [{s}]" )                
                 
                 reply = None
                 
@@ -294,11 +302,11 @@ class BlueTooth :
     
                     reply = self.process_json_cmd( json, robot )
                 elif s != None :
-                    repy = self.process_text_cmd( s, robot )
+                    reply = self.process_text_cmd( s, robot )
                 pass
             
                 if reply is None :
-                    reply = "Unknow code"
+                    reply = "Unknown code"
                 pass
             
                 if reply != None :
