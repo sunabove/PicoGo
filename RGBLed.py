@@ -23,6 +23,7 @@ def ws2812():
 pass
         
 class RGBLed(object): #NeoPixel
+    
     def __init__(self,pin=PIN_NUM,num=NUM_LEDS,brightness=0.8):
         self.pin=pin
         self.num=num
@@ -46,23 +47,39 @@ class RGBLed(object): #NeoPixel
         self.PURPLE = (180, 0, 255)
         self.WHITE = (255, 255, 255)
         self.COLORS = (self.BLACK, self.RED, self.YELLOW, self.GREEN, self.CYAN, self.BLUE, self.PURPLE, self.WHITE)
+    pass
         
-    ##########################################################################
     def pixels_show(self):
         dimmer_ar = array.array("I", [0 for _ in range(self.num)])
+        
         for i,c in enumerate(self.ar):
             r = int(((c >> 8) & 0xFF) * self.brightness)
             g = int(((c >> 16) & 0xFF) * self.brightness)
             b = int((c & 0xFF) * self.brightness)
             dimmer_ar[i] = (g<<16) + (r<<8) + b
+        pass
+    
         self.sm.put(dimmer_ar, 8)
+    pass
+
+    def set_color( self, color ):
+        self.pixels_set(0, color)
+        self.pixels_set(1, color)
+        self.pixels_set(2, color)
+        self.pixels_set(3, color)
+        
+        self.pixels_show()
+    pass
 
     def pixels_set(self, i, color):
         self.ar[i] = (color[1]<<16) + (color[0]<<8) + color[2]
+    pass
 
     def pixels_fill(self, color):
-        for i in range(len(self.ar)):
+        for i in range(len(self.ar)) :
             self.pixels_set(i, color)
+        pass
+    pass
 
     def color_chase(self, color, wait):
         for i in range(self.num):
@@ -70,6 +87,7 @@ class RGBLed(object): #NeoPixel
             sleep(wait)
             self.pixels_show()
         sleep(0.2)
+    pass
      
     def wheel(self, pos):
         # Input a value 0 to 255 to get a color value.
@@ -82,7 +100,9 @@ class RGBLed(object): #NeoPixel
             pos -= 85
             return (0, 255 - pos * 3, pos * 3)
         pos -= 170
+        
         return (pos * 3, 0, 255 - pos * 3)
+    pass
      
      
     def rainbow_cycle(self, wait):

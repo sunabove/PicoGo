@@ -8,6 +8,7 @@ class BlueTooth :
         print( "Hello ... Bluetooth!" )
         
         self.robot = Robot()
+        self.uart = self.robot.uart
         
         self.init_bluetooth()
     pass
@@ -16,121 +17,9 @@ class BlueTooth :
         robot = self.robot
         
         rgbLed = robot.rgbLed
-        rgbLed.pixels_set(0, rgbLed.BLACK)
-        rgbLed.pixels_set(1, rgbLed.BLACK)
-        rgbLed.pixels_set(2, rgbLed.BLACK)
-        rgbLed.pixels_set(3, rgbLed.BLACK)
-        rgbLed.pixels_show()
+        color = ( 0, 0, 0 )
+        rgbLed.set_color( color )
                 
-    pass
-
-    def process_json_cmd( self, s, robot ) :
-        try :
-            self.process_json_cmd_impl( s, robot )
-        except Exception as e :
-            print( e ) 
-        pass
-    pass
-    
-    def process_json_cmd_impl( self, json, robot ) :
-        uart = robot.uart
-        
-        motor = robot.motor
-        rgbLed = robot.rgbLed
-        buzzer = robot.buzzer
-        led = robot.led
-        
-        speed = robot.speed
-        
-        cmd = json.get("Forward")
-        
-        print( f"cmd = {cmd}" )
-        
-        if cmd != None:
-            if cmd == "Down":
-                motor.forward(speed, verbose=True)
-                uart.write("{\"State\":\"Forward\"}")
-            elif cmd == "Up":
-                motor.stop()
-                uart.write("{\"State\":\"Stop\"}")
-                
-        cmd = json.get("Backward")
-        if cmd != None:
-            if cmd == "Down":
-                motor.backward(speed)
-                uart.write("{\"State\":\"Backward\"}")
-            elif cmd == "Up":
-                motor.stop()
-                uart.write("{\"State\":\"Stop\"}")
-         
-        cmd = json.get("Left")
-        if cmd != None:
-            if cmd == "Down":
-                motor.left(20)
-                uart.write("{\"State\":\"Left\"}")
-            elif cmd == "Up":
-                motor.stop()
-                uart.write("{\"State\":\"Stop\"}")
-                 
-        cmd = json.get("Right")
-        if cmd != None:
-            if cmd == "Down":
-                motor.right(20)
-                uart.write("{\"State\":\"Right\"}")
-            elif cmd == "Up":
-                motor.stop()
-                uart.write("{\"State\":\"Stop\"}")
-      
-        cmd = json.get("Low")
-        if cmd == "Down":
-            uart.write("{\"State\":\"Low\"}")
-            robot.speed = robot.low_speed
-
-        cmd = json.get("Medium")
-        if cmd == "Down":
-            uart.write("{\"State\":\"Medium\"}")
-            robot.speed = robot.med_speed
-
-        cmd = json.get("High")
-        if cmd == "Down":
-            uart.write("{\"State\":\"High\"}")
-            robot.speed = robot.high_speed
-        
-        cmd = json.get("BZ")
-        if cmd != None:
-            if cmd == "on":
-                buzzer.value(1)
-                uart.write("{\"BZ\":\"ON\"}")
-                uart.write("{\"State\":\"BZ:\ON\"}")
-            elif cmd == "off":
-                buzzer.value(0)
-                uart.write("{\"BZ\":\"OFF\"}")
-                uart.write("{\"State\":\"BZ:\OFF\"}")
-        
-        cmd = json.get("LED")
-        if cmd != None:
-            if cmd == "on":
-                led.value(1)
-                uart.write("{\"LED\":\"ON\"}")
-                uart.write("{\"State\":\"LED:\ON\"}")
-            elif cmd == "off":
-                led.value(0)
-                uart.write("{\"LED\":\"OFF\"}")
-                uart.write("{\"State\":\"LED:\OFF\"}")
-        
-        cmd = json.get("RGB")
-        if cmd != None:
-            rgb = tuple( eval(cmd) )
-            
-            rgbLed.pixels_set(0, rgb)
-            rgbLed.pixels_set(1, rgb)
-            rgbLed.pixels_set(2, rgb)
-            rgbLed.pixels_set(3, rgb)
-            
-            rgbLed.pixels_show()
-            
-            uart.write("{\"State\":\"RGB:\("+cmd+")\"}")
-        pass
     pass
 
     def read_bytes( self, uart, nbytes ) :
@@ -148,6 +37,175 @@ class BlueTooth :
         return byte_list
     pass
 
+    def send_reply( self, reply ) :
+        uart = self.uart
+        
+        reply = f"{reply}\n"
+        
+        uart.write( reply )
+        
+        if not uart.txdone() :
+            uart.flush()
+        pass
+        
+        reply_len = len( reply )
+        reply = reply.replace( "\n", "\\n" )
+        
+        print( f"send reply : '{reply}', len : {reply_len}" )
+    pass
+
+    def process_json_cmd( self, s, robot ) :
+        reply = None
+        
+        try :
+            reply = self.process_json_cmd_impl( s, robot )
+        except Exception as e :
+            print( e ) 
+        pass
+    
+        return reply
+    pass
+    
+    def process_json_cmd_impl( self, json, robot ) :
+        reply = None
+        
+        uart = robot.uart
+        
+        motor = robot.motor
+        rgbLed = robot.rgbLed
+        buzzer = robot.buzzer
+        led = robot.led
+        
+        speed = robot.speed
+        
+        cmd = json.get("Forward")
+        
+        if cmd != None:
+            if cmd == "Down":
+                motor.forward(speed, verbose=True)
+                reply = "ok"
+            elif cmd == "Up":
+                motor.stop()
+                reply = "ok"
+            pass
+        pass
+                
+        cmd = json.get("Backward")
+        if cmd != None:
+            if cmd == "Down":
+                motor.backward(speed)
+                reply = "ok"
+            elif cmd == "Up":
+                motor.stop()
+                reply = "ok"
+            pass
+        pass
+         
+        cmd = json.get("Left")
+        if cmd != None:
+            if cmd == "Down":
+                motor.left(20)
+                reply = "ok"
+            elif cmd == "Up":
+                motor.stop()
+                reply = "ok"
+            pass
+        pass
+                 
+        cmd = json.get("Right")
+        if cmd != None:
+            if cmd == "Down":
+                motor.right(20)
+                reply = "ok"
+            elif cmd == "Up":
+                motor.stop()
+                reply = "ok"
+            pass
+        pass
+      
+        cmd = json.get("Low")
+        if cmd == "Down":
+            robot.speed = robot.low_speed
+            reply = "ok"
+        pass
+
+        cmd = json.get("Medium")
+        if cmd == "Down":
+            robot.speed = robot.med_speed
+            reply = "ok"
+        pass
+
+        cmd = json.get("High")
+        if cmd == "Down":
+            robot.speed = robot.high_speed
+            reply = "ok"
+        pass
+        
+        cmd = json.get("BZ")
+        if cmd != None:
+            if cmd == "on":
+                buzzer.value(1)
+                reply = "ok"
+            elif cmd == "off":
+                buzzer.value(0)
+                reply = "ok"
+            pass
+        pass
+        
+        cmd = json.get("LED")
+        if cmd != None:
+            if cmd == "on":
+                led.value(1)
+                reply = "ok"
+            elif cmd == "off":
+                led.value(0)
+                reply = "ok"
+            pass
+        pass
+        
+        cmd = json.get("RGB")
+        if cmd != None:
+            rgb = tuple( eval(cmd) )
+            
+            rgbLed.set_color( rgb )
+            
+            reply = "ok"
+        pass
+    
+        if reply is None :
+            reply = "bad"
+        pass
+    
+        return reply
+    pass
+
+    def process_text_cmd( self, s, robot ) :
+        reply = None
+        try :
+            reply = self.process_text_cmd_impl( s, robot )
+        except Exception as e :
+            print( e )
+        pass
+    
+        return reply
+    pass
+
+    def process_text_cmdImp( self, s, robot ) :
+        reply = None
+        
+        if s == "hello" :
+            reply = "ok"
+        elif s == "send me pair code" :
+            pair_code = robot.lcd.disp_pairing_code( flush=True )
+            
+            reply = f"pair code: {pair_code}"  
+        else :
+            reply = "Unknow code"
+        pass
+    
+        return reply
+    pass
+            
     def main( self ) :
         print( "Ready to accept!" )
         
@@ -220,35 +278,44 @@ class BlueTooth :
                 print( f"s = {s}" )
                 count += 1
                 
-                if s == "display pair code" :
-                    pair_code = robot.lcd.disp_pairing_code( flush=True )
+                reply = None
+                
+                json = None
                     
-                    uart.write( f"pair code: {pair_code}" )
-                else :
-                    json = None
-                    
-                    try : 
-                        json = ujson.loads(s)
-                    except Exception as e:
-                        #print( e )
-                        pass
+                try : 
+                    json = ujson.loads(s)
+                except Exception as e:
+                    #print( e )
                     pass
-        
-                    if json != None :
-                        print( "json =" , json )
-        
-                        self.process_json_cmd( json, robot )
-                    pass
+                pass
+    
+                if json != None :
+                    print( "json =" , json )
+    
+                    reply = self.process_json_cmd( json, robot )
+                elif s != None :
+                    repy = self.process_text_cmd( s, robot )
+                pass
+            
+                if reply is None :
+                    reply = "Unknow code"
+                pass
+            
+                if reply != None :
+                    self.send_reply( reply )
                 pass
             pass
             
             if s != None and (utime.ticks_ms() - t) > 3000 :
-                t = utime.ticks_ms()
-                
-                text = f"PicoGo\n{count}"
-                
-                robot.lcd.disp_full_text( text )
-                robot.lcd.show()
+                showMsg = False
+                if showMsg :
+                    t = utime.ticks_ms()
+                    
+                    text = f"PicoGo\n{count}"
+                    
+                    robot.lcd.disp_full_text( text )
+                    robot.lcd.show()
+                pass
             pass
 
         pass
