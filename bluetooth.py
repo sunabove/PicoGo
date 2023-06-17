@@ -22,25 +22,10 @@ class BlueTooth :
                 
     pass
 
-    def read_bytes( self, uart, nbytes ) :
-        byte_list = bytearray( nbytes )
-            
-        i = 0 
-        while i < nbytes : 
-            b = uart.read( 1 )
-            if b :
-                byte_list[ i ] = b[0]
-                i += 1
-            pass
-        pass
-
-        return byte_list
-    pass
-
-    def send_reply( self, reply ) :
+    def send_reply( self, request_no, reply ) :
         uart = self.uart
         
-        reply = f"{reply}\n"
+        reply = f"{request_no}:{reply}\n"
         
         uart.write( reply )
         
@@ -51,7 +36,7 @@ class BlueTooth :
         reply_len = len( reply )
         reply = reply.replace( "\n", "\\n" )
         
-        print( f"send reply : '{reply}', len : {reply_len}" )
+        print( f"send request_no: {request_no}, reply : '{reply}', len : {reply_len}" )
     pass
 
     def process_json_cmd( self, s, robot ) :
@@ -212,6 +197,25 @@ class BlueTooth :
     
         return reply
     pass
+
+    def read_bytes( self, uart, nbytes ) :
+        byte_list = bytearray( nbytes )
+            
+        i = 0 
+        while i < nbytes : 
+            b = uart.read( 1 )
+            if b :
+                byte_list[ i ] = b[ 0 ]
+                i += 1
+            pass
+        pass
+
+        if nbytes == 1 :
+            return byte_list[ 0 ]
+        else :
+            return byte_list
+        pass
+    pass
             
     def main( self ) :
         print( "Ready to accept!" )
@@ -226,26 +230,37 @@ class BlueTooth :
         head_read_count = 0
         
         while True :
-            debug = False
+            debug = True
             
             data_type = 0
             data_len  = 0
-            
+                
+            # read data type and data len
             while data_type == 0 :
                 head_read_count += 1
-                # read start of heading
-                b = self.read_bytes( uart, 1 )    
-                b = b[0]
                 
-                debug and print( f"[{head_read_count:04d}] start of heading = {b}" )
+                request_no = 0
                 
-                if b != 1 :
+                debug and print( f"[{head_read_count:04d}] reading sart of heading ..." )
+                start_of_heading = self.read_bytes( uart, 1 )
+                debug and print( f"[{head_read_count:04d}] start of heading = {start_of_heading}" )
+                
+                if start_of_heading != 1 :
                     data_type = 0
                     data_len  = 0
-                elif b == 1 : # Start of Heading
+                elif start_of_heading == 1 : # start of heading
+                    # read read request_no
+                    if True : 
+                        byte_list = self.read_bytes( uart, 2 )
+                        
+                        request_no = 0
+                        for b in byte_list :
+                            request_no = data_len*255 + b
+                        pass
+                    pass
+                
                     # read data type
-                    b = self.read_bytes( uart, 1 )
-                    data_type = b[0] 
+                    data_type = self.read_bytes( uart, 1 ) 
                     
                     # read data_len
                     if data_type : 
@@ -259,22 +274,24 @@ class BlueTooth :
                 pass
             pass
 
-            print( f"date_type = {data_type}, data_len = {data_len}" )
+            print( f"request_no = {request_no}, date_type = {data_type}, data_len = {data_len}" )
 
             # reate data
             data = None
             
             if data_len > 0 :
                 data = self.read_bytes( uart, data_len )  
+            else :
+                data = None
             pass
 
             # read end of transmission
-            if True : 
-                byte_list = self.read_bytes( uart, 1 )  
+            if data != None : 
+                end_of_transmission = self.read_bytes( uart, 1 )  
             
-                if byte_list[0] != 4 : # End of Transmission
+                if end_of_transmission != 4 : # End of Transmission
                     data = None
-                pass
+                pass 
             pass
 
             if data : 
@@ -310,7 +327,7 @@ class BlueTooth :
                 pass
             
                 if reply != None :
-                    self.send_reply( reply )
+                    self.send_reply( request_no, reply )
                 pass
             pass
             
