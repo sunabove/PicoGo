@@ -43,7 +43,7 @@ class Robot :
         duration = 1
         
         lcd.disp_logo()        
-        self.beepOnOff( repeat=1, period=0.6 )        
+        self.beepOnOff( repeat = 1, period = 1.2 )        
         sleep( duration )
         
         lcd.disp_full_number( self.VERSION, flush=True )        
