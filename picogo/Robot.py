@@ -7,6 +7,43 @@ from .Motor import Motor
 from .RGBLed import RGBLed
 from .LCD import LCD
 
+def main_file_copy() :
+    print( "main_file_copy" )
+
+    file_exist = True
+    file_name = "/main.py"
+    
+    try:
+        f = open(filename, "r")
+        # continue with the file.
+    except OSError:  # open failed
+       # handle the file open case
+       file_exist = False
+    pass
+    
+    if not file_exist :
+        file = open( file_name, "w" )
+        fileContent = """
+if __name__== '__main__' :
+    
+print( 'Hello PicoGo!' )
+print( 'Running Bluetooth program ... ' )
+
+from picogo import BlueTooth
+
+BlueTooth.main()
+
+print( "Good bye!" )    
+pass
+        """
+        file.write( "" )
+        file.close()
+        
+        print( "Done. main_file_copy" )
+pass
+
+main_file_copy()
+
 class Robot :
     
     VERSION = 1000
