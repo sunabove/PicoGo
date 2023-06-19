@@ -13,3 +13,6 @@ from .picozero import (
     Robot ,
     TRSensor , 
 )
+
+
+print( "picogo __init__.py executed." )
