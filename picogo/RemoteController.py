@@ -1,6 +1,7 @@
 from machine import Pin
-from Motor import Motor
 from time import sleep_us
+
+from .Motor import Motor
 
 def getkey( irRemoteCon ):
         

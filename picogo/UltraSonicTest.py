@@ -1,5 +1,6 @@
-from UltraSonic import UltraSonic
 from time import sleep 
+
+from .UltraSonic import UltraSonic
 
 if __name__=='__main__':
     ultraSonic = UltraSonic()

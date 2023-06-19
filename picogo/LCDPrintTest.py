@@ -1,4 +1,4 @@
-from LCD import LCD 
+from .LCD import LCD 
         
 if __name__=='__main__':
     # LCDPrintTest.py

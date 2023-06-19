@@ -1,7 +1,6 @@
 from machine import Pin
+import machine, rp2
 from time import sleep, sleep_ms
-import machine 
-import rp2
 
 @rp2.asm_pio(out_shiftdir=0, autopull=True, pull_thresh=12, autopush=True, push_thresh=12, sideset_init=(rp2.PIO.OUT_LOW), out_init=rp2.PIO.OUT_LOW)
 def spi_cpha0():

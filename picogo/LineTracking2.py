@@ -1,8 +1,9 @@
 from machine import Pin
-from TRSensor import TRSensor
-from Motor import PicoGo
-from RGBLed import RGBLed
 import time
+
+from .TRSensor import TRSensor
+from .Motor import PicoGo
+from .RGBLed import RGBLed
 
 
 M = PicoGo()

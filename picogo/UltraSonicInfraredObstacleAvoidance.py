@@ -1,11 +1,12 @@
 from machine import Pin
-from Motor import PicoGo
-from UltraSonic import UltraSonic
 from time import sleep
+
+from .Motor import Motor
+from .UltraSonic import UltraSonic
 
 if __name__ == '__main__' :
 
-    robot = PicoGo()
+    motor = Motor()
     ultraSonic = UltraSonic()
     
     dsr = Pin(2, Pin.IN)
@@ -30,25 +31,25 @@ if __name__ == '__main__' :
         pass
     
         if obstacle_cnt == 1 :
-            robot.stop()
+            motor.stop()
             sleep( duration)
         pass
     
         if left_block and right_block : # 양쪽에 장애물이 있을 때, 좌회전
-            robot.left( speed )
+            motor.left( speed )
             sleep( 5*duration )
         elif left_block :   # 좌측 장애물시, 우회전
-            robot.right( speed )
+            motor.right( speed )
             sleep( 5*duration )
         elif right_block :  # 우측 장애물시, 좌회전
-            robot.left( speed )
+            motor.left( speed )
             sleep( 5*duration )
         if dist < max_dist : # 전방 장애물 있을 경우, 좌회전 
-            robot.left( speed )
+            motor.left( speed )
             sleep( 5*duration )        
         else :              # 장매물이 없으면, 전진
             obstacle_cnt = 0 
-            robot.forward( speed )
+            motor.forward( speed )
             sleep( duration )
         pass
     pass

@@ -1,6 +1,7 @@
-from Motor import PicoGo
-from UltraSonic import UltraSonic
 from time import sleep
+
+from .Motor import PicoGo
+from .UltraSonic import UltraSonic
 
 if __name__ == '__main__' :
     print( "Hello" )

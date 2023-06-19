@@ -1,7 +1,8 @@
-from LCD import LCD
-from Battery import Battery
-from time import sleep
 from random import randint
+
+from .LCD import LCD
+from .Battery import Battery
+from .time import sleep
         
 if __name__=='__main__': 
     

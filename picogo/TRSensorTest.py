@@ -1,7 +1,8 @@
-from Motor import PicoGo
-from TRSensor import TRSensor
 from time import sleep, sleep_ms
-from LCD import LCD
+
+from .Motor import PicoGo
+from .TRSensor import TRSensor
+from .LCD import LCD
 
 if __name__ == '__main__':
 

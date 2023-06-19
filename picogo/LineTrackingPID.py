@@ -1,6 +1,7 @@
-from TRSensor import TRSensor
-from Motor import PicoGo
 from time import sleep
+
+from .TRSensor import TRSensor
+from .Motor import PicoGo
 
 if __name__ == '__main__' :
     print("TRSensor Test Program ...")

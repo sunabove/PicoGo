@@ -1,6 +1,7 @@
-from LCD import LCD
-from UltraSonic import UltraSonic
 from time import sleep 
+
+from .LCD import LCD
+from .UltraSonic import UltraSonic
         
 if __name__=='__main__': 
     

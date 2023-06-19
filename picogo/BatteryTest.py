@@ -1,6 +1,7 @@
-from Battery import Battery
-from LCD import LCD
 from time import sleep
+
+from .Battery import Battery
+from .LCD import LCD
 
 if __name__ == '__main__' :
     

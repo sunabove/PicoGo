@@ -1,16 +1,16 @@
 from machine import UART, Pin
-from TRSensor import TRSensor
-from Motor import PicoGo
-from ws2812 import NeoPixel
-from ST7789 import ST7789
-import ujson
-import utime
+import ujson, utime
+
+from .TRSensor import TRSensor
+from .Motor import PicoGo
+from .RGBLed import RGBLed
+from .LCD import LCD
 
 
 bat = machine.ADC(Pin(26))
 temp = machine.ADC(4)
 
-lcd = ST7789()
+lcd = LCD()
 lcd.fill(0xF232)
 lcd.line(2,2,70,2,0xBB56)
 lcd.line(70,2,85,17,0xBB56)
@@ -42,7 +42,7 @@ Trig = Pin(14, Pin.OUT)
 Trig.value(0)
 Echo.value(0)
 
-strip = NeoPixel()
+strip = RGBLed()
 strip.pixels_set(0, strip.BLACK)
 strip.pixels_set(1, strip.BLACK)
 strip.pixels_set(2, strip.BLACK)

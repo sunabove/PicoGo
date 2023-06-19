@@ -1,14 +1,13 @@
 from machine import Pin, SPI
 from time import sleep
-from Battery import Battery
-from UltraSonic import UltraSonic
-from IRSensor import IRSensor
-from TRSensor import TRSensor
-from Motor import Motor
 from random import randint
+import framebuf, builtins
 
-import framebuf
-import builtins
+from .Battery import Battery
+from .UltraSonic import UltraSonic
+from .IRSensor import IRSensor
+from .TRSensor import TRSensor
+from .Motor import Motor
     
 # ST7789
 class LCD(framebuf.FrameBuffer):
@@ -530,7 +529,7 @@ class LCD(framebuf.FrameBuffer):
     pass
 
     def disp_logo_text(self, fg=None, bg=None, flush=True) :
-        from LogoText import logo_text
+        from .LogoText import logo_text
 
         self.disp_full_text( logo_text, fg=fg, bg=bg, flush=flush )
     
@@ -580,7 +579,7 @@ class LCD(framebuf.FrameBuffer):
     def disp_full_number( self, number=0, fg=None, bg=None, flush=True) :
         debug = False
         
-        from TextNumber import numbers
+        from .TextNumber import numbers
         
         number = int(number)
         number = f"{number:d}"

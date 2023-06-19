@@ -1,12 +1,11 @@
 import machine
+from machine import Pin, Timer
 import ujson, utime
-
 from time import sleep
 
-from Motor import Motor
-from machine import Pin, Timer
-from RGBLed import RGBLed
-from LCD import LCD
+from .Motor import Motor
+from .RGBLed import RGBLed
+from .LCD import LCD
 
 class Robot :
     
