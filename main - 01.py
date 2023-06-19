@@ -3,9 +3,9 @@ if __name__== '__main__' :
     print( 'Hello PicoGo!' )
     print( 'Running Bluetooth program ... ' )
     
-    from picogo import *
+    from picogo import BlueTooth
     
-    ## blueTooth.main()
+    BlueTooth.main()
     
     print( "Good bye!" )
     
