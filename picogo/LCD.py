@@ -8,6 +8,8 @@ from .UltraSonic import UltraSonic
 from .IRSensor import IRSensor
 from .TRSensor import TRSensor
 from .Motor import Motor
+
+import picogo
     
 # ST7789
 class LCD(framebuf.FrameBuffer):
@@ -534,7 +536,15 @@ class LCD(framebuf.FrameBuffer):
         self.disp_full_text( logo_text, fg=fg, bg=bg, flush=flush )
     
         del logo_text
-    pass        
+    pass
+
+    def disp_version( self ) :
+        print( "disp_version" )
+
+        version = picogo.__version__
+        
+        self.disp_full_number( version, flush=True )
+    pass
 
     def disp_logo_image(self, logo_image, flush=True) : 
         

@@ -8,9 +8,7 @@ from .RGBLed import RGBLed
 from .LCD import LCD
 
 print( "Import Robot ..." )
-class Robot :
-    
-    VERSION = 1000
+class Robot : 
     
     low_speed  = 30
     med_speed  = 50
@@ -46,7 +44,7 @@ class Robot :
         self.beepOnOff( repeat = 1, period = 1.2 )        
         sleep( duration )
         
-        lcd.disp_full_number( self.VERSION, flush=True )        
+        lcd.disp_version()        
         sleep( duration )
         
         lcd.disp_logo()        

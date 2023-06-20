@@ -189,6 +189,18 @@ class BlueTooth :
             print( f"pair code = {pair_code}" )
             
             reply = f"pair code: {pair_code}"  
+        elif "paring completed" in s :
+            print( f"paring completed" )
+            
+            robot.lcd.disp_logo()
+
+            reply = f"ok"  
+        elif "good bye" in s :
+            print( f"good bye" )
+            
+            robot.lcd.disp_version()
+            
+            reply = f"ok"  
         else :
             print( f"Unknown command = [{s}]" )
             

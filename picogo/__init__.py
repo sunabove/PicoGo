@@ -1,6 +1,6 @@
 __name__ = "picogo"
 __package__ = "picogo"
-__version__ = '0.0.20'
+__version__ = '101'
 __author__ = "SkySLAM Co., Ltd."
 
 print( "picogo __init__.py executed." ) 
