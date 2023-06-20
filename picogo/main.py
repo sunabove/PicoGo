@@ -7,6 +7,6 @@ if __name__== '__main__' :
     
     BlueTooth.main()
     
-    print( "Good bye!" )
+    print( 'Good bye!' )
     
 pass
