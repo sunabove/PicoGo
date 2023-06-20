@@ -1,10 +1,12 @@
 __name__ = "picogo"
 __package__ = "picogo"
-__version__ = '0.0.5'
+__version__ = '0.0.9'
 __author__ = "SkySLAM Co., Ltd."
 
+print( "picogo __init__.py executed." ) 
+
 from .Robot import (
-    Robot , 
+    Robot  
 )
 
-print( "picogo __init__.py executed." ) 
+print( "Done. picogo __init__.py executed." ) 

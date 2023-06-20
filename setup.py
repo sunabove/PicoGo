@@ -1,13 +1,9 @@
 from setuptools import setup
 
-from setuptools import setup
-from setuptools.command.develop import develop
-from setuptools.command.install import install
-
 __project__ = 'picogo'
 __packages__ = ['picogo']
 __desc__ = 'A beginner-friendly library for using picogo with the Raspberry Pi Pico. '
-__version__ = '0.0.9'
+__version__ = '0.0.16'
 __author__ = "SkySLAM Co., Ltd."
 __author_email__ = 'terabuilder@gmail.com'
 __license__ = 'MIT'
@@ -38,24 +34,6 @@ robot.forward( speed = 30 )
 Documentation is available at (https://github.com/sunabove/PicoGo/).
 """
 
-class PostInstallCommand(install):
-    """Post-installation for installation mode."""
-    def run(self):
-        install.run(self)
-        
-        # copy main file
-        self.copy_main_file()
-    pass
-
-    def copy_main_file(self) :
-        print( "copy_main_file" )
-        if False :
-            file = open( "/myMainFile.py", "w" )
-            file.close()
-        pass
-    pass
-pass
-
 setup(
     name=__project__,
     version=__version__,
@@ -68,9 +46,5 @@ setup(
     license=__license__,
     classifiers=__classifiers__,
     keywords=__keywords__,
-    packages=__packages__,
-
-    cmdclass={
-        'install': PostInstallCommand,
-    },
+    packages=__packages__, 
 )
