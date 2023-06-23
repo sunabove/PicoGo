@@ -1,8 +1,8 @@
 from random import randint
+from time import sleep
 
 from .LCD import LCD
 from .Battery import Battery
-from .time import sleep
         
 if __name__=='__main__': 
     
