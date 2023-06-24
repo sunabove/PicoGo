@@ -3,7 +3,7 @@ from time import sleep
 
 from .LCD import LCD
 from .Battery import Battery
-        
+
 if __name__=='__main__': 
     
     lcd = LCD()

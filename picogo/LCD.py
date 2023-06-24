@@ -11,7 +11,7 @@ from .Motor import Motor
 
 import picogo
     
-# ST7789
+# ST7789 # 240 x 135
 class LCD(framebuf.FrameBuffer):
     
     # RGC 565 Color Definition
@@ -78,11 +78,13 @@ class LCD(framebuf.FrameBuffer):
             rects.append( rect )
         pass
         
-        for r in rects :
-            self.rect( r[0], r[1], r[2], r[3], self.fg, False )
+        if False : 
+            for r in rects :
+                self.rect( r[0], r[1], r[2], r[3], self.fg, False )
+            pass
         pass
     
-    pass
+    pass ### __init__
         
     def write_cmd(self, cmd):
         self.cs(1)
@@ -520,7 +522,7 @@ class LCD(framebuf.FrameBuffer):
         flush and self.flush()
     pass # disp_full_text
 
-    def color(self, R,G,B): # Convert RGB888 to RGB565
+    def color(self, R, G, B): # Convert RGB888 to RGB565
         return (((G&0b00011100)<<3) +((B&0b11111000)>>3)<<8) + (R&0b11111000)+((G&0b11100000)>>5)
     pass
 
