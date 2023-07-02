@@ -1,10 +1,10 @@
 from time import sleep, sleep_ms
 
-from .Motor import PicoGo
-from .TRSensor import TRSensor
-from .LCD import LCD
+from picogo.Motor import Motor
+from picogo.TRSensor import TRSensor
+from picogo.LCD import LCD
 
-if __name__ == '__main__':
+if __name__ is '__main__':
 
     print( "TRSensor Test ... \n" )
     
@@ -18,19 +18,19 @@ if __name__ == '__main__':
     if True :
         sleep(3) 
         
-        robot = PicoGo()
+        motor = Motor()
         
         for i in range(100):
             if  25 < i <= 75:
-                robot.setMotor( 30, -30, False )
+                motor.move( 30, -30, False )
             else:
-                robot.setMotor(-30, 30, False )
+                motor.move(-30, 30, False )
             pass
         
             trs.calibrate()
         pass
 
-        robot.stop()
+        motor.stop()
 
         print( "calibratedMin = ", trs.calibratedMin )
         print( "calibratedMax = ", trs.calibratedMax )

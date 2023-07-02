@@ -1,26 +1,26 @@
 from time import sleep
 
-from .Motor import PicoGo
-from .UltraSonic import UltraSonic
+from picogo.Robot import Robot
+from picogo.UltraSonic import UltraSonic
 
-if __name__ == '__main__' :
-    print( "Hello" )
-
-    robot = PicoGo()
+def main( robot = None ) :
+    if robot is None : robot = Robot()
+    
     ultraSonic = UltraSonic()
     
     duration = 0.02
     speed = 20
     max_dist = 18
     
-    obstacle_cnt = 0 
+    obstacle_cnt = 0
+    
     while True :
-        dist = ultraSonic.obstacle_distance()
+        dist = ultraSonic.distance()
         
         print( f"distance = {dist:6.2f} cm" )
         
         if dist < max_dist :
-            ostacle_cnt += 1
+            obstacle_cnt += 1
             
             if obstacle_cnt == 1 : 
                 robot.stop()
@@ -33,7 +33,16 @@ if __name__ == '__main__' :
         pass
             
         sleep( duration )
-    pass
-
-    print( "Goodbye!" )
+    pass 
 pass
+
+if __name__ is '__main__' :
+    
+    print( "Hello ..." )
+        
+    robot = Robot()
+    main( robot )
+    
+pass
+    
+    

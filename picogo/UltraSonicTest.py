@@ -1,12 +1,12 @@
 from time import sleep 
 
-from .UltraSonic import UltraSonic
+from picogo.UltraSonic import UltraSonic
 
-if __name__=='__main__':
+if __name__ is '__main__':
     ultraSonic = UltraSonic()
     
     while True:
-        dist = ultraSonic.obstacle_distance()
+        dist = ultraSonic.distance()
         print( f"Distance = {dist:6.2f} cm" )
         sleep( 0.1)
     pass

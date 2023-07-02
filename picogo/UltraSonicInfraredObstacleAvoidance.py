@@ -1,16 +1,17 @@
 from machine import Pin
 from time import sleep
 
-from .Motor import Motor
-from .UltraSonic import UltraSonic
+from picogo.Robot import Robot
+from picogo.UltraSonic import UltraSonic
+from picogo.IRSensor import IRSensor
 
-if __name__ == '__main__' :
-
-    motor = Motor()
-    ultraSonic = UltraSonic()
+def main( robot = None ) :
+    if robot is None : robot = Robot()
     
-    dsr = Pin(2, Pin.IN)
-    dsl = Pin(3, Pin.IN)
+    motor = robot.motor
+    
+    ultraSonic = UltraSonic()
+    irSensor = IRSensor() 
     
     duration = 0.02
     speed = 20
@@ -21,10 +22,9 @@ if __name__ == '__main__' :
     obstacle_cnt = 0
         
     while True:
-        dist = ultraSonic.obstacle_distance()
+        dist = ultraSonic.distance()
         
-        left_block = ( dsr.value() == 0 )
-        right_block = ( dsl.value()== 0 )
+        left_block, right_block = irSensor.read_blocks()
         
         if dist < max_dist or left_block or right_block == 0 :
             obstacle_cnt += 1
@@ -52,6 +52,16 @@ if __name__ == '__main__' :
             motor.forward( speed )
             sleep( duration )
         pass
+    
     pass
 
+pass ## -- main
+
+if __name__ is '__main__' :
+    
+    print( "Hello ..." )
+        
+    robot = Robot()
+    main( robot )
+    
 pass

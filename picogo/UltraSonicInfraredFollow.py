@@ -1,11 +1,10 @@
 from machine import UART, Pin
 import ujson, utime
 
-from .TRSensor import TRSensor
-from .Motor import PicoGo
-from .RGBLed import RGBLed
-from .LCD import LCD
-
+from picogo.TRSensor import TRSensor
+from picogo.Motor import Motor
+from picogo.RGBLed import RGBLed
+from picogo.LCD import LCD
 
 bat = machine.ADC(Pin(26))
 temp = machine.ADC(4)
@@ -27,7 +26,7 @@ lcd.text("Waveshare.com",70,120,0x07E0)
 lcd.show()
 
 IR = Pin(5, Pin.IN)
-M = PicoGo()
+motor = Motor()
 uart = UART(0, 9600)     # init with given baudrate
 led = Pin(25, Pin.OUT)
 led.value(1)
@@ -94,22 +93,24 @@ while True:
         lcd.text("percent     :   {:3.1f} %".format(p),30,80,0xFFFF)
         lcd.show()
     print(D)
+    
     if(D<5):
-        M.stop()
+        motor.stop()
     elif((DL_status == 0) and (DR_status == 1)):
-        M.left(20)
+        motor.left(20)
     elif((DL_status == 1) and (DR_status == 0)):
-        M.right(20)
+        motor.right(20)
     elif(((D>5) and( D<7)) or ((DL_status == 0) and (DR_status == 0))):
-        M.forward(30)
+        motor.forward(30)
     else:
-       M.stop() 
+       motor.stop() 
         
     utime.sleep_ms(20)
-    
 
     for i in range(strip.num):
         strip.pixels_set(i, strip.wheel(((i * 256 // strip.num) + j) & 255))
+    pass
+
     strip.pixels_show()
     
     j += 1
