@@ -32,7 +32,7 @@ class Motor(object):
         pass
     pass
 
-    def left(self,speed, verbose=False):
+    def left(self, speed, verbose=False):
         if 0 <= speed <= 100 :
             if verbose : print( f"left: speed = {speed}" )
             self.set_motor( -speed, speed )

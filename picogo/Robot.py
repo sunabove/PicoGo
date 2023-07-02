@@ -1,18 +1,18 @@
-import machine
+import machine , ujson, time
 from machine import Pin, Timer
-import ujson, utime
 from time import sleep
 
-from .Motor import Motor
-from .RGBLed import RGBLed
-from .LCD import LCD
+from picogo.Motor import Motor
+from picogo.RGBLed import RGBLed
+from picogo.LCD import LCD
 
 print( "Import Robot ..." )
+
 class Robot : 
     
-    low_speed  = 30
-    med_speed  = 50
-    high_speed = 80
+    LOW_SPEED = low_speed  = 30
+    MED_SPEED = med_speed  = 50
+    HIGHT_SPEED = high_speed = 80
     
     def __init__(self):
         self.speed = self.low_speed
@@ -31,7 +31,7 @@ class Robot :
         self.uart = machine.UART(0, 115200)
         
         self.init_robot()
-    pass
+    pass ## -- __init__
 
     def init_robot( self ):
         print( "init_robot")
@@ -56,7 +56,7 @@ class Robot :
         pass
         
         print( "done init robot." )
-    pass
+    pass ## -- init_robot
 
     def beepOnOff(self, repeat = 1, period = 0.5 ) :
         print( "beepOnOff" )
@@ -71,10 +71,100 @@ class Robot :
         pass
     
         print( "done. beepOnOff" )
-    pass 
+    pass ## -- beepOnOff
 
-pass
+    def ledToggle(self, repeat = 10, period = 0.5 ) :
+        
+        led = self.led
+        
+        class LedBlink :
+            def __init__( self, led, max_count = 10 ) :
+                self.led = led
+                self.count = 0
+                self.max_count = max_count
+            pass
+                
+            def blink( self, timer ):
+                self.count += 1
+                    
+                if self.count <= self.max_count :
+                    print( f"[{self.count}] toggle" )
+                    
+                    self.led.toggle()
+                else :
+                    print( "timer deinit" )
+                    
+                    timer.deinit()
+                pass
+            pass
+        pass
 
-if __name__ == '__main__' :
+        ledBlink = LedBlink( led=led, max_count = 2*repeat )
+        timer = Timer()
+        freq = 1/period
+        
+        timer.init( freq=freq, mode=Timer.PERIODIC, callback=ledBlink.blink )
+    pass # -- ledToggle
+
+    def forward(self, speed=None, verbose=False ):
+        if speed is None : speed = Robot.LOW_SPEED
+        
+        self.motor.forward( speed, verbose )
+    pass
+
+    def backward(self, speed=None, verbose=False ):
+        if speed is None : speed = Robot.LOW_SPEED
+        
+        self.motor.backward( speed, verbose )
+    pass
+
+    def left(self, speed=None, verbose=False ):
+        if speed is None : speed = Robot.LOW_SPEED
+        
+        self.motor.left( speed, verbose )
+    pass
+
+    def right(self, speed=None, verbose=False ):
+        if speed is None : speed = Robot.LOW_SPEED
+        
+        self.motor.right( speed, verbose )
+    pass
+
+    def stop(self, verbose=False):
+        self.motor.stop( verbose )
+    pass
+
+    def move(self, left, right, verbose=True):
+        if left is None : left = Robot.LOW_SPEED
+        if right is None : right = - left
+        
+        self.motor.move( left, right, verbose )
+    pass
+
+    def set_motor(self, left, right, verbose=False):
+        self.motor.set_motor( lef, right, verbose )
+    pass
+
+pass ## -- class Robot
+
+if __name__ is '__main__' : 
+    
     robot = Robot()
+    
+    robot.ledToggle()
+    
+    robot.forward()
+    sleep( 2 )
+    
+    robot.backward()
+    sleep( 2 )
+    
+    robot.left()
+    sleep( 2 )
+    
+    robot.right()
+    sleep( 2 )
+    
+    robot.stop()
+    
 pass
