@@ -40,8 +40,11 @@ class Robot :
         
         duration = 1
         
-        lcd.disp_logo()        
-        self.beepOnOff( repeat = 1, period = 1.2 )        
+        lcd.disp_logo()
+        
+        self.ledToggle()        
+        
+        self.beepOnOff( repeat = 1, period = 1.2 )
         sleep( duration )
         
         lcd.disp_version()        
@@ -58,7 +61,50 @@ class Robot :
         print( "done init robot." )
     pass ## -- init_robot
 
-    def beepOnOff(self, repeat = 1, period = 0.5 ) :
+    def beepOnOff(self, repeat = 1, period = 0.5, verbose=False ) :
+        print( "beepOnOff" )
+        
+        buzzer = self.buzzer
+        
+        repeat = max( 1, repeat ) 
+    
+        class BuzzerOnOff :
+            def __init__( self, buzzer, max_count = 10, verbose=False ) :
+                self.buzzer = buzzer
+                self.count = 0
+                self.max_count = max_count
+                self.verbose = verbose
+            pass
+                
+            def toggle( self, timer ):
+                buzzer = self.buzzer
+                
+                if self.count < self.max_count :
+                    if self.verbose : print( f"[{self.count}] toggle" )
+                    
+                    buzzer.value( int((self.count + 1)%2) )
+                else :
+                    if self.verbose : print( "timer deinit" )
+                    
+                    buzzer.value( 0 )
+                    
+                    timer.deinit()
+                pass
+            
+                self.count += 1
+            pass
+        pass
+
+        buzzerOnOff = BuzzerOnOff( buzzer=buzzer, max_count = 2*repeat, verbose=verbose )
+        timer = Timer()
+        freq = 1/period
+        
+        timer.init( freq=freq, mode=Timer.PERIODIC, callback=buzzerOnOff.toggle )
+    
+        print( "done. beepOnOff" )
+    pass ## -- beepOnOff
+
+    def beepOnOffOld(self, repeat = 1, period = 0.5 ) :
         print( "beepOnOff" )
         
         buzzer = self.buzzer
@@ -73,33 +119,35 @@ class Robot :
         print( "done. beepOnOff" )
     pass ## -- beepOnOff
 
-    def ledToggle(self, repeat = 10, period = 0.5 ) :
+    def ledToggle(self, repeat = 10, period = 0.5, verbose=False ) :
+        print( f"ledToggle( repeat={repeat}, period={period} )" )
         
         led = self.led
         
         class LedBlink :
-            def __init__( self, led, max_count = 10 ) :
+            def __init__( self, led, max_count = 10, verbose=False ) :
                 self.led = led
                 self.count = 0
                 self.max_count = max_count
+                self.verbose = verbose
             pass
                 
             def blink( self, timer ):
-                self.count += 1
-                    
-                if self.count <= self.max_count :
-                    print( f"[{self.count}] toggle" )
+                if self.count < self.max_count :
+                    if self.verbose : print( f"[{self.count}] toggle" )
                     
                     self.led.toggle()
                 else :
-                    print( "timer deinit" )
+                    if self.verbose : print( "timer deinit" )
                     
                     timer.deinit()
                 pass
+            
+                self.count += 1
             pass
         pass
 
-        ledBlink = LedBlink( led=led, max_count = 2*repeat )
+        ledBlink = LedBlink( led=led, max_count = 2*repeat, verbose=verbose )
         timer = Timer()
         freq = 1/period
         
@@ -150,8 +198,6 @@ pass ## -- class Robot
 if __name__ is '__main__' : 
     
     robot = Robot()
-    
-    robot.ledToggle()
     
     robot.forward()
     sleep( 2 )
