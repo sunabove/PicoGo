@@ -6,7 +6,7 @@ from picogo.UltraSonic import UltraSonic
 def main( robot = None ) :
     if robot is None : robot = Robot()
     
-    ultraSonic = UltraSonic()
+    ultraSonic = robot.ultraSonic
     
     duration = 0.02
     speed = 20
@@ -25,6 +25,7 @@ def main( robot = None ) :
             if obstacle_cnt == 1 : 
                 robot.stop()
                 sleep( duration )
+            pass
             
             robot.right( 2*speed )
         else:

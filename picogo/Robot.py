@@ -2,9 +2,12 @@ import machine , ujson, time
 from machine import Pin, Timer
 from time import sleep
 
+from picogo.CurrentTime import curr_time_mili
 from picogo.Motor import Motor
 from picogo.RGBLed import RGBLed
 from picogo.LCD import LCD
+from picogo.UltraSonic import UltraSonic
+from picogo.IRSensor import IRSensor
 
 print( "Import Robot ..." )
 
@@ -17,17 +20,23 @@ class Robot :
     def __init__(self):
         self.speed = self.low_speed
         
+        # input devices
+        self.battery = machine.ADC(Pin(26))
+        self.temperature = machine.ADC(4)
+                
+        self.ultraSonic = UltraSonic()
+        self.irSensor = IRSensor()
+        
+        # output devices
         self.rgbLed = RGBLed()
         
         self.buzzer = machine.Pin(4, Pin.OUT)
         self.led = machine.Pin(25, Pin.OUT)
         
-        self.battery = machine.ADC(Pin(26))
-        self.temperature = machine.ADC(4)
-                
         self.lcd = LCD()
         self.motor = Motor()
         
+        # bluetooth uart        
         self.uart = machine.UART(0, 115200)
         
         self.init_robot()

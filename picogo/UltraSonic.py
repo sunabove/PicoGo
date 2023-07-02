@@ -1,6 +1,8 @@
 from machine import Pin
 from time import sleep, sleep_us, ticks_us
 
+from picogo.CurrentTime import curr_time_mili
+
 class UltraSonic :
     
     def __init__( self ) :

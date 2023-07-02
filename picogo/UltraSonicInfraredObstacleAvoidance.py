@@ -2,16 +2,15 @@ from machine import Pin
 from time import sleep
 
 from picogo.Robot import Robot
-from picogo.UltraSonic import UltraSonic
-from picogo.IRSensor import IRSensor
+from picogo.UltraSonic import UltraSonic 
 
 def main( robot = None ) :
     if robot is None : robot = Robot()
     
     motor = robot.motor
     
-    ultraSonic = UltraSonic()
-    irSensor = IRSensor() 
+    ultraSonic = robot.ultraSonic
+    irSensor = robot.irSensor
     
     duration = 0.02
     speed = 20
