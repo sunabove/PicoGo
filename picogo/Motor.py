@@ -93,4 +93,4 @@ class Motor(object):
         pass
     pass
 
-pass
+pass ## -- class Motor

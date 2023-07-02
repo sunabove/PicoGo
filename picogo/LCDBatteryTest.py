@@ -1,8 +1,8 @@
 from random import randint
 from time import sleep
 
-from .LCD import LCD
-from .Battery import Battery
+from picogo.LCD import LCD
+from picogo.Battery import Battery
 
 if __name__=='__main__': 
     

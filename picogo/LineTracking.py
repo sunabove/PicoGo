@@ -1,8 +1,8 @@
 from time import sleep
 
-from .TRSensor import TRSensor
-from .Motor import PicoGo
-from .LCD import LCD
+from picogo.TRSensor import TRSensor
+from picogo.Motor import Motor
+from picogo.LCD import LCD
 
 if __name__ == '__main__' :
     
@@ -11,24 +11,24 @@ if __name__ == '__main__' :
     lcd = LCD() 
     lcd.disp_text( f"LineTracking", 50, 60 )
     
-    robot = PicoGo()
+    motor = Motor()
     trs = TRSensor()
     
-    robot.stop()
+    motor.stop()
     
     sleep(3)
     
     for i in range(100) :
         if  25 < i <= 75:
-            robot.setMotor( 30, -30, False )
+            motor.set_motor( 30, -30, False )
         else:
-            robot.setMotor(-30, 30, False )
+            motor.set_motor( -30, 30, False )
         pass
     
         trs.calibrate()
     pass
 
-    robot.stop()
+    motor.stop()
 
     print( "calibratedMin = ", trs.calibratedMin )
     print( "calibratedMax = ", trs.calibratedMax )
@@ -53,15 +53,18 @@ if __name__ == '__main__' :
         
         if True :
             power_diff = max_power*pos_diff/center_position
-            robot.move( max_power + power_diff, max_power - power_diff )
+            
+            motor.move( max_power + power_diff, max_power - power_diff )
         elif abs( pos_diff ) < numSensors/4 :
-            robot.forward( max_power )
+            motor.forward( max_power )
         elif pos_diff > 0 :
             power = max_power*abs(pos_diff)/center_position
-            robot.right( power )
+            
+            motor.right( power )
         elif pos_diff < 0 :
             power = max_power*abs(pos_diff)/center_position
-            robot.left( power )
+            
+            motor.left( power )
         pass
     
         sleep( 0.1 )

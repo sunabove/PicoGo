@@ -1,10 +1,13 @@
-if __name__== '__main__' :
+if __name__ is '__main__' :
+    
     from machine import Pin, Timer
+    
     led = Pin(25, Pin.OUT)
     timer = Timer()
 
     def blink(timer):
         led.toggle()
+    pass
 
     timer.init(freq=2, mode=Timer.PERIODIC, callback=blink)
     

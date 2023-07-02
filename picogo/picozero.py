@@ -2,10 +2,6 @@ from machine import Pin, PWM, Timer, ADC
 from micropython import schedule
 from time import ticks_ms, ticks_us, sleep
 
-###############################################################################
-# EXCEPTIONS
-###############################################################################
-
 class PWMChannelAlreadyInUse(Exception):
     pass
 
@@ -1966,4 +1962,3 @@ class DistanceSensor(PinsMixin):
         Returns the maximum distance that the sensor will measure in metres.
         """
         return self._max_distance
-

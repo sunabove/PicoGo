@@ -1,4 +1,4 @@
-from .LCD import LCD 
+from picogo.LCD import LCD 
         
 if __name__=='__main__':
     lcd = LCD()

@@ -1,19 +1,22 @@
 from time import sleep
 
-from .TRSensor import TRSensor
-from .Motor import PicoGo
+from picogo.TRSensor import TRSensor
+from picogo.Motor import Motor
 
-if __name__ == '__main__' :
+if __name__ is '__main__' :
+    
     print("TRSensor Test Program ...")
     sleep(3)
-    robot = PicoGo()
+    
+    motor = Motor()
 
     trs = TRSensor()
+    
     for i in range(100):
         if  25 < i <= 75:
-            robot.setMotor( 30, -30, False )
+            motor.set_motor( 30, -30, False )
         else:
-            robot.setMotor(-30, 30, False )
+            motor.set_motor(-30, 30, False )
         pass
     
         trs.calibrate()
@@ -61,9 +64,9 @@ if __name__ == '__main__' :
         power_diff = max( -maximum, min( power_diff, maximum ) )
         
         if power_diff < 0 :
-            robot.setMotor(maximum + power_diff, maximum)
+            motor.set_motor(maximum + power_diff, maximum)
         else:
-            robot.setMotor(maximum, maximum - power_diff)
+            motor.set_motor(maximum, maximum - power_diff)
         pass 
 
     pass

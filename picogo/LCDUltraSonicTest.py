@@ -1,7 +1,7 @@
 from time import sleep 
 
-from .LCD import LCD
-from .UltraSonic import UltraSonic
+from picogo.LCD import LCD
+from picogo.UltraSonic import UltraSonic
         
 if __name__=='__main__': 
     

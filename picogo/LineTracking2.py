@@ -1,12 +1,12 @@
 from machine import Pin
 import time
 
-from .TRSensor import TRSensor
-from .Motor import PicoGo
-from .RGBLed import RGBLed
+from picogo.TRSensor import TRSensor
+from picogo.Motor import Motor
+from picogo.RGBLed import RGBLed
 
 
-M = PicoGo()
+M = Motor()
 Buzzer = Pin(4, Pin.OUT)
 DSR = Pin(2, Pin.IN)
 DSL = Pin(3, Pin.IN)
@@ -20,12 +20,15 @@ strip.pixels_show()
 time.sleep(2)
 
 TRS=TRSensor()
+
 for i in range(100):
-    if(i<25 or i>= 75):
-        M.setMotor(30,-30)
+    if i<25 or i>= 75 :
+        M.set_motor(30,-30)
     else:
-        M.setMotor(-30,30)
+        M.set_motor(-30,30)
     TRS.calibrate()
+pass
+
 print("\ncalibrate done\r\n")
 print(TRS.calibratedMin)
 print(TRS.calibratedMax)
@@ -36,16 +39,16 @@ last_proportional = 0
 j=0
 
 while True:
-    position,Sensors = TRS.readLine()
+    position, Sensors = TRS.readLine()
     DR_status = DSR.value()
     DL_status = DSL.value()
     
     if((Sensors[0] + Sensors[1] + Sensors[2]+ Sensors[3]+ Sensors[4]) > 4000):
         Buzzer.value(0)
-        M.setMotor(0,0)
+        M.set_motor(0,0)
     elif((DL_status == 0) or (DR_status == 0)):
         Buzzer.value(1)
-        M.setMotor(0,0)
+        M.set_motor(0,0)
     else:
         Buzzer.value(0)
         # The "proportional" term should be 0 when we are on the line.
@@ -75,12 +78,14 @@ while True:
             power_difference = - maximum
 
         if (power_difference < 0):
-            M.setMotor(maximum + power_difference, maximum)
+            M.set_motor(maximum + power_difference, maximum)
         else:
-            M.setMotor(maximum, maximum - power_difference)
+            M.set_motor(maximum, maximum - power_difference)
 
     for i in range(strip.num):
         strip.pixels_set(i, strip.wheel(((i * 256 // strip.num) + j) & 255))
+    pass
+
     strip.pixels_show()
     
     j += 1

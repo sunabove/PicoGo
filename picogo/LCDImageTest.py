@@ -2,7 +2,7 @@
 import sys
 
 from PIL import Image
-from .LCD import LCD
+from picogo.LCD import LCD
 
 print("""
 image.py - Display an image on the LCD.
