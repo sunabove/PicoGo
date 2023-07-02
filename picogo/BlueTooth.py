@@ -1,7 +1,7 @@
 import machine
 import ujson, utime
 
-from .Robot import Robot
+from picogo.Robot import Robot
 
 class BlueTooth :
     def __init__( self ):

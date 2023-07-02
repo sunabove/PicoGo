@@ -1,7 +1,7 @@
 from time import sleep
 
-from .Battery import Battery
-from .LCD import LCD
+from picogo.Battery import Battery
+from picogo.LCD import LCD
 
 if __name__ == '__main__' :
     

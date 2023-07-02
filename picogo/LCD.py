@@ -3,16 +3,16 @@ from time import sleep
 from random import randint
 import framebuf, builtins
 
-from .Battery import Battery
-from .UltraSonic import UltraSonic
-from .IRSensor import IRSensor
-from .TRSensor import TRSensor
-from .Motor import Motor
+from picogo.Battery import Battery
+from picogo.UltraSonic import UltraSonic
+from picogo.IRSensor import IRSensor
+from picogo.TRSensor import TRSensor
+from picogo.Motor import Motor
 
 import picogo
     
 # ST7789 # 240 x 135
-class LCD(framebuf.FrameBuffer):
+class LCD( framebuf.FrameBuffer ):
     
     # RGC 565 Color Definition
     WHITE  = white  = 0xFFFF
@@ -485,7 +485,7 @@ class LCD(framebuf.FrameBuffer):
             pass
             
             self.rect( int(x_1), int(y), int(w_1), int(h), c, True )
-            self.rect( int(x_0), int(y), int(w_0), int(h), lcd.white, False )
+            self.rect( int(x_0), int(y), int(w_0), int(h), LCD.white, False )
         pass
         
         if flush : self.flush()
@@ -591,7 +591,7 @@ class LCD(framebuf.FrameBuffer):
     def disp_full_number( self, number=0, fg=None, bg=None, flush=True) :
         debug = False
         
-        from .TextNumber import numbers
+        from picogo.TextNumber import numbers
         
         number = int(number)
         number = f"{number:d}"
@@ -662,7 +662,7 @@ class LCD(framebuf.FrameBuffer):
         return texts
     pass
 
-pass
+pass ## -- class LCD
 
 if __name__== '__main__' :
     # LCDPrintTest.py
