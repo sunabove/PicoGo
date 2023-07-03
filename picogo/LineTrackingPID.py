@@ -2,13 +2,9 @@ from time import sleep
 
 from picogo.Robot import Robot
 
-def main( robot = None ) :
+def mainImpl( robot ) :
 
-    print("TRSensor Test Program ...")
-    
-    if robot is None : robot = Robot()
-    
-    robot.run_ext_module = True
+    print("TRSensor Test Program ...") 
     
     robot.stop()
     sleep( 1 )
@@ -75,11 +71,32 @@ def main( robot = None ) :
 
 pass
 
+def main( robot ) :
+    robot.run_ext_module = True
+    
+    import _thread 
+    
+    callback = lambda : mainImpl( robot=robot )
+    
+    _thread.start_new_thread( callback, () )
+    
+    print( "thread inited" )
+pass
+
 if __name__ is '__main__' :
     
     print( "Hello ..." )
         
     robot = Robot()
     main( robot )
+    
+    duration = 30
+    print( f"sleep({duration})" )
+    sleep( duration )
+    print( f"finished sleep({duration})" )
+    
+    robot.run_ext_module = False
+    
+    print( "Good bye!" )
     
 pass

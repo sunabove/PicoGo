@@ -58,8 +58,7 @@ def mainImpl( robot ) :
 
 pass ## -- main
 
-def main( robot ) :
-    robot.run_ext_module = True
+def main( robot ) : 
     
     import _thread 
     
