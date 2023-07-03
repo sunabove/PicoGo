@@ -5,6 +5,34 @@ import random
 from picogo.Robot import Robot
 from picogo.UltraSonic import UltraSonic 
 
+def run_obstacle_avoidance( robot ) :
+    duration = robot.duration
+    speed = robot.speed
+    max_dist = robot.max_dist
+    
+    left_block, right_block = robot.read_blocks()
+    
+    if not left_block and not right_block :
+        dist = robot.obstacle_distance()
+    else :
+        dist = 2*max_dist 
+    pass
+    
+    if left_block and right_block :
+        robot.backward( speed )
+    elif left_block :   # 좌측 장애물시, 우회전
+        robot.right( speed ) 
+    elif right_block :  # 우측 장애물시, 좌회전
+        robot.left( speed ) 
+    elif dist < max_dist : # 전방 장애물 있을 경우, 좌회전 
+        robot.left( speed ) 
+    else :              # 장매물이 없으면, 전진
+        robot.forward( speed ) 
+    pass 
+
+    return left_block, right_block, ( dist < max_dist ), duration
+pass ## -- run_ultrasonic_avoidance
+    
 def mainImpl( robot ) :
     print( f"mainImpl" ) 
     
@@ -15,40 +43,17 @@ def mainImpl( robot ) :
     robot.disp_info_rects()
         
     while robot.run_ext_module :
-        duration = robot.duration
-        speed = robot.speed
-        max_dist = robot.max_dist
-        
         robot.disp_battery()
-        robot.disp_motor()
-        
-        left_block, right_block = robot.read_blocks()
-        
-        if not left_block and not right_block :
-            dist = robot.obstacle_distance()
-        else :
-            dist = 2*max_dist 
-        pass
-        
-        if left_block and right_block :
-            robot.backward( speed )
-        elif left_block :   # 좌측 장애물시, 우회전
-            robot.right( speed ) 
-        elif right_block :  # 우측 장애물시, 좌회전
-            robot.left( speed ) 
-        elif dist < max_dist : # 전방 장애물 있을 경우, 좌회전 
-            robot.left( speed ) 
-        else :              # 장매물이 없으면, 전진
-            robot.forward( speed ) 
-        pass
+        robot.disp_motor() 
     
-        if left_block or right_block or dist < max_dist :
+        [ left_block, right_block, is_obstacle, duration ] = run_obstacle_avoidance( robot )
+        
+        if left_block or right_block or is_obstacle :
             dur_count = random.randint( 30, 50 )
             sleep( dur_count*duration )
         else :
             sleep( duration )
         pass
-    
     pass
 
     robot.stop()
@@ -58,7 +63,8 @@ def mainImpl( robot ) :
 
 pass ## -- main
 
-def main( robot ) : 
+def main( robot ) :
+    robot.run_ext_module = True
     
     import _thread 
     

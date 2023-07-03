@@ -165,6 +165,7 @@ class BlueTooth :
     pass
 
     def process_text_cmd( self, s, robot ) :
+        print( f"process_text_cmd s = [{s}]" )
         reply = None
         
         try :
@@ -194,9 +195,50 @@ class BlueTooth :
             
             robot.lcd.disp_logo()
 
-            reply = f"ok"  
+            reply = f"ok"
+        elif "start obstacle avoidance" in s :
+            robot.beepOnOff( repeat=2, period=0.3 )
+            
+            from picogo import ObstacleAvoidance
+            
+            ObstacleAvoidance.main( robot )
+        elif "start lane following" in s :
+            robot.beepOnOff( repeat=2, period=0.3 )
+            
+            from picogo import LineTrackingPID
+            
+            LineTrackingPID.main( robot )
+        elif "speed" in s:
+            print( f"speed" )
+            
+            value = s.split( "=" )[-1]
+            speed = robow.low_speed
+            
+            try : 
+                speed= int( value.strip() )
+            except:
+                pass
+            pass
+            
+            robot.speed = speed
+            
+            reply = f"ok" 
+        elif "stop" in s:
+            print( f"stop" )
+            
+            robot.run_ext_module = False
+            robot.stop()
+            
+            robot.beepOnOff( repeat=3, period=0.3 )
+            
+            robot.lcd.disp_logo()
+            
+            reply = f"ok"
         elif s in "good bye" or "disconnect" in s:
             print( f"good bye" )
+            
+            robot.run_ext_module = False
+            robot.stop()
             
             robot.beepOnOff( repeat=4, period=0.3 )
             

@@ -251,7 +251,7 @@ class Robot :
         self.motor.stop( verbose )
     pass
 
-    def move(self, left, right, verbose=True):
+    def move(self, left, right, verbose=False):
         if left is None : left = Robot.LOW_SPEED
         if right is None : right = - left
         

@@ -1,10 +1,11 @@
-from time import sleep
+from time import ticks_ms, time, sleep
 
 from picogo.Robot import Robot
+from picogo.ObstacleAvoidance import run_obstacle_avoidance
 
 def mainImpl( robot ) :
 
-    print("TRSensor Test Program ...") 
+    print("Start Lane Tracking ...") 
     
     robot.stop()
     sleep( 1 )
@@ -28,46 +29,63 @@ def mainImpl( robot ) :
     
     robot.stop() 
     sleep(1)
+    
+    robot.disp_info_rects() 
 
     integral = 0
-    last_proportional = 0
+    last_proportional = 0 
     
-    robot.disp_info_rects()
-
+    then_ms = ticks_ms()
+    
+    count = 0
+    
     while robot.run_ext_module :
-        speed = robot.speed
-        maximum = 20
+        count += 1
+        max_speed = min( 80, 1*robot.speed )
         
         robot.disp_battery()
         robot.disp_motor()
         
+        duration = robot.duration
+        
         position, sensors = robot.readLine()
         
-        print( "position = ", position, ", Sensors = ", sensors )        
+        now_ms = ticks_ms()
+        
+        elapsed_ms = now_ms - then_ms
+        
+        print( f"[{count:05d}] now_ms = {now_ms}, then_ms = {then_ms}, elpased_ms = {elapsed_ms}, position = {position}, sensors = {sensors}" )
         
         # The "proportional" term should be 0 when we are on the line.
-        proportional = 1000*position - 2000
+        proportional = 1000*position - 2500
 
         # Compute the derivative (change) and integral (sum) of the position.
-        derivative = proportional - last_proportional
+        derivative = ( proportional - last_proportional )
         integral += proportional
 
         # Remember the last position.
         last_proportional = proportional
         
-        power_diff = proportional/30  + derivative*2;  
+        speed_diff = proportional/30  + derivative*2.5 + integral*0.0001
+        ## speed_diff = proportional/30  + derivative*2;  
 
-        power_diff = max( -maximum, min( power_diff, maximum ) )
+        speed_diff = max( - max_speed, min( speed_diff, max_speed ) )
         
-        if power_diff < 0 :
-            robot.move(maximum + power_diff, maximum)
+        if speed_diff < 0 :
+            robot.move( max_speed + speed_diff, max_speed )
         else:
-            robot.move(maximum, maximum - power_diff)
-        pass  
+            robot.move( max_speed, max_speed - speed_diff )
+        pass
+    
+        then_ms = now_ms
+    
+        ## sleep( duration ) 
     pass
 
-    robot.stop()
-    sleep( 1 )
+    robot.stop() 
+    robot.disp_logo()
+
+    print( f"Finished running lane tracking." )
 
 pass
 
