@@ -19,7 +19,10 @@ class Robot :
     
     def __init__(self):
         self.speed = self.low_speed
-        self.run_ext_module = False 
+        
+        self.run_ext_module = False
+        self.duration = 0.001
+        self.max_dist = 18
         
         # input devices
         self.ultraSonic = UltraSonic()
@@ -67,6 +70,18 @@ class Robot :
         
         print( "done init robot." )
     pass ## -- init_robot
+
+    def read_blocks(self):
+        blocks = self.irSensor.read_blocks()
+        
+        return blocks
+    pass
+
+    def obstacle_distance( self ) :
+        dist = self.ultraSonic.obstacle_distance()
+        
+        return dist;
+    pass
 
     def beepOnOff(self, repeat = 1, period = 0.5, verbose=False ) :
         print( "beepOnOff" )
