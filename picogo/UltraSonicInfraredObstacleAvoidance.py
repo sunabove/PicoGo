@@ -1,14 +1,12 @@
-from machine import Pin
+from machine import Pin, Timer
 from time import sleep
 import random
 
 from picogo.Robot import Robot
 from picogo.UltraSonic import UltraSonic 
 
-def main( robot = None ) :
-    if robot is None : robot = Robot()
-    
-    robot.run_ext_module = True
+def mainImpl( robot ) :
+    print( f"mainImpl" ) 
     
     left_block = 0
     right_block = 0  
@@ -53,9 +51,24 @@ def main( robot = None ) :
     
     pass
 
+    robot.stop()
+    robot.disp_logo()
+
     print( f"Finished running ultrasonic ir avoidance." )
 
 pass ## -- main
+
+def main( robot ) :
+    robot.run_ext_module = True
+    
+    import _thread 
+    
+    callback = lambda : mainImpl( robot=robot )
+    
+    _thread.start_new_thread( callback, () )
+    
+    print( "thread inited" )
+pass
 
 if __name__ is '__main__' :
     
@@ -63,5 +76,14 @@ if __name__ is '__main__' :
         
     robot = Robot()
     main( robot )
+    
+    duration = 30
+    print( f"sleep({duration})" )
+    sleep( duration )
+    print( f"finished sleep({duration})" )
+    
+    robot.run_ext_module = False
+    
+    print( "Good bye!" )
     
 pass

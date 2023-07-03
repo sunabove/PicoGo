@@ -35,10 +35,15 @@ def main( robot = None ) :
 
     integral = 0
     last_proportional = 0
+    
+    robot.disp_info_rects()
 
     while robot.run_ext_module :
         speed = robot.speed
         maximum = 20
+        
+        robot.disp_battery()
+        robot.disp_motor()
         
         position, sensors = robot.readLine()
         

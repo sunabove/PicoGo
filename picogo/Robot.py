@@ -81,17 +81,21 @@ class Robot :
         lcd.disp_info_rects()
     pass
 
+    def disp_logo( self, flush=1 ) :
+        self.lcd.disp_logo(flush=flush)
+    pass
+
     def disp_battery( self, flush=0 ):
         self.lcd.disp_battery( self.battery, flush=flush )
     pass
 
     def disp_speeds( self, flush=0 ) :
-        self.diso_motor( flush=flush)
+        self.diso_motor( flush=flush )
     pass
 
     def disp_motor( self, flush=0 ) :
         self.lcd.disp_motor( self.motor, flush=flush )
-    pass
+    pass 
 
     def read_blocks(self):
         blocks = self.irSensor.read_blocks()
@@ -100,15 +104,6 @@ class Robot :
         lcd.disp_ir_sensor( blocks, flush=True )
         
         return blocks
-    pass
-
-    def obstacle_distance( self ) :
-        dist = self.ultraSonic.obstacle_distance()
-        
-        lcd = self.lcd
-        lcd.disp_ultra_sonic( dist, flush=True )
-        
-        return dist;
     pass
 
     def trs_calibrate( self ) :
@@ -123,6 +118,15 @@ class Robot :
         
         return line
     pass
+
+    def obstacle_distance( self ) :
+        dist = self.ultraSonic.obstacle_distance()
+        
+        lcd = self.lcd
+        lcd.disp_ultra_sonic( dist, flush=True )
+        
+        return dist;
+    pass 
 
     def beepOnOff(self, repeat = 1, period = 0.5, verbose=False ) :
         print( "beepOnOff" )
