@@ -195,12 +195,14 @@ class BlueTooth :
             robot.lcd.disp_logo()
 
             reply = f"ok"  
-        elif "good bye" in s :
+        elif s in "good bye" or "disconnect" in s:
             print( f"good bye" )
+            
+            robot.beepOnOff( repeat=4, period=0.3 )
             
             robot.lcd.disp_version()
             
-            reply = f"ok"  
+            reply = f"ok"
         else :
             print( f"Unknown command = [{s}]" )
             

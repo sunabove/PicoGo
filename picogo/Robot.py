@@ -21,18 +21,15 @@ class Robot :
         self.speed = self.low_speed
         
         # input devices
-        self.battery = machine.ADC(Pin(26))
-        self.temperature = machine.ADC(4)
-                
         self.ultraSonic = UltraSonic()
         self.irSensor = IRSensor()
+        self.battery = machine.ADC(Pin(26))
+        self.temperature = machine.ADC(4)
         
         # output devices
         self.rgbLed = RGBLed()
-        
         self.buzzer = machine.Pin(4, Pin.OUT)
         self.led = machine.Pin(25, Pin.OUT)
-        
         self.lcd = LCD()
         self.motor = Motor()
         
@@ -105,7 +102,9 @@ class Robot :
         pass
 
         buzzerOnOff = BuzzerOnOff( buzzer=buzzer, max_count = 2*repeat, verbose=verbose )
+        
         timer = Timer()
+        
         freq = 1/period
         
         timer.init( freq=freq, mode=Timer.PERIODIC, callback=buzzerOnOff.toggle )
