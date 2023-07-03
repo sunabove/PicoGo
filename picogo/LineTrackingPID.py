@@ -46,7 +46,7 @@ def mainImpl( robot ) :
         print( "position = ", position, ", Sensors = ", sensors )        
         
         # The "proportional" term should be 0 when we are on the line.
-        proportional = position - 2000
+        proportional = 1000*position - 2000
 
         # Compute the derivative (change) and integral (sum) of the position.
         derivative = proportional - last_proportional
@@ -90,7 +90,7 @@ if __name__ is '__main__' :
     robot = Robot()
     main( robot )
     
-    duration = 30
+    duration = 60
     print( f"sleep({duration})" )
     sleep( duration )
     print( f"finished sleep({duration})" )

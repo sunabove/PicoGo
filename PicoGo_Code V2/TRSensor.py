@@ -130,6 +130,7 @@ class TRSensor():
         avg = 0
         sum = 0
         on_line = 0
+        
         for i in range(0,self.numSensors):
             value = sensor_values[i]
             if(white_line):
