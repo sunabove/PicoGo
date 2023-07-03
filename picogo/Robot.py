@@ -19,6 +19,7 @@ class Robot :
     
     def __init__(self):
         self.speed = self.low_speed
+        self.run_ext_module = False 
         
         # input devices
         self.ultraSonic = UltraSonic()
