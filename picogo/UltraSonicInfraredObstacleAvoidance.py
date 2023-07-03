@@ -21,6 +21,9 @@ def main( robot = None ) :
         speed = robot.speed
         max_dist = robot.max_dist
         
+        robot.disp_battery()
+        robot.disp_motor()
+        
         left_block, right_block = robot.read_blocks()
         
         if not left_block and not right_block :

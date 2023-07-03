@@ -9,6 +9,7 @@ from picogo.LCD import LCD
 from picogo.UltraSonic import UltraSonic
 from picogo.IRSensor import IRSensor
 from picogo.TRSensor import TRSensor
+from picogo.Battery import Battery
 
 print( "Import Robot ..." )
 
@@ -30,8 +31,7 @@ class Robot :
         self.ultraSonic = UltraSonic()
         self.irSensor = IRSensor()
         self.trs = TRSensor()
-        self.battery = machine.ADC(Pin(26))
-        self.temperature = machine.ADC(4)
+        self.battery = Battery() 
         
         # output devices
         self.rgbLed = RGBLed()
@@ -77,7 +77,20 @@ class Robot :
     def disp_info_rects( self ) :
         print( f"disp_info_rects" )
         
-        self.lcd.disp_info_rects()
+        lcd = self.lcd
+        lcd.disp_info_rects()
+    pass
+
+    def disp_battery( self, flush=0 ):
+        self.lcd.disp_battery( self.battery, flush=flush )
+    pass
+
+    def disp_speeds( self, flush=0 ) :
+        self.diso_motor( flush=flush)
+    pass
+
+    def disp_motor( self, flush=0 ) :
+        self.lcd.disp_motor( self.motor, flush=flush )
     pass
 
     def read_blocks(self):
