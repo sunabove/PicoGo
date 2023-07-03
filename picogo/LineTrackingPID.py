@@ -1,42 +1,46 @@
 from time import sleep
 
-from picogo.TRSensor import TRSensor
-from picogo.Motor import Motor
+from picogo.Robot import Robot
 
-if __name__ is '__main__' :
-    
+def main( robot = None ) :
+
     print("TRSensor Test Program ...")
-    sleep(3)
     
-    motor = Motor()
-
-    trs = TRSensor()
+    if robot is None : robot = Robot()
     
-    for i in range(100):
+    robot.run_ext_module = True
+    
+    robot.stop()
+    sleep( 1 )
+    
+    speed = 30
+    
+    for i in range(100) :
         if  25 < i <= 75:
-            motor.set_motor( 30, -30, False )
+            robot.move( speed, -speed, False )
         else:
-            motor.set_motor(-30, 30, False )
+            robot.move( -speed, speed, False )
         pass
     
-        trs.calibrate()
+        robot.trs_calibrate()
     pass
 
-    robot.stop()
-
-    print( "calibratedMin = ", trs.calibratedMin )
-    print( "calibratedMax = ", trs.calibratedMax )
+    print( "calibratedMin = ", robot.trs.calibratedMin )
+    print( "calibratedMax = ", robot.trs.calibratedMax )
     print( "calibrate done!")
     print()
     
-    sleep(5)
+    robot.stop() 
+    sleep(1)
 
-    maximum = 20
     integral = 0
     last_proportional = 0
 
-    while True:
-        position, sensors = trs.readLine()
+    while robot.run_ext_module :
+        speed = robot.speed
+        maximum = 20
+        
+        position, sensors = robot.readLine()
         
         print( "position = ", position, ", Sensors = ", sensors )        
         
@@ -50,25 +54,27 @@ if __name__ is '__main__' :
         # Remember the last position.
         last_proportional = proportional
         
-        '''
-        // Compute the difference between the two motor power settings,
-        // m1 - m2.  If this is a positive number the robot will turn
-        // to the right.  If it is a negative number, the robot will
-        // turn to the left, and the magnitude of the number determines
-        // the sharpness of the turn.  You can adjust the constants by which
-        // the proportional, integral, and derivative terms are multiplied to
-        // improve performance.
-        '''
         power_diff = proportional/30  + derivative*2;  
 
         power_diff = max( -maximum, min( power_diff, maximum ) )
         
         if power_diff < 0 :
-            motor.set_motor(maximum + power_diff, maximum)
+            robot.move(maximum + power_diff, maximum)
         else:
-            motor.set_motor(maximum, maximum - power_diff)
-        pass 
-
+            robot.move(maximum, maximum - power_diff)
+        pass  
     pass
 
+    robot.stop()
+    sleep( 1 )
+
+pass
+
+if __name__ is '__main__' :
+    
+    print( "Hello ..." )
+        
+    robot = Robot()
+    main( robot )
+    
 pass

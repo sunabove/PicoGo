@@ -8,6 +8,7 @@ from picogo.RGBLed import RGBLed
 from picogo.LCD import LCD
 from picogo.UltraSonic import UltraSonic
 from picogo.IRSensor import IRSensor
+from picogo.TRSensor import TRSensor
 
 print( "Import Robot ..." )
 
@@ -20,6 +21,7 @@ class Robot :
     def __init__(self):
         self.speed = self.low_speed
         
+        # paramenter for obstacle avoidance
         self.run_ext_module = False
         self.duration = 0.001
         self.max_dist = 18
@@ -27,6 +29,7 @@ class Robot :
         # input devices
         self.ultraSonic = UltraSonic()
         self.irSensor = IRSensor()
+        self.trs = TRSensor()
         self.battery = machine.ADC(Pin(26))
         self.temperature = machine.ADC(4)
         
@@ -71,8 +74,17 @@ class Robot :
         print( "done init robot." )
     pass ## -- init_robot
 
+    def disp_info_rects( self ) :
+        print( f"disp_info_rects" )
+        
+        self.lcd.disp_info_rects()
+    pass
+
     def read_blocks(self):
         blocks = self.irSensor.read_blocks()
+        
+        lcd = self.lcd
+        lcd.disp_ir_sensor( blocks, flush=True )
         
         return blocks
     pass
@@ -80,7 +92,23 @@ class Robot :
     def obstacle_distance( self ) :
         dist = self.ultraSonic.obstacle_distance()
         
+        lcd = self.lcd
+        lcd.disp_ultra_sonic( dist, flush=True )
+        
         return dist;
+    pass
+
+    def trs_calibrate( self ) :
+        return self.trs.calibrate()
+    pass
+
+    def readLine(self, white_line = 0):
+        line = [ position, sensors ] = self.trs.readLine( white_line = white_line )
+        
+        lcd = self.lcd
+        lcd.disp_tr_sensor( position, sensors, flush=True )
+        
+        return line
     pass
 
     def beepOnOff(self, repeat = 1, period = 0.5, verbose=False ) :

@@ -13,6 +13,8 @@ def main( robot = None ) :
     left_block = 0
     right_block = 0  
     dist = 0
+    
+    robot.disp_info_rects()
         
     while robot.run_ext_module :
         duration = robot.duration

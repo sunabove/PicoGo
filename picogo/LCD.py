@@ -77,14 +77,26 @@ class LCD( framebuf.FrameBuffer ):
             rect = [ x, y, w, h, m ]
             rects.append( rect )
         pass
-        
-        if False : 
-            for r in rects :
-                self.rect( r[0], r[1], r[2], r[3], self.fg, False )
-            pass
-        pass
     
     pass ### __init__
+
+    def disp_info_rects( self ) : 
+        x = 0
+        y = 0 
+        
+        width = self.width
+        height = self.height
+        
+        self.rect( x, y, width, height - 1, self.bg, True )
+        self.rect( x, y, width, height - 1, self.fg, False )
+        
+        rects = self.rects
+        
+        for r in rects :
+            self.rect( r[0], r[1], r[2], r[3], self.fg, False )
+        pass
+    
+    pass 
         
     def write_cmd(self, cmd):
         self.cs(1)
