@@ -1,5 +1,5 @@
 # PicoGo Build Process
-# pip install pip setuptools wheel build twine --upgrade
+pip install setuptools wheel build twine --upgrade
 
 python setup.py clean sdist bdist_wheel 
 

@@ -29,7 +29,7 @@ print("\ncalibrate done\r\n")
 print(TRS.calibratedMin)
 print(TRS.calibratedMax)
 print("\ncalibrate done\r\n")
-maximum = 100
+maximum = 40
 integral = 0
 last_proportional = 0
 j=0
@@ -39,7 +39,7 @@ while True:
     DR_status = DSR.value()
     DL_status = DSL.value()
     
-    if((Sensors[0] + Sensors[1] + Sensors[2]+ Sensors[3]+ Sensors[4]) > 4000):
+    if False and ((Sensors[0] + Sensors[1] + Sensors[2]+ Sensors[3]+ Sensors[4]) > 4000):
         Buzzer.value(0)
         M.setMotor(0,0)
     elif((DL_status == 0) or (DR_status == 0)):
@@ -82,5 +82,6 @@ while True:
         strip.pixels_set(i, strip.wheel(((i * 256 // strip.num) + j) & 255))
     strip.pixels_show()
     j += 1
-    if(j > 256): 
-        j = 0
+    
+    if j > 256 : j = 0
+pass

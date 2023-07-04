@@ -212,7 +212,7 @@ class BlueTooth :
             print( f"speed" )
             
             value = s.split( "=" )[-1]
-            speed = robow.low_speed
+            speed = robot.low_speed
             
             try : 
                 speed= int( value.strip() )

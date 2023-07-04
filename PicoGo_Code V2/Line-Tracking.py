@@ -13,6 +13,8 @@ for i in range(100):
     else:
         M.setMotor(-30,30)
     TRS.calibrate()
+pass
+
 print("\ncalibrate done\r\n")
 print(TRS.calibratedMin)
 print(TRS.calibratedMax)
