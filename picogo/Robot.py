@@ -25,7 +25,7 @@ class Robot :
         # paramenter for obstacle avoidance
         self.run_ext_module = False
         self.duration = 0.001
-        self.max_dist = 18
+        self.max_dist = 15
         
         # input devices
         self.ultraSonic = UltraSonic()
