@@ -11,7 +11,7 @@ class BlueTooth :
         self.uart = self.robot.uart
         
         self.init_bluetooth()
-    pass
+    pass ## -- __init__
 
     def init_bluetooth( self ) :
         robot = self.robot
@@ -20,7 +20,7 @@ class BlueTooth :
         color = ( 0, 0, 0 )
         rgbLed.set_color( color )
                 
-    pass
+    pass ## -- init_bluetooth
 
     def send_reply( self, request_no, reply ) :
         uart = self.uart
@@ -37,7 +37,7 @@ class BlueTooth :
         reply = reply.replace( "\n", "\\n" )
         
         print( f"send request_no: {request_no}, reply : '{reply}', len : {reply_len}" )
-    pass
+    pass ## -- send_reply
 
     def process_json_cmd( self, s, robot ) :
         reply = None
@@ -49,7 +49,7 @@ class BlueTooth :
         pass
     
         return reply
-    pass
+    pass ## -- process_json_cmd
     
     def process_json_cmd_impl( self, json, robot ) :
         reply = None
@@ -162,7 +162,7 @@ class BlueTooth :
         pass
     
         return reply
-    pass
+    pass ## -- process_json_cmd_impl
 
     def process_text_cmd( self, s, robot ) :
         print( f"process_text_cmd s = [{s}]" )
@@ -175,7 +175,7 @@ class BlueTooth :
         pass
     
         return reply
-    pass
+    pass ## -- process_text_cmd
 
     def process_text_cmd_impl( self, s, robot ) :
         reply = None
@@ -202,12 +202,16 @@ class BlueTooth :
             from picogo import ObstacleAvoidance
             
             ObstacleAvoidance.main( robot )
+            
+            reply = f"ok"
         elif "start lane following" in s :
             robot.beepOnOff( repeat=2, period=0.3 )
             
             from picogo import LineTrackingPID
             
             LineTrackingPID.main( robot )
+            
+            reply = f"ok"
         elif "speed" in s:
             print( f"speed" )
             
@@ -221,6 +225,21 @@ class BlueTooth :
             pass
             
             robot.speed = speed
+            
+            reply = f"ok" 
+        elif "ostacle distance" in s:
+            print( f"obstacle distance" )
+            
+            value = s.split( "=" )[-1]
+            dist = robot.low_speed
+            
+            try : 
+                dist= int( value.strip() )
+            except:
+                pass
+            pass
+            
+            robot.max_dist = dist
             
             reply = f"ok" 
         elif "stop" in s:
@@ -252,7 +271,7 @@ class BlueTooth :
         pass
     
         return reply
-    pass
+    pass ## -- process_text_cmd_impl
 
     def read_bytes( self, uart, nbytes ) :
         byte_list = bytearray( nbytes )
@@ -271,7 +290,7 @@ class BlueTooth :
         else :
             return byte_list
         pass
-    pass
+    pass ## -- read_bytes
             
     def main( self ) :
         print( "Ready to accept!" )
