@@ -1,73 +1,134 @@
-from time import sleep
+from time import ticks_ms, time, sleep
 
-from picogo.TRSensor import TRSensor
-from picogo.Motor import Motor
-from picogo.LCD import LCD
+from picogo.Robot import Robot 
 
-if __name__ == '__main__' :
+class LineTracking :
     
-    print("TRSensor Test Program ...")
-    
-    lcd = LCD() 
-    lcd.disp_text( f"LineTracking", 50, 60 )
-    
-    motor = Motor()
-    trs = TRSensor()
-    
-    motor.stop()
-    
-    sleep(3)
-    
-    for i in range(100) :
-        if  25 < i <= 75:
-            motor.set_motor( 30, -30, False )
-        else:
-            motor.set_motor( -30, 30, False )
+    def __init__ ( self ) :
+        pass
+    pass ## -- __init__
+
+    def calibrate( self, robot ) :
+        robot.stop()
+        sleep( 1 ) 
+        
+        speed = 30
+        
+        for i in range(100) :
+            if  25 < i <= 75:
+                robot.move( speed, -speed, False )
+            else:
+                robot.move( -speed, speed, False )
+            pass
+        
+            robot.trs_calibrate()
         pass
     
-        trs.calibrate()
+        robot.stop() 
+        sleep(1)
+        
+        print( "calibratedMin = ", robot.trs.calibratedMin )
+        print( "calibratedMax = ", robot.trs.calibratedMax )
+        print( "calibrate done!")
+        print()
+        
+    pass
+        
+    def mainImpl( self, robot ) :
+
+        print("Start Lane Tracking ...") 
+        
+        self.calibrate( robot )
+
+        robot.disp_info_rects() 
+
+        integral = 0
+        last_proportional = 0 
+        
+        then_ms = ticks_ms()
+        
+        count = 0
+        
+        while robot.run_ext_module :
+            count += 1
+            max_speed = min( 80, 1*robot.speed )
+            
+            robot.disp_battery()
+            robot.disp_motor()
+            
+            duration = robot.duration
+            
+            position, sensors = robot.readLine()
+            
+            now_ms = ticks_ms()
+            
+            elapsed_ms = now_ms - then_ms
+            
+            print( f"[{count:05d}] now_ms = {now_ms}, then_ms = {then_ms}, elpased_ms = {elapsed_ms}, position = {position}, sensors = {sensors}" )
+            
+            # The "proportional" term should be 0 when we are on the line.
+            proportional = 1000*position - 2500
+
+            # Compute the derivative (change) and integral (sum) of the position.
+            derivative = ( proportional - last_proportional )
+            integral += proportional
+
+            # Remember the last position.
+            last_proportional = proportional
+            
+            speed_diff = proportional/30  + derivative*2.5 + integral*0.0001
+            ## speed_diff = proportional/30  + derivative*2;  
+
+            speed_diff = max( - max_speed, min( speed_diff, max_speed ) )
+            
+            if speed_diff < 0 :
+                robot.move( max_speed + speed_diff, max_speed )
+            else:
+                robot.move( max_speed, max_speed - speed_diff )
+            pass
+        
+            then_ms = now_ms
+        
+            ## sleep( duration ) 
+        pass ## -- mainImpl
+
+        robot.stop() 
+        robot.disp_logo()
+
+        print( f"Finished running lane tracking." )
+
     pass
 
-    motor.stop()
+pass ## -- class LineTracking
 
-    print( "calibratedMin = ", trs.calibratedMin )
-    print( "calibratedMax = ", trs.calibratedMax )
-    print( "calibrate done!")
-    print()
+def main( robot ) :
+    robot.run_ext_module = True
     
-    sleep(3)
-
-    numSensors = trs.numSensors
-    center_position = trs.center_position()
+    import _thread
     
-    max_power = 15 
-
-    while True:
-        position, sensors = trs.readLine()
-        
-        print( "position = ", position, ", Sensors = ", sensors )        
-        
-        pos_diff = position - center_position
-        
-        lcd.disp_text( f"pos  = {position:4.3f}\ndiff = {pos_diff:6.3f}", 50, 60 )
-        
-        if True :
-            power_diff = max_power*pos_diff/center_position
-            
-            motor.move( max_power + power_diff, max_power - power_diff )
-        elif abs( pos_diff ) < numSensors/4 :
-            motor.forward( max_power )
-        elif pos_diff > 0 :
-            power = max_power*abs(pos_diff)/center_position
-            
-            motor.right( power )
-        elif pos_diff < 0 :
-            power = max_power*abs(pos_diff)/center_position
-            
-            motor.left( power )
-        pass
+    lineTracking = LineTracking()
     
-        sleep( 0.1 )
-    pass
+    callback = lambda : lineTracking.mainImpl( robot=robot )
+    
+    _thread.start_new_thread( callback, () )
+    
+    print( "thread inited" )
+pass
 
+if __name__ is '__main__' :
+    
+    print( "Hello ..." )
+        
+    robot = Robot()
+    main( robot )
+    
+    duration = 60
+    print( f"sleep({duration})" )
+    sleep( duration )
+    print( f"finished sleep({duration})" )
+    
+    robot.run_ext_module = False
+    
+    print( "Good bye!" )
+    
 pass

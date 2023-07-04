@@ -207,9 +207,9 @@ class BlueTooth :
         elif "start lane following" in s :
             robot.beepOnOff( repeat=2, period=0.3 )
             
-            from picogo import LineTrackingPID
+            from picogo import LineTracking
             
-            LineTrackingPID.main( robot )
+            LineTracking.main( robot )
             
             reply = f"ok"
         elif "speed" in s:

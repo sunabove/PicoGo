@@ -5,7 +5,6 @@ from picogo.TRSensor import TRSensor
 from picogo.Motor import Motor
 from picogo.RGBLed import RGBLed
 
-
 M = Motor()
 Buzzer = Pin(4, Pin.OUT)
 DSR = Pin(2, Pin.IN)
