@@ -58,7 +58,7 @@ class LineTracking :
             
             duration = robot.duration
             
-            position, sensors = robot.readLine()
+            position, sensors, on_line = robot.readLine()
             
             now_ms = ticks_ms()
             
@@ -67,16 +67,16 @@ class LineTracking :
             print( f"[{count:05d}] now_ms = {now_ms}, then_ms = {then_ms}, elpased_ms = {elapsed_ms}, position = {position}, sensors = {sensors}" )
             
             # The "proportional" term should be 0 when we are on the line.
-            proportional = 1000*position - 2500
+            proportional = position - 2
 
             # Compute the derivative (change) and integral (sum) of the position.
-            derivative = ( proportional - last_proportional )
             integral += proportional
+            derivative = ( proportional - last_proportional )
 
             # Remember the last position.
             last_proportional = proportional
             
-            speed_diff = proportional/30  + derivative*2.5 + integral*0.0001
+            speed_diff = proportional*300  + derivative*2000 + integral*0.0001
             ## speed_diff = proportional/30  + derivative*2;  
 
             speed_diff = max( - max_speed, min( speed_diff, max_speed ) )

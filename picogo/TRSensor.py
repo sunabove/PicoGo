@@ -169,8 +169,8 @@ class TRSensor():
                 
             # only average in values that are above a noise threshold
             if value > 50 :
-                weighted_total += value*i    # this is for the weighted total,
-                total_value += value                # this is for the denominator
+                weighted_total += i*value
+                total_value += value
             pass
         pass
 
@@ -182,11 +182,11 @@ class TRSensor():
             else: # If it last read to the right of center, return the max.
                 #print("right")
                 self.last_position = numSensors
-        else:
+        else :
             self.last_position = weighted_total/total_value
         pass
 
-        return self.last_position, sensor_values
+        return self.last_position, sensor_values, on_line
     pass
 
 pass

@@ -111,7 +111,7 @@ class Robot :
     pass
 
     def readLine(self, white_line = 0):
-        line = [ position, sensors ] = self.trs.readLine( white_line = white_line )
+        line = [ position, sensors, on_line ] = self.trs.readLine( white_line = white_line )
         
         lcd = self.lcd
         lcd.disp_tr_sensor( position, sensors, flush=True )
