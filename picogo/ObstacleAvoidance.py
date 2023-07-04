@@ -6,7 +6,6 @@ from picogo.Robot import Robot
 from picogo.UltraSonic import UltraSonic 
 
 def run_obstacle_avoidance( robot ) :
-    duration = robot.duration
     speed = robot.speed
     max_dist = robot.max_dist
     
@@ -30,7 +29,7 @@ def run_obstacle_avoidance( robot ) :
         robot.forward( speed ) 
     pass 
 
-    return left_block, right_block, ( dist < max_dist ), duration
+    return left_block, right_block, ( dist < max_dist ) 
 pass ## -- run_ultrasonic_avoidance
     
 def mainImpl( robot ) :
@@ -43,15 +42,20 @@ def mainImpl( robot ) :
     robot.disp_info_rects()
         
     while robot.run_ext_module :
+        duration = robot.duration
+        duration = 0 
+    
         robot.disp_battery()
         robot.disp_motor() 
     
-        [ left_block, right_block, is_obstacle, duration ] = run_obstacle_avoidance( robot )
+        [ left_block, right_block, is_obstacle ] = run_obstacle_avoidance( robot )
         
         if left_block or right_block or is_obstacle :
             dur_count = random.randint( 30, 50 )
-            sleep( dur_count*duration )
-        else :
+            duration = dur_count*duration
+        pass
+    
+        if duration > 0 :
             sleep( duration )
         pass
     pass
