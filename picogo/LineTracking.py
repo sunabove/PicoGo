@@ -45,39 +45,41 @@ class LineTracking :
         integral = 0
         last_proportional = 0 
         
-        then_ms = ticks_ms()
+        then = ticks_ms()/1000
         
         count = 0
         
         while robot.run_ext_module :
             count += 1
-            max_speed = min( 80, 1*robot.speed )
+            
+            speed = robot.speed
+            max_speed = min( 80, robot.speed )
             
             robot.disp_battery()
             robot.disp_motor()
             
             duration = robot.duration
             
-            position, sensors, on_line = robot.readLine()
+            pos, sensors, on_line = robot.readLine()
             
-            now_ms = ticks_ms()
+            now = ticks_ms()/1000
             
-            elapsed_ms = now_ms - then_ms
+            elapsed = now - then
             
-            print( f"[{count:05d}] now_ms = {now_ms}, then_ms = {then_ms}, elpased_ms = {elapsed_ms}, position = {position}, sensors = {sensors}" )
+            print( f"[{count:05d}] now = {now}, then = {then}, elpased = {elapsed}, pos = {pos}, sensors = {sensors}" )
             
-            # The "proportional" term should be 0 when we are on the line.
-            proportional = position - 2
-
-            # Compute the derivative (change) and integral (sum) of the position.
+         
+            # PID algorithm
+            dt = elapsed   # average 0.083
+            proportional = pos*1000 - 2000
             integral += proportional
-            derivative = ( proportional - last_proportional )
+            derivative = proportional - last_proportional
 
             # Remember the last position.
             last_proportional = proportional
             
-            speed_diff = proportional*330  + derivative*2000 + integral*0.0000
-            ## speed_diff = proportional/30  + derivative*2;  
+            speed_diff = proportional*0.03  + derivative*1
+            # speed_diff = proportional/30  + derivative*2  
 
             speed_diff = max( - max_speed, min( speed_diff, max_speed ) )
             
@@ -87,7 +89,7 @@ class LineTracking :
                 robot.move( max_speed, max_speed - speed_diff )
             pass
         
-            then_ms = now_ms
+            then = now
         
             ## sleep( duration ) 
         pass ## -- mainImpl
@@ -122,7 +124,7 @@ if __name__ is '__main__' :
     robot = Robot()
     main( robot )
     
-    duration = 60
+    duration = 40
     print( f"sleep({duration})" )
     sleep( duration )
     print( f"finished sleep({duration})" )
