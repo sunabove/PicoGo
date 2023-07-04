@@ -76,7 +76,7 @@ class LineTracking :
             # Remember the last position.
             last_proportional = proportional
             
-            speed_diff = proportional*300  + derivative*2000 + integral*0.0001
+            speed_diff = proportional*330  + derivative*2000 + integral*0.0000
             ## speed_diff = proportional/30  + derivative*2;  
 
             speed_diff = max( - max_speed, min( speed_diff, max_speed ) )

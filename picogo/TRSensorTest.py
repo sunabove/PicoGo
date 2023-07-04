@@ -34,19 +34,17 @@ if __name__ is '__main__':
 
         print( "calibratedMin = ", trs.calibratedMin )
         print( "calibratedMax = ", trs.calibratedMax )
-        print( "calibrate done! \n" ) 
-    else :
-        trs.calibrate()
+        print( "calibrate done! \n" )  
     pass
     
     idx = 0 
     while True:
         idx += 1
-        position, sensors = trs.readLine()
+        position, sensors, is_online = trs.readLine()
         
         lcd.disp_tr_sensor( position, sensors, flush=1 ) 
         
-        print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}" )            
+        print( f"[{idx:4d}] position = {position:+.2f}, sensors = {sensors}, online={is_online}" )            
         
     
         sleep( 1 )

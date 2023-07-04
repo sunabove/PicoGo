@@ -148,8 +148,8 @@ class TRSensor():
     If your line is light on black, set the optional second argument white_line to true.
     In this case, each sensor value will be replaced by (1000-value) before the averaging.
     """
-    def readLine(self, white_line = 0):
-        sensor_values = self.readCalibrated()
+    def readLine(self, white_line = 0, analog = False):
+        sensors = self.readCalibrated()
         
         numSensors = self.numSensors
         
@@ -157,7 +157,7 @@ class TRSensor():
         total_value = 0
         on_line = 0        
         
-        for i, value in enumerate( sensor_values ):             
+        for i, value in enumerate( sensors ):             
             if white_line :
                 value = 1_000 - value
             pass
@@ -185,8 +185,11 @@ class TRSensor():
         else :
             self.last_position = weighted_total/total_value
         pass
+    
+        total = sum( sensors ) / numSensors
+        on_line = total < 700 
 
-        return self.last_position, sensor_values, on_line
+        return self.last_position, sensors, on_line
     pass
 
 pass
