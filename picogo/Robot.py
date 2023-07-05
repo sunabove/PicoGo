@@ -27,6 +27,11 @@ class Robot :
         self.duration = 0.001
         self.max_dist = 15
         
+        # location
+        self.x = 0
+        self.y = 0
+        self.ang_deg = 0
+        
         # input devices
         self.ultraSonic = UltraSonic()
         self.irSensor = IRSensor()
@@ -222,6 +227,84 @@ class Robot :
         
         timer.init( freq=freq, mode=Timer.PERIODIC, callback=ledBlink.blink )
     pass # -- ledToggle
+
+    def toggleStop( self ):
+        msg = f"Robot: toggleStop()"
+        print( msg )
+        
+        self.x = 0
+        self.y = 0
+        
+        ang_deg = - self.ang_deg
+        
+        self.stop()
+        
+        self.addRotation( self.ang_deg )
+        
+        self.stop()
+    pass # -- toggleStop
+
+    def addRotation( self, ang_deg ) :
+        msg =  f"Robot: addRotation( ang_deg = {ang_deg} )"
+        print( msg )
+        
+        if ang_deg > 0 : 
+            self.left()
+        else :
+            self.right()
+        pass
+    
+        self.ang_deg += ang_deg
+    
+        sleep( 1 )
+        
+        self.stop()
+    pass # -- addRotation
+
+    def moveXY( self, x, y ):
+        msg = f"Robot: moveXY( x = {x}, y = {y} )"
+        print( msg )
+        
+        self.forward( )
+        
+        if x is not None : self.x += x
+        if y is not None : self.y += y 
+        
+        sleep( 1 )
+        
+        self.stop()
+    pass # moveXY
+
+    def locateXY( self, x, y ):
+        msg = f"Robot: locateXY( x = {x}, y = {y} )"
+        print( msg )
+        
+        self.forward( )
+        
+        if x is not None : self.x = x
+        if y is not None : self.y = y
+        
+        sleep( 1 )
+        
+        self.stop()
+    pass # moveXY
+
+    def moveToDirection( self, fx, fy, tx, ty, ang_deg ) :
+        msg = f"Robot: moeToDirection( fx = {fx}, fy = {fy}, tx = {tx}, ty = {ty}, ang_deg = {ang_deg}"
+        print( msg )
+        
+        dx = tx - fx
+        dy = ty - fx
+        
+        self.forward()
+        
+        self.x += dx
+        self.y += dy        
+        
+        sleep(1 )
+        
+        self.stop()
+    pass
 
     def forward(self, speed=None, verbose=False ):
         if speed is None : speed = Robot.LOW_SPEED

@@ -1,5 +1,5 @@
 import machine
-import ujson, utime
+import ujson, utime 
 
 from picogo.Robot import Robot
 
@@ -172,10 +172,40 @@ class BlueTooth :
             reply = self.process_text_cmd_impl( s, robot )
         except Exception as e :
             print( e )
+            
+            debug = True
+            
+            if debug : 
+                raise e
+            pass
         pass
     
         return reply
     pass ## -- process_text_cmd
+
+    def parse_param( self, s ) :
+        s = s.split( "(" )[1]
+        s = s.split( ")" )[0]
+        
+        s = s.split( "," )
+        
+        f = []
+        for t in s :
+            t = t.split( "=" )
+            t = t[-1]
+            t = t.strip()
+            
+            try:
+                t = float( t )
+            except :
+                t = None
+            pass
+        
+            f.append( t )
+        pass
+    
+        return f
+    pass ## parse_param
 
     def process_text_cmd_impl( self, s, robot ) :
         reply = None
@@ -183,20 +213,12 @@ class BlueTooth :
         if "hello" in s :
             
             reply = "ok"
+        elif "addDirection" in s :
+            # do nothing
             
-        elif "whenStartEntry" in s :
-            robot.stop()
-            
-            robot.beepOnOff( repeat=2, period=0.3 )            
-            
-            reply = "ok" 
-        elif "toggleStop" in s :
-            robot.stop()
-            
-            robot.beepOnOff( repeat=3, period=0.3 )            
-            
-            reply = "ok" 
+            reply = "ok"            
         elif "togglePause" in s :
+            # do nothing really
             b = True
             
             if b :
@@ -206,17 +228,42 @@ class BlueTooth :
             robot.beepOnOff( repeat=3, period=0.3 )            
             
             reply = "ok" 
+        elif "whenStartEntry" in s :
+            robot.stop()
+            
+            robot.beepOnOff( repeat=2, period=0.3 )            
+            
+            reply = "ok" 
+        elif "toggleStop" in s :
+            ## implemented
+            robot.toggleStop()
+            
+            robot.beepOnOff( repeat=3, period=0.3 )            
+            
+            reply = "ok" 
         elif "addRotation" in s :
-            ang_deg = 90
+            ang_deg = self.parse_param( s )
+            ang_deg = ang_deg[ 0 ]
             
-            robot.left()
+            robot.addRotation( ang_deg )
             
-            reply = "ok"  
-        elif "addDirection" in s :
-            # do noghint
             reply = "ok"  
         elif "moveToDirection" in s :
-            robot.forward()
+            fx, fy, tx, ty, ang_deg = self.parse_param( x )
+            
+            robot.moveToDirection( fx, fy, tx, ty, ang_deg )
+            
+            reply = "ok"
+        elif "moveXY" in s :
+            x, y = self.parse_param( s )
+            
+            robot.moveXY( x, y )
+            
+            reply = "ok"
+        elif "locateXY" in s :
+            x, y = self.parse_param( s )
+            
+            robot.locateXY( x, y )
             
             reply = "ok"
         elif "send me pairing code" in s :
