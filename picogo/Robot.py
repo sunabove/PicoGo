@@ -315,7 +315,7 @@ class Robot :
     pass # locateXY
 
     def moveToDirection( self, dist ) :
-        msg = f"Robot: moeToDirection( fx = {fx}, fy = {fy}, tx = {tx}, ty = {ty}, ang_deg = {ang_deg}"
+        msg = f"Robot: moeToDirection( dist = {dist} )"
         print( msg ) 
         
         self.translate( dist ) 
