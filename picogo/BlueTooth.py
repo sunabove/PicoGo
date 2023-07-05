@@ -249,7 +249,7 @@ class BlueTooth :
             
             reply = "ok"  
         elif "moveToDirection" in s :
-            fx, fy, tx, ty, ang_deg = self.parse_param( x )
+            fx, fy, tx, ty, ang_deg = self.parse_param( s )
             
             robot.moveToDirection( fx, fy, tx, ty, ang_deg )
             
