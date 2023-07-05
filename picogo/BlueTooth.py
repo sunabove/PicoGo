@@ -213,10 +213,7 @@ class BlueTooth :
             
             reply = "ok"  
         elif "addDirection" in s :
-            ang_deg = 90
-            
-            robot.right()
-            
+            # do noghint
             reply = "ok"  
         elif "moveToDirection" in s :
             robot.forward()
