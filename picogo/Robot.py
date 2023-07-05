@@ -258,9 +258,11 @@ class Robot :
     def rotate( self, ang_deg, speed = None ) :
         if speed is None : speed = self.MIN_SPEED
         
-        print( f"Robot: rotate ang_deg = {ang_deg}, speed = {speed}" ); 
+        abs_ang_deg = abs( ang_deg )
         
-        duration = abs( ang_deg )/speed*0.144
+        duration = abs_ang_deg/speed*0.14
+        
+        print( f"Robot: rotate ang_deg = {ang_deg}, duration = {duration}, speed = {speed}" );          
         
         if duration > 0 :
             dir = 1 if ang_deg > 0 else -1
@@ -374,7 +376,7 @@ pass ## -- class Robot
 
 def test_rotation( robot ) :
     
-    for ang_deg in [ 5, 10, 20, 30, 40, 60, 90 ] :
+    for ang_deg in [ 30, 60, 90 ] :
         tot_angle = 0
         
         while tot_angle < 360 :
