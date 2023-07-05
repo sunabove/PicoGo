@@ -377,16 +377,18 @@ def test_rotation( robot ) :
     for ang_deg in [ 5, 10, 20, 30, 40, 60, 90 ] :
         tot_angle = 0
         
-        while tot_angle < 720 : 
+        while tot_angle < 360 :
+            print( f"tot_angle = {tot_angle}" )
             robot.addRotation( ang_deg )
             
             tot_angle += ang_deg
             
-            sleep( 1 )
+            sleep( 0.5 )
         pass
 
-        self.beepOnOff( repeat = 1, period = 1.2 )
-        sleep( 1 )
+        robot.beepOnOff( repeat = 2, period = 1.2 )
+        
+        sleep( 3 )
         
     pass
 
@@ -411,15 +413,7 @@ def test_robot( robot ) :
 pass
 
 def main( robot ) :
-    robot.run_ext_module = True
-    
-    callback = lambda : test_robot( robot=robot )
-    
-    import _thread 
-    
-    _thread.start_new_thread( callback, () )
-    
-    print( "thread inited" )
+    test_robot( robot=robot )
 pass
 
 if __name__ is '__main__' :
