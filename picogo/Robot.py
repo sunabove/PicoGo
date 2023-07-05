@@ -282,36 +282,44 @@ class Robot :
         
         print( f"Robot: translate dist = {dist}, duration = {duration}, speed = {speed}" )
         
-        if x < 0 :
-            self.backward( speed, duration = duration, verbose=True )
-        else :
-            self.forward( speed, duration = duration, verbose=True )
-        
+        if y == 0 :
+            if x < 0 :
+                self.backward( speed, duration = duration, verbose=True )
+            else :
+                self.forward( speed, duration = duration, verbose=True )
+        elif x == 0 :
+            pass
+        pass
+    
         self.x += x
         self.y += y 
         
         self.stop( duration = 0.01 ) 
     pass # -- translate
 
-    def moveXY( self, x, y = None ):
-        msg = f"Robot: moveXY( x = {x}, y = {y} )"
+    def moveXY( self, dx, dy = None ):
+        msg = f"Robot: moveXY( dx = {dx}, dy = {dy} )"
         print( msg )
         
-        self.translate( x, y )
+        self.translate( dx, dy )
     pass # moveXY
 
     def locateXY( self, x, y ):
         msg = f"Robot: locateXY( x = {x}, y = {y} )"
         print( msg )
         
-        self.forward( )
+        dx = None
+        dy = None
         
-        if x is not None : self.x = x
-        if y is not None : self.y = y
-        
-        sleep( 1 )
-        
-        self.stop()
+        if x is not None :
+            dx = x - self.x
+        pass
+    
+        if y is not None :
+            dy = y - self.y
+        pass
+    
+        self.translate( dx, dy ) 
     pass # locateXY
 
     def moveToDirection( self, dist ) :
