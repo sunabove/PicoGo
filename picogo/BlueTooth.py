@@ -181,27 +181,47 @@ class BlueTooth :
         reply = None
         
         if "hello" in s :
+            
             reply = "ok"
+            
         elif "whenStartEntry" in s :
             robot.stop()
             
             robot.beepOnOff( repeat=2, period=0.3 )            
             
-            replly = "ok" 
+            reply = "ok" 
         elif "toggleStop" in s :
             robot.stop()
             
             robot.beepOnOff( repeat=3, period=0.3 )            
             
-            replly = "ok" 
-        elif "togglePause" in s : 
+            reply = "ok" 
+        elif "togglePause" in s :
+            b = True
+            
+            if b :
+                robot.stop()
+            pass
+            
             robot.beepOnOff( repeat=3, period=0.3 )            
             
-            replly = "ok" 
+            reply = "ok" 
+        elif "addRotation" in s :
+            ang_deg = 90
+            
+            robot.left()
+            
+            reply = "ok"  
+        elif "addDirection" in s :
+            ang_deg = 90
+            
+            robot.right()
+            
+            reply = "ok"  
         elif "moveToDirection" in s :
             robot.forward()
             
-            replly = "ok"
+            reply = "ok"
         elif "send me pairing code" in s :
             print( f"processing pairing code" )
             
