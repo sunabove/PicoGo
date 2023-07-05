@@ -257,7 +257,7 @@ class Robot :
         
         abs_ang_deg = abs( ang_deg )
         
-        duration = abs_ang_deg/speed*0.14
+        duration = abs_ang_deg/speed*0.107
         
         print( f"Robot: rotate ang_deg = {ang_deg}, duration = {duration}, speed = {speed}" );          
         

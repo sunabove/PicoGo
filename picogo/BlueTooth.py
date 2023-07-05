@@ -393,6 +393,8 @@ class BlueTooth :
 
         head_read_count = 0
         
+        robot.beepOnOff( repeat=2, period=0.5 )
+        
         while True :
             debug = True
             
