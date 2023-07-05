@@ -7,6 +7,8 @@ class BlueTooth :
     def __init__( self ):
         print( "Hello ... Bluetooth!" )
         
+        self.debug = False
+        
         self.robot = Robot()
         self.uart = self.robot.uart
         
@@ -173,7 +175,7 @@ class BlueTooth :
         except Exception as e :
             print( e )
             
-            debug = True
+            debug = self.debug
             
             if debug : 
                 raise e
@@ -507,12 +509,14 @@ class BlueTooth :
 
 pass
 
-def main() :
+def main( debug = False ) :
     blueTooth = BlueTooth()
+    blueTooth.debug = debug
+    
     blueTooth.main()
 pass
 
 if __name__ == '__main__' :
-    main()
+    main( debug = True )
 pass
     

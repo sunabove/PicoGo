@@ -1,4 +1,4 @@
-import machine , ujson, time
+import machine , ujson, time, math
 from machine import Pin, Timer
 from time import sleep
 
@@ -15,8 +15,9 @@ print( "Import Robot ..." )
 
 class Robot : 
     
-    LOW_SPEED = low_speed  = 30
-    MED_SPEED = med_speed  = 50
+    MIN_SPEED   = min_speed  = 15
+    LOW_SPEED   = low_speed  = 30
+    MED_SPEED   = med_speed  = 50
     HIGHT_SPEED = high_speed = 80
     
     def __init__(self):
@@ -242,37 +243,61 @@ class Robot :
         self.addRotation( self.ang_deg )
         
         self.stop()
+        
+        duration = 0.01
+        sleep( duration )
     pass # -- toggleStop
 
     def addRotation( self, ang_deg ) :
         msg =  f"Robot: addRotation( ang_deg = {ang_deg} )"
         print( msg )
         
-        if ang_deg > 0 : 
-            self.left()
-        else :
-            self.right()
-        pass
-    
-        self.ang_deg += ang_deg
-    
-        sleep( 1 )
-        
-        self.stop()
+        self.rotate( ang_deg )
     pass # -- addRotation
 
-    def moveXY( self, x, y ):
+    def rotate( self, ang_deg, speed = None ) :
+        if speed is None : speed = self.MIN_SPEED
+        
+        print( f"Robot: rotate ang_deg = {ang_deg}, speed = {speed}" ); 
+        
+        duration = abs( ang_deg )/speed
+        
+        if duration > 0 :
+            dir = 1 if ang_deg > 0 else -1
+            self.move( dir*speed, -dir*speed )
+            
+            sleep( duration )
+        pass
+    
+        self.stop() 
+    pass # -- rotate
+
+    def translate( self, x, y, speed = None ) :
+        if speed is None : speed = self.MIN_SPEED
+        
+        if x is None : x = 0
+        if y is None : y = 0
+        
+        dist = math.sqrt( x*x + y*y )
+        duration = 1.4*dist/speed
+        
+        print( f"Robot: translate dist = {dist}, duration = {duration}, speed = {speed}" )
+        
+        self.forward( speed )
+        
+        self.x += x
+        self.y += y
+        
+        sleep( duration )
+        
+        self.stop()
+    pass # -- translate
+
+    def moveXY( self, x, y = None ):
         msg = f"Robot: moveXY( x = {x}, y = {y} )"
         print( msg )
         
-        self.forward( )
-        
-        if x is not None : self.x += x
-        if y is not None : self.y += y 
-        
-        sleep( 1 )
-        
-        self.stop()
+        self.translate( x, y )
     pass # moveXY
 
     def locateXY( self, x, y ):
@@ -347,22 +372,62 @@ class Robot :
 
 pass ## -- class Robot
 
-if __name__ is '__main__' : 
+def test_rotation( robot ) :
     
-    robot = Robot()
-    
-    robot.forward()
-    sleep( 2 )
-    
-    robot.backward()
-    sleep( 2 )
-    
-    robot.left()
-    sleep( 2 )
-    
-    robot.right()
-    sleep( 2 )
-    
+    for i in range( 10 ) :
+        ang_deg = 36
+        
+        robot.addRotation( ang_deg )
+        
+        sleep( 1 )
+    pass
+
     robot.stop()
+pass # -- test_rotation
+
+def test_translation( robot ) :
+    
+    for i in range( 9 ) :
+        dist = i + 1
+        
+        robot.moveXY( dist )
+        
+        sleep( 2 )
+    pass
+
+    robot.stop()
+pass # -- test_translation
+
+def test_robot( robot ) :
+    test_rotation( robot )
+pass
+
+def main( robot ) :
+    robot.run_ext_module = True
+    
+    callback = lambda : test_robot( robot=robot )
+    
+    import _thread 
+    
+    _thread.start_new_thread( callback, () )
+    
+    print( "thread inited" )
+pass
+
+if __name__ is '__main__' :
+    
+    print( "Hello ..." )
+        
+    robot = Robot()
+    main( robot )
+    
+    duration = 1
+    print( f"sleep({duration})" )
+    sleep( duration )
+    print( f"finished sleep({duration})" )
+    
+    robot.run_ext_module = False
+    
+    print( "Good bye!" )
     
 pass
