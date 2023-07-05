@@ -206,7 +206,11 @@ class BlueTooth :
             f.append( t )
         pass
     
-        return f
+        if len( f ) == 1 :
+            return f[ 0 ]
+        else :
+            return f
+        pass
     pass ## parse_param
 
     def process_text_cmd_impl( self, s, robot ) :
@@ -244,16 +248,15 @@ class BlueTooth :
             
             reply = "ok" 
         elif "addRotation" in s :
-            ang_deg = self.parse_param( s )
-            ang_deg = ang_deg[ 0 ]
+            ang_deg = self.parse_param( s ) 
             
             robot.addRotation( ang_deg )
             
             reply = "ok"  
         elif "moveToDirection" in s :
-            fx, fy, tx, ty, ang_deg = self.parse_param( s )
+            dist = self.parse_param( s ) 
             
-            robot.moveToDirection( fx, fy, tx, ty, ang_deg )
+            robot.moveToDirection( dist )
             
             reply = "ok"
         elif "moveXY" in s :

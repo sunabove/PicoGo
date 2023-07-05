@@ -15,7 +15,7 @@ print( "Import Robot ..." )
 
 class Robot : 
     
-    MIN_SPEED   = min_speed  = 15
+    MIN_SPEED   = min_speed  = 20
     LOW_SPEED   = low_speed  = 30
     MED_SPEED   = med_speed  = 50
     HIGHT_SPEED = high_speed = 80
@@ -234,18 +234,15 @@ class Robot :
         print( msg )
         
         self.x = 0
-        self.y = 0
-        
-        ang_deg = - self.ang_deg
+        self.y = 0 
         
         self.stop()
         
-        self.addRotation( self.ang_deg )
+        self.addRotation( - self.ang_deg )
         
         self.stop()
         
-        duration = 0.01
-        sleep( duration )
+        sleep( 0.01 )
     pass # -- toggleStop
 
     def addRotation( self, ang_deg ) :
@@ -271,10 +268,10 @@ class Robot :
             sleep( duration )
         pass
     
-        self.stop() 
+        self.stop( duration = 0.01 ) 
     pass # -- rotate
 
-    def translate( self, x, y, speed = None ) :
+    def translate( self, x, y = 0, speed = None ) :
         if speed is None : speed = self.MIN_SPEED
         
         if x is None : x = 0
@@ -285,14 +282,15 @@ class Robot :
         
         print( f"Robot: translate dist = {dist}, duration = {duration}, speed = {speed}" )
         
-        self.forward( speed )
+        if x < 0 :
+            self.backward( speed, duration = duration, verbose=True )
+        else :
+            self.forward( speed, duration = duration, verbose=True )
         
         self.x += x
-        self.y += y
+        self.y += y 
         
-        sleep( duration )
-        
-        self.stop()
+        self.stop( duration = 0.01 ) 
     pass # -- translate
 
     def moveXY( self, x, y = None ):
@@ -314,62 +312,80 @@ class Robot :
         sleep( 1 )
         
         self.stop()
-    pass # moveXY
+    pass # locateXY
 
-    def moveToDirection( self, fx, fy, tx, ty, ang_deg ) :
+    def moveToDirection( self, dist ) :
         msg = f"Robot: moeToDirection( fx = {fx}, fy = {fy}, tx = {tx}, ty = {ty}, ang_deg = {ang_deg}"
-        print( msg )
+        print( msg ) 
         
-        dx = tx - fx
-        dy = ty - fx
-        
-        self.forward()
-        
-        self.x += dx
-        self.y += dy        
-        
-        sleep(1 )
-        
-        self.stop()
-    pass
+        self.translate( dist ) 
+    pass # -- moveToDirection
 
-    def forward(self, speed=None, verbose=False ):
+    def forward(self, speed=None, duration = 0, verbose=False ):
         if speed is None : speed = Robot.LOW_SPEED
         
         self.motor.forward( speed, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def backward(self, speed=None, verbose=False ):
+    def backward(self, speed=None, duration = 0, verbose=False ):
         if speed is None : speed = Robot.LOW_SPEED
         
         self.motor.backward( speed, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def left(self, speed=None, verbose=False ):
+    def left(self, speed=None, duration = 0 , verbose=False ):
         if speed is None : speed = Robot.LOW_SPEED
         
         self.motor.left( speed, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def right(self, speed=None, verbose=False ):
+    def right(self, speed=None, duration = 0 , verbose=False ):
         if speed is None : speed = Robot.LOW_SPEED
         
         self.motor.right( speed, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def stop(self, verbose=False):
+    def stop(self, duration = 0, verbose=False):
         self.motor.stop( verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def move(self, left, right, verbose=False):
+    def move(self, left, right, duration = 0, verbose=False):
         if left is None : left = Robot.LOW_SPEED
         if right is None : right = - left
         
         self.motor.move( left, right, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
-    def set_motor(self, left, right, verbose=False):
+    def set_motor(self, left, right, duration = 0, verbose=False):
         self.motor.set_motor( lef, right, verbose )
+        
+        if duration > 0 :
+            sleep( duration )
+        pass
     pass
 
 pass ## -- class Robot
