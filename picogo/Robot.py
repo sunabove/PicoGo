@@ -236,13 +236,11 @@ class Robot :
         self.x = 0
         self.y = 0 
         
-        self.stop()
+        self.stop( duration = 0.01 )
         
-        self.addRotation( - self.ang_deg )
+        self.rotate( - self.ang_deg )
         
-        self.stop()
-        
-        sleep( 0.01 )
+        self.stop( duration = 0.01 ) 
     pass # -- toggleStop
 
     def addRotation( self, ang_deg ) :
@@ -257,42 +255,71 @@ class Robot :
         
         abs_ang_deg = abs( ang_deg )
         
-        duration = abs_ang_deg/speed*0.107
+        duration = abs_ang_deg/speed*0.112
         
         print( f"Robot: rotate ang_deg = {ang_deg}, duration = {duration}, speed = {speed}" );          
         
         if duration > 0 :
             dir = 1 if ang_deg > 0 else -1
+            
             self.move( dir*speed, -dir*speed )
             
             sleep( duration )
         pass
     
+        pre_ang_deg = self.ang_deg
+        
+        self.ang_deg += ang_deg
+        self.ang_deg = self.ang_deg % 360
+        
+        print( f"Robot: rotation result : cur_ang = { self.ang_deg }, pre_ang = {pre_ang_deg}" )
+    
         self.stop( duration = 0.01 ) 
     pass # -- rotate
 
-    def translate( self, x, y = 0, speed = None ) :
+    def translate( self, x, y = None, speed = None ) :
         if speed is None : speed = self.MIN_SPEED
         
-        if x is None : x = 0
-        if y is None : y = 0
+        dx = x 
+        dy = y 
         
-        dist = math.sqrt( x*x + y*y )
+        if x is None : dx = 0
+        if y is None : dy = 0
+        
+        dist = math.sqrt( dx*dx + dy*dy )
         duration = 1.4*dist/speed
         
         print( f"Robot: translate dist = {dist}, duration = {duration}, speed = {speed}" )
         
-        if y == 0 :
+        if y is None :
             if x < 0 :
                 self.backward( speed, duration = duration, verbose=True )
             else :
                 self.forward( speed, duration = duration, verbose=True )
-        elif x == 0 :
             pass
+        else :
+            # rotate
+            to_ang_deg = math.atan2( dy, dx )*180/math.pi
+            to_ang_deg = to_ang_deg % 360
+            
+            fr_ang_deg = self.ang_deg
+            
+            rot_ang_deg = to_ang_deg - fr_ang_deg
+            
+            print( f"Robot: rotation befor translation. angle = {rot_ang_deg}" )
+            self.rotate( rot_ang_deg )
+            
+            # translate 
+            self.forward( speed, duration = duration, verbose=True )
         pass
-    
-        self.x += x
-        self.y += y 
+        
+        px = self.x
+        py = self.y
+        
+        self.x += dx
+        self.y += dy 
+        
+        print( f"Robot: tranlation result cx = {self.x}, cy ={self.y}, px = {px}, py = {py}" )
         
         self.stop( duration = 0.01 ) 
     pass # -- translate
@@ -301,15 +328,20 @@ class Robot :
         msg = f"Robot: moveXY( dx = {dx}, dy = {dy} )"
         print( msg )
         
+        if dx is None :
+            dx = 0
+        pass
+    
+        if dy is None :
+            dy = 0
+        pass
+        
         self.translate( dx, dy )
     pass # moveXY
 
     def locateXY( self, x, y ):
-        msg = f"Robot: locateXY( x = {x}, y = {y} )"
-        print( msg )
-        
-        dx = None
-        dy = None
+        dx = 0
+        dy = 0
         
         if x is not None :
             dx = x - self.x
@@ -319,6 +351,9 @@ class Robot :
             dy = y - self.y
         pass
     
+        msg = f"Robot: locateXY( x = {x}, y = {y}, dx = {dx}, dy = {dy} )"
+        print( msg ) 
+    
         self.translate( dx, dy ) 
     pass # locateXY
 
@@ -326,7 +361,7 @@ class Robot :
         msg = f"Robot: moeToDirection( dist = {dist} )"
         print( msg ) 
         
-        self.translate( dist ) 
+        self.translate( x = dist, y = None ) 
     pass # -- moveToDirection
 
     def forward(self, speed=None, duration = 0, verbose=False ):
