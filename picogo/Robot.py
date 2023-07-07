@@ -324,8 +324,8 @@ class Robot :
         self.stop( duration = 0.01 ) 
     pass # -- translate
 
-    def moveXY( self, dx, dy = None ):
-        msg = f"Robot: moveXY( dx = {dx}, dy = {dy} )"
+    def moveBy( self, dx, dy = None ):
+        msg = f"Robot: moveBy( dx = {dx}, dy = {dy} )"
         print( msg )
         
         if dx is None :
@@ -337,9 +337,9 @@ class Robot :
         pass
         
         self.translate( dx, dy )
-    pass # moveXY
+    pass # moveBy
 
-    def locateXY( self, x, y ):
+    def locateTo( self, x, y ):
         dx = 0
         dy = 0
         
@@ -351,11 +351,11 @@ class Robot :
             dy = y - self.y
         pass
     
-        msg = f"Robot: locateXY( x = {x}, y = {y}, dx = {dx}, dy = {dy} )"
+        msg = f"Robot: locateTo( x = {x}, y = {y}, dx = {dx}, dy = {dy} )"
         print( msg ) 
     
         self.translate( dx, dy ) 
-    pass # locateXY
+    pass # locateTo
 
     def moveToDirection( self, dist ) :
         msg = f"Robot: moeToDirection( dist = {dist} )"
@@ -461,7 +461,7 @@ def test_translation( robot ) :
     for i in range( 9 ) :
         dist = i + 1
         
-        robot.moveXY( dist )
+        robot.moveBy( dist )
         
         sleep( 2 )
     pass

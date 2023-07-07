@@ -259,16 +259,16 @@ class BlueTooth :
             robot.moveToDirection( dist )
             
             reply = "ok"
-        elif "moveXY" in s :
+        elif ( "moveBy" in s ) or ( "mobeXY" in s ) :
             x, y = self.parse_param( s )
             
-            robot.moveXY( x, y )
+            robot.moveBy( x, y )
             
             reply = "ok"
-        elif "locateXY" in s :
+        elif ( "locateTo" in s ) or ( "locateXY" in s ):
             x, y = self.parse_param( s )
             
-            robot.locateXY( x, y )
+            robot.locateTo( x, y )
             
             reply = "ok"
         elif "send me pairing code" in s :
