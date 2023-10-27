@@ -5,7 +5,7 @@ from picogo.Motor import Motor
 if __name__== '__main__' :
     motor = Motor()
     
-    duration = 1
+    duration = 2
     
     motor.forward(30)
     sleep(duration)
