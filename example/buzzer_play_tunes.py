@@ -1,5 +1,15 @@
-import time
-from picozero import Speaker
+from time import sleep
+from picozero import Speaker, LED
+from machine import Timer
+
+led = LED(25)
+
+timer = Timer()
+
+def led_blink( timer ):
+    led.toggle()
+
+timer.init( freq=1, mode=Timer.PERIODIC, callback=led_blink )
 
 speaker = Speaker(4)
 
@@ -16,5 +26,5 @@ BEAT = 1
 for idx, note in enumerate( notes ) :
     note = note.strip()
     print( f"[{idx:3d}] speaker play note: {note}" )
-    speaker.play( note, BEAT )
+    speaker.play( note, BEAT*2 )    
 pass

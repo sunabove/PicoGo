@@ -1,8 +1,8 @@
 from time import sleep
 from picozero import Speaker, LED
 
-led = LED(25)
 buzzer = Speaker(4)
+led = LED(25)
 
 while 1 :
     led.on()    
