@@ -26,9 +26,14 @@ BEAT = 1
 
 start = 37
 end = start + 25
-for idx, note in enumerate( notes[start:end] ) :
-    note = note.strip()
-    if "#" not in note :
-        print( f"[{ start + idx:3d}/{end - start}] speaker play note: {note}" )
-        speaker.play( note, BEAT*2 )
+
+while 1 : 
+    for idx, note in enumerate( notes[start:end] ) :
+        note = note.strip()
+        if "#" not in note :
+            print( f"[{ start + idx:3d}/{end - start}] speaker play note: {note}" )
+            speaker.play( note, BEAT*2 )
+    pass
+    
+    sleep( 2 )
 pass
