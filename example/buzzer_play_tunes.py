@@ -19,13 +19,14 @@ d4,d#4,e4,f4,f#4,g4,g#4,a4,a#4,b4,c5,c#5,d5,d#5,e5,f5,f#5,g5,g#5,a5,a#5,
 b5,c6,c#6,d6,d#6,e6,f6,f#6,g6,g#6,a6,a#6,b6,c7,c#7,d7,d#7,e7,f7,f#7,
 g7,g#7,a7,a#7,b7,c8,c#8,d8,d#8"""
 
+
 notes = notes.strip().split(",")
 notes_len = len( notes )
 
 BEAT = 1
 
 start = 37
-end = start + 2*8 + 1
+end = start + 25
 for idx, note in enumerate( notes[start:end] ) :
     note = note.strip()
     if "#" not in note :
