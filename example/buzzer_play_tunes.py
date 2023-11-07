@@ -20,11 +20,15 @@ b5,c6,c#6,d6,d#6,e6,f6,f#6,g6,g#6,a6,a#6,b6,c7,c#7,d7,d#7,e7,f7,f#7,
 g7,g#7,a7,a#7,b7,c8,c#8,d8,d#8"""
 
 notes = notes.strip().split(",")
+notes_len = len( notes )
 
 BEAT = 1
 
-for idx, note in enumerate( notes ) :
+start = 37
+end = start + 2*8 + 1
+for idx, note in enumerate( notes[start:end] ) :
     note = note.strip()
-    print( f"[{idx:3d}] speaker play note: {note}" )
-    speaker.play( note, BEAT*2 )    
+    if "#" not in note :
+        print( f"[{ start + idx:3d}/{end - start}] speaker play note: {note}" )
+        speaker.play( note, BEAT*2 )
 pass
