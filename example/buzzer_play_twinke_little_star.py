@@ -20,11 +20,13 @@ melodies = [
 sleep( 1 )
 
 try :
-    while 1 :
+    for _ in range( 2 ) :
         led.toggle()
         speaker.play( melodies )
         sleep( 3 )
     pass
 except :
+    pass
+finally:
     led.off()
 pass
