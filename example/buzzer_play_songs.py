@@ -56,7 +56,7 @@ sleep( 1 )
 
 try :
     print( "hello" )
-    for idx, song in enumerate( songs ) : 
+    for song in songs : 
         led.toggle()
         speaker.play( to_melody( song ) )
         sleep( 3 )
