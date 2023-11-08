@@ -27,7 +27,12 @@ melodies = [ ['d5', BEAT / 2], ['d#5', BEAT / 2], ['f5', BEAT], ['d6', BEAT], ['
 
 sleep( 1 )
 
-speaker.play( melodies )
-
-timer.deinit()
-led.off()
+try :
+    while 1 :
+        speaker.play( melodies )
+        sleep( 3 )
+    pass
+except :
+    timer.deinit()
+    led.off()
+pass
