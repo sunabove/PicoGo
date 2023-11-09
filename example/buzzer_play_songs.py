@@ -16,13 +16,13 @@ do, do, sol, sol, la, la, sol2, fa, fa, mi, mi, re, re, do2,
 
 song_1 = "sol sol la la sol sol mi2 sol sol mi mi re2 sol sol la la sol sol mi2 sol mi re mi do2"
 
-song_2 = """sol, la, sol, la, sol, mi, re, do2, do+, la, sol, mi, sol2,
+song_2 = """sol2, la, sol2, la, sol, mi, re, do2, do+2, la, sol2, mi, sol2,
 la, la, sol, la, sol, mi, re, do2, re, mi, re, mi, do2,
 re, re, do, re, mi, mi, do2, la, sol, la, si, do+, sol2,
-do+, ra, sol, mi, re, mi, do, sol2, sol, re, fa, mi, re, do2
+do+, ra, sol, mi, re, mi, sol, la2, sol2, re, fa, mi, re, do2
 """
 
-songs = [ song_1, song_1, song_2 ]
+songs = [ song_0, song_1, song_2 ]
 
 def to_melody( song ) :
     notes = []
