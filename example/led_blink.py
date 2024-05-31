@@ -5,6 +5,6 @@ led = LED(25)
 
 while 1 :
    led.toggle()
-   print( led.value )
+   print( "\b"*4, led.value, end="" )
    sleep(1)
 pass

@@ -1,14 +1,10 @@
-import time
-from machine import Pin
+from picozero import LED
+from time import sleep
 
-# led instrinsic 
-led=Pin(25, Pin.OUT)
-
-print( "Hello..." )
+led = LED(25)
 
 while 1 :
-    led.toggle()
-    time.sleep(0.5)
+   led.toggle()
+   print( "\b"*4, led.value, end="" )
+   sleep(1)
 pass
-
-print( "Good bye!" )

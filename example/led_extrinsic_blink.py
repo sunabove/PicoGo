@@ -2,8 +2,9 @@ from picozero import LED
 from time import sleep
 
 led = LED(13)
-while True :
-   led.on()
-   sleep(2)
-   led.off()
-   sleep(2)
+
+while 1 :
+   led.toggle()
+   print( "\b"*4, led.value, end="" )
+   sleep(1)
+pass
