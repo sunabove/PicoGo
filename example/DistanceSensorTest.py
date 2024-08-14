@@ -7,11 +7,11 @@ from time import sleep
 distanceSensor = DistanceSensor(trigger=20, echo=12)
 
 # 무한 루프를 실행합니다. 
-# 사용자가 강제로 중지하기 전까지 계속 반복됩니다.
+# 사용자가 강제로 종료하기 전까지 반복합니다.
 while 1 :
     # 현재 측정된 거리를 센티미터(cm) 단위로 출력합니다.
     # 측정된 거리는 소수점 세 자리까지 표시합니다.
-    print( f"{distanceSensor.distance * 100:6.3f} cm" )
+    print( 0, f"{distanceSensor.distance * 100:6.3f} cm" )
     
     sleep(0.1)  # 0.1초 동안 대기합니다. 초당 약 10번 측정합니다.
 pass
